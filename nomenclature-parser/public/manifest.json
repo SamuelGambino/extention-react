@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Product Parser",
+    "description": "Расширение для извлечения информации о товарах с любых сайтов.",
+    "version": "1.0.0",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "Web Parsing Toolkit"
+    },
+    "permissions": [
+        "storage",
+        "tabs",
+        "scripting",
+        "activeTab",
+        "downloads",
+        "contextMenus"
+    ],
+    "host_permissions": [
+        "*://eda.yandex.ru/*",
+        "*://yandex.ru/maps/*",
+        "*://2gis.ru/*",
+        "<all_urls>"
+    ],
+    "web_accessible_resources": []
+}

@@ -1,0 +1,36 @@
+.telemetry {
+  height: 212px;
+  width: 46px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.telemetry span {
+  flex: 1;
+  border: 1px solid;
+
+  transition:
+    flex-grow 1.2s ease,
+    opacity .8s ease;
+}
+
+.telemetry span.active {
+  flex-grow: 5;
+  opacity: 1;
+}
+
+@keyframes pulse-a {
+  0% {
+    flex-grow: 1;
+  }
+
+  50% {
+    flex-grow: 4;
+  }
+
+  100% {
+    flex-grow: 1;
+  }
+}

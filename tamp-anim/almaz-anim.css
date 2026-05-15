@@ -1,0 +1,67 @@
+#left {
+  transform-origin: center;
+  animation: octa-anim-left 3s linear infinite;
+}
+
+#left-middle {
+  transform-origin: center;
+  animation: octa-animm-left-middle 3s linear infinite;
+}
+
+#right-middle {
+  transform-origin: center;
+  animation: octa-animm-right-middle 3s linear infinite;
+}
+
+#right {
+  transform-origin: center;
+  animation: octa-animm-right 3s linear infinite;
+}
+
+@keyframes octa-animm-right {
+  0% {
+    transform: scaleX(0.45);
+  }
+  
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes octa-animm-right-middle {
+  0% {
+    transform: scaleX(0);
+  }
+
+  50% {
+    transform: scaleX(0);
+  }
+  
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes octa-animm-left-middle {
+  0% {
+    transform: scaleX(1);
+  }
+
+  50% {
+    transform: scaleX(0);
+  }
+  
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes octa-anim-left {
+  0% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0.45);
+  }
+}
