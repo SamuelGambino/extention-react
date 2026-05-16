@@ -1,0 +1,114 @@
+.popup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  height: 100%;
+  padding: 10px 20px;
+  background-color: #1D2133;
+  opacity: 0.85;
+  border-radius: 8px;
+  gap: 20px;
+}
+
+.popup__wrapper {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 16px;
+  height: 100%;
+}
+
+.popup__decorative {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0;
+  padding: 5px 0 5vh;
+}
+
+.popup__content {
+  grid-column: 2;
+  grid-row: 1 / 3;
+}
+
+/* 4. РАБОЧАЯ ОБЛАСТЬ С КОНТЕНТОМ (Магия скролла здесь) */
+.app-content {
+  flex: 1;             /* Занимает ВСЁ доступное пространство между верхом и футером */
+  overflow-y: auto;    /* Скролл появляется внутри этого блока, если контент длинный */
+  padding: 20px;       /* Внутренние отступы, чтобы контент не лип к краям */
+  
+  /* Настройка кастомного скроллбара (опционально, для красоты) */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+#left {
+  transform-origin: center;
+  animation: octa-anim-left 3s linear infinite;
+}
+
+#left-middle {
+  transform-origin: center;
+  animation: octa-animm-left-middle 3s linear infinite;
+}
+
+#right-middle {
+  transform-origin: center;
+  animation: octa-animm-right-middle 3s linear infinite;
+}
+
+#right {
+  transform-origin: center;
+  animation: octa-animm-right 3s linear infinite;
+}
+
+@keyframes octa-animm-right {
+  0% {
+    transform: scaleX(0.45);
+  }
+  
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes octa-animm-right-middle {
+  0% {
+    transform: scaleX(0);
+  }
+
+  50% {
+    transform: scaleX(0);
+  }
+  
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes octa-animm-left-middle {
+  0% {
+    transform: scaleX(1);
+  }
+
+  50% {
+    transform: scaleX(0);
+  }
+  
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes octa-anim-left {
+  0% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0.45);
+  }
+}

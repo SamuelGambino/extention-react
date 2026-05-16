@@ -1,0 +1,23 @@
+.footer {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+  justify-content: space-between;
+  border-top: 1px solid var(--second);
+  color: var(--second);
+  margin: 0 -20px;
+  padding: 10px 20px 0;
+}
+
+.footer__text {
+  color: inherit;
+  font-family: var(--default);
+  font-size: 16px;
+  text-decoration: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer__icon {
+  margin-left: 5px;
+}

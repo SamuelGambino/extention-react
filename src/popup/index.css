@@ -11,10 +11,8 @@
   --shadow:
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Inter', Arial, sans-serif;
-  --heading: system-ui, 'Inter', Arial, sans-serif;
-  --logo: system-ui, 'Monoton', Arial, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --default: system-ui, 'Inter Variable', Arial, sans-serif;
+  --logo: 'Monoton', system-ui;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -25,67 +23,51 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-/* @media (prefers-color-scheme: dark) {
-
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-} */
-
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  position: relative;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
+  background-image: url('../assets/grid.svg');
+  background-repeat: no-repeat;
+  background-position: bottom;
   min-height: 100svh;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
 
 body {
+  font-family: var(--default);
   margin: 0;
+  width: 800px;
+  height: 600px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Убирает случайные полосы прокрутки */
+  box-sizing: border-box;
 }
 
 h1 {
   font-family: var(--logo);
-  font-weight: 500;
   color: var(--text-h);
+  text-transform: uppercase;
+  font-size: 36px;
+  margin: 0;
 }
 h2 {
-  font-family: var(--heading);
+  font-family: var(--default);
   font-weight: 500;
   color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 16px;
+  margin: 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
 }
 
 p {

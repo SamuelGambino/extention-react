@@ -1,23 +1,19 @@
 .telemetry {
-  height: 212px;
   width: 46px;
-
+  height: 249px; 
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .telemetry span {
-  flex: 1;
-  border: 1px solid;
-
-  transition:
-    flex-grow 1.2s ease,
-    opacity .8s ease;
+  border: 1px solid var(--second);
+  min-height: 0;
+  transition: flex-grow 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .telemetry span.active {
-  flex-grow: 5;
+  flex-grow: 2;
   opacity: 1;
 }
 
