@@ -60,7 +60,7 @@ h1 {
   font-size: 36px;
   margin: 0;
 }
-h2 {
+legend {
   font-family: var(--default);
   font-weight: 500;
   color: var(--text-h);

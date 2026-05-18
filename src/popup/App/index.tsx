@@ -62,11 +62,11 @@ const App = () => {
           <Telemetry />
         </div>
 
-        <div className='popup__content'>
-          {/* <MainSettings />*/}
-          {/* <SecondSettings />*/}
-          {/* <ConfigSettings />*/}
-        </div>
+        <form className='popup__content'>
+          <fieldset className="popup__settings">
+            <legend className="popup__settings-title">Main</legend>
+          </fieldset>
+        </form>
 
       </div>
 
