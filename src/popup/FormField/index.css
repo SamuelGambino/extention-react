@@ -1,0 +1,46 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field__title {
+  display: flex;
+  gap: 4px;
+}
+
+.form-field__label {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.form-field__hint-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.form-field__icon {
+  margin-left: 4px;
+  cursor: pointer;
+  display: block;
+}
+
+.form-field__tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+  background: var(--second-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.form-field__tooltip-text {
+  display: block;
+  padding: 6px 10px;
+  color: var(--text);
+}

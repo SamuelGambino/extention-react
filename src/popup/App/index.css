@@ -42,10 +42,16 @@
 
 .popup__settings {
   position: relative;
-  padding: 16px 0 0 16px;
+  padding: 16px -16px 0 16px;
+  margin-right: 16px;
   border-width: 1px;
+  border-style: solid;
   border-right: none;
   border-bottom: none;
+  border-color: var(--second);
+  box-shadow: none;
+  display: grid;
+  
 }
 
 .popup__settings::before {
@@ -63,7 +69,7 @@
   content: '';
   position: absolute;
   right: 0;
-  top: -12.5px;
+  top: -12px;
   width: 4px;
   height: 4px;
   border-radius: 90px;
@@ -91,7 +97,7 @@
   content: '';
   position: absolute;
   right: -22px;
-  top: 0;
+  top: -1px;
   background-image: url(../../assets/slight-icon.svg);
   width: 22px;
   height: 22px;

@@ -2,8 +2,17 @@ import './index.css'
 import Header from '../Header'
 import Footer from '../Footer'
 import Telemetry from '../Telemetry';
+import FormField from '../FormField';
 
-
+const PresertOptions = [
+  { label: 'None', value: 'none' },
+  { label: 'Custom', value: 'custom' },
+  { label: 'Api', value: 'api' },
+  { label: 'VK', value: 'vk' },
+  { label: 'Yandex eda', value: 'yandex_eda' },
+  { label: 'Yandex map', value: 'yandex_map' },
+  { label: 'Chibbis', value: 'chibbis' },
+]
 
 const App = () => {
 
@@ -65,6 +74,7 @@ const App = () => {
         <form className='popup__content'>
           <fieldset className="popup__settings">
             <legend className="popup__settings-title">Main</legend>
+            <FormField label="Preset" hint="Выберите пресет парсера" isAccent={true} field={{ type: 'select', value: 'none', options: PresertOptions }} onChange={() => {}} />
           </fieldset>
         </form>
 
