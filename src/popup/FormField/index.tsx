@@ -1,6 +1,7 @@
 import type React from 'react';
 import './index.css'
 import { useCallback, useEffect, useRef, useState } from 'react';
+import ScrambleText from '../ScrambleText';
 
 interface IInputField {
   type: 'input';
@@ -30,59 +31,58 @@ interface IFormFieldProps {
   onChange: (value: string | boolean) => void;
 }
 
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&';
 const PHASE1_DURATION = 220;
-const CHAR_SCRAMBLE_DURATION = 380;
-const CHAR_SETTLE_DELAY = 18;
+const MAX_WIDTH = 200;
 
-function rand() {
-  return CHARS[Math.floor(Math.random() * CHARS.length)];
-}
-
-function measureText(text: string): number {
+const measureTooltip = (text: string): { width: number; height: number } => {
   const el = document.createElement('span');
-  el.style.cssText =
-    'position:absolute;visibility:hidden;white-space:nowrap;font-size:13px;font-family:monospace;padding:6px 10px;';
+  el.style.cssText = `
+    position: absolute;
+    visibility: hidden;
+    word-break: break-word;
+    max-width: ${MAX_WIDTH}px;
+    padding: 6px 10px;
+    line-height: 1.4;
+  `;
   el.textContent = text;
   document.body.appendChild(el);
-  const w = el.offsetWidth;
+  const w = Math.min(el.offsetWidth, MAX_WIDTH);
+  const h = el.offsetHeight;
   document.body.removeChild(el);
-  return w;
+  return { width: w, height: h };
 }
 
-function easeInOut(p: number) {
+const easeInOut = (p: number) => {
   return p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
-}
+};
 
-function useTooltipAnimation(hint: string | undefined) {
+const useTooltipAnimation = (hint: string | undefined) => {
   const [visible, setVisible] = useState(false);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [displayText, setDisplayText] = useState('');
+  const [scramblePlaying, setScramblePlaying] = useState(false);
 
   const rafRef = useRef<number | null>(null);
   const scrambleRafRef = useRef<number | null>(null);
 
   const cancelAll = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    if (scrambleRafRef.current) cancelAnimationFrame(scrambleRafRef.current);
+    if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    if (scrambleRafRef.current !== null) cancelAnimationFrame(scrambleRafRef.current);
   }, []);
 
   const show = useCallback(() => {
     if (!hint) return;
     cancelAll();
 
-    const targetW = measureText(hint);
-    const TOOLTIP_HEIGHT = 32;
+    const { width: targetW, height: targetH } = measureTooltip(hint);
 
     setVisible(true);
     setWidth(0);
-    setHeight(TOOLTIP_HEIGHT);
-    setDisplayText('');
+    setHeight(targetH);
 
     let startTime: number | null = null;
 
-    function phase1(ts: number) {
+    const phase1 = (ts: number) => {
       if (!startTime) startTime = ts;
       const p = Math.min((ts - startTime) / PHASE1_DURATION, 1);
       setWidth(easeInOut(p) * targetW);
@@ -91,48 +91,8 @@ function useTooltipAnimation(hint: string | undefined) {
         rafRef.current = requestAnimationFrame(phase1);
       } else {
         setWidth(targetW);
-        startScramble();
+        setScramblePlaying(true);
       }
-    }
-
-    function startScramble() {
-      const len = hint!.length;
-      const settled = new Array(len).fill(false);
-      let settledCount = 0;
-      const startTimes = Array.from({ length: len }, (_, i) => i * CHAR_SETTLE_DELAY);
-      const scrambleStart = performance.now();
-
-      function frame(now: number) {
-        const elapsed = now - scrambleStart;
-        let display = '';
-
-        for (let i = 0; i < len; i++) {
-          if (settled[i]) {
-            display += hint![i];
-          } else if (elapsed >= startTimes[i]) {
-            const charElapsed = elapsed - startTimes[i];
-            if (charElapsed >= CHAR_SCRAMBLE_DURATION) {
-              settled[i] = true;
-              settledCount++;
-              display += hint![i];
-            } else {
-              display += hint![i] === ' ' ? ' ' : rand();
-            }
-          } else {
-            display += ' ';
-          }
-        }
-
-        setDisplayText(display);
-
-        if (settledCount < len) {
-          scrambleRafRef.current = requestAnimationFrame(frame);
-        } else {
-          setDisplayText(hint!);
-        }
-      }
-
-      scrambleRafRef.current = requestAnimationFrame(frame);
     }
 
     rafRef.current = requestAnimationFrame(phase1);
@@ -140,36 +100,39 @@ function useTooltipAnimation(hint: string | undefined) {
 
   const hide = useCallback(() => {
     cancelAll();
+    setScramblePlaying(false);
     setWidth(0);
     setHeight(0);
     setTimeout(() => {
       setVisible(false);
-      setDisplayText('');
     }, 300);
   }, [cancelAll]);
 
   useEffect(() => () => cancelAll(), [cancelAll]);
 
-  return { visible, width, height, displayText, show, hide };
+  return { visible, width, height, scramblePlaying, show, hide };
 }
 
 const FormField: React.FC<IFormFieldProps> = ({ label, hint, isAccent, field, onChange }) => {
-  const { visible, width, height, displayText, show, hide } = useTooltipAnimation(hint);
+  const { visible, width, height, scramblePlaying, show, hide } = useTooltipAnimation(hint);
 
   const renderField = () => {
     switch (field.type) {
       case 'input':
         return (
-          <input
-            className='form-field__input'
-            placeholder={field.placeholder}
-            value={field.value}
-            onChange={(e) => onChange(e.target.value)}
-          />
+          <div className='form-field__input-wrapper'>
+            <input
+              className={`form-field__input ${isAccent ? 'form-field__input--accent' : ''}`}
+              placeholder={field.placeholder}
+              value={field.value}
+              onChange={(e) => onChange(e.target.value)}
+            />
+            {field.button}
+          </div>
         );
       case 'switch':
         return (
-          <label className='form-field__switch'>
+          <label className={`form-field__switch ${isAccent ? 'form-field__switch--accent' : ''}`}>
             <input
               type='checkbox'
               checked={field.value}
@@ -181,7 +144,7 @@ const FormField: React.FC<IFormFieldProps> = ({ label, hint, isAccent, field, on
       case 'select':
         return (
           <select
-            className='form-field__select'
+            className={`form-field__select ${isAccent ? 'form-field__select--accent' : ''}`}
             value={field.options.find(option => option.value === field.value)?.value || ''}
             onChange={(e) => onChange(e.target.value)}
           >
@@ -202,7 +165,9 @@ const FormField: React.FC<IFormFieldProps> = ({ label, hint, isAccent, field, on
       <div className='form-field__title'>
         <label className='form-field__label'>{label}</label>
         {hint && (
-          <div className="form-field__hint-wrapper">
+          <div className="form-field__hint-wrapper"
+            onMouseEnter={show}
+            onMouseLeave={hide}>
             <svg
               className="form-field__icon"
               width="16"
@@ -210,8 +175,6 @@ const FormField: React.FC<IFormFieldProps> = ({ label, hint, isAccent, field, on
               viewBox="0 0 16 16"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              onMouseEnter={show}
-              onMouseLeave={hide}
             >
               <circle cx="8" cy="8" r="7.5" stroke="white" />
               <path
@@ -229,7 +192,11 @@ const FormField: React.FC<IFormFieldProps> = ({ label, hint, isAccent, field, on
                   transition: width === 0 ? 'width 0.18s ease, height 0.12s ease 0.1s' : 'none',
                 }}
               >
-                <span className="form-field__tooltip-text">{displayText}</span>
+                <ScrambleText
+                  className="form-field__tooltip-text"
+                  text={hint}
+                  play={scramblePlaying}
+                />
               </div>
             )}
           </div>

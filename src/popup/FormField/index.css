@@ -34,13 +34,23 @@
   overflow: hidden;
   background: var(--second-bg);
   border: 1px solid var(--border);
-  border-radius: 6px;
-  white-space: nowrap;
   pointer-events: none;
 }
 
 .form-field__tooltip-text {
   display: block;
+  text-align: left;
   padding: 6px 10px;
+  color: var(--text-h);
+}
+
+.form-field__select {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-field);
   color: var(--text);
+}
+
+.form-field__select--accent {
+  border-color: var(--accent-border);
 }

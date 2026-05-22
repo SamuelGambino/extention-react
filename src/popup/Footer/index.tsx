@@ -1,3 +1,4 @@
+import ScrambleText from '../ScrambleText';
 import './index.css'
 
 const Footer = () => {
@@ -10,10 +11,10 @@ const Footer = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        developer
-        <svg className='footer__icon' width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15.4996 15.5V0.5H0.5" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-          <path d="M15.5 0.5L0.800293 15.2006" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+        <ScrambleText className='footer__scramble' text="developer" play={true} repeatInterval={3000} />
+        <svg className='footer__icon' width="15" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.4997 14.5V0.5H0.5" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M14.5 0.5L0.780273 14.2205" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </a>
     </footer>
