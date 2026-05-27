@@ -1,0 +1,161 @@
+.switch-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switch-field__switch {
+  position: relative;
+  width: 58px;
+  height: 26px;
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.switch-field__switch input {
+  display: none;
+}
+
+.switch-field__track {
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background: var(--bg-field);
+    border: 1px solid var(--border);
+    transition: border-color 0.25s;
+    overflow: hidden;
+  }
+
+  .switch-field__track::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(255,255,255,0.025) 3px,
+      rgba(255,255,255,0.025) 4px
+    );
+  }
+
+  .switch-field__segments {
+    position: absolute;
+    inset: 3px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .switch-field__seg {
+    flex: 1;
+    border-radius: 1px;
+    background: var(--bg-field);
+    border: 1px solid var(--border);
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .switch-field__thumb {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    width: 22px;
+    left: 3px;
+    border-radius: 1px;
+    background: #232c4e;
+    border: 1px solid var(--border);
+    transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s, border-color 0.22s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .switch-field__thumb::before {
+    content: '';
+    width: 2px;
+    height: 10px;
+    background: var(--bg-field);
+    border-radius: 1px;
+    transition: background 0.22s;
+  }
+
+  .switch-field__thumb::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 1px;
+    border: 1px solid transparent;
+    transition: border-color 0.22s;
+  }
+
+  .switch-field__text {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--second-bg);
+    min-width: 60px;
+    transition: color 0.22s;
+  }
+
+  .switch-field__switch input:checked ~ .switch-field__track {
+    border-color: #3d5a8a;
+  }
+
+  .switch-field__switch input:checked ~ .switch-field__thumb {
+    left: 33px;
+    background: #1a3a5c;
+    border-color: #4a85c8;
+  }
+
+  .switch-field__switch input:checked ~ .switch-field__thumb::before {
+    background: #5a9de0;
+  }
+
+  .switch-field__switch input:checked ~ .switch-field__thumb::after {
+    border-color: rgba(74, 133, 200, 0.4);
+    box-shadow: 0 0 6px rgba(74, 133, 200, 0.3);
+  }
+
+  .switch-field__switch.on-accent input:checked ~ .switch-field__track {
+    border-color: #2a6644;
+  }
+  .switch-field__switch.on-accent input:checked ~ .switch-field__thumb {
+    background: #133322;
+    border-color: #3aaa6a;
+  }
+  .switch-field__switch.on-accent input:checked ~ .switch-field__thumb::before {
+    background: #4acf84;
+  }
+  .switch-field__switch.on-accent input:checked ~ .switch-field__thumb::after {
+    border-color: rgba(58, 170, 106, 0.4);
+    box-shadow: 0 0 6px rgba(58, 170, 106, 0.25);
+  }
+
+  .switch-field__switch input:checked + .switch-field__text-wrap .switch-field__text,
+  .switch-field__text-wrap .switch-field__text {
+    display: none;
+  }
+
+  .switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .status-on { color: #4acf84; }
+  .switch-field__text--disabled { color: #4a5580; }
+
+  .switch-field__corner {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+  }
+  .switch-field__corner.tl { top: 3px; left: 3px; border-top: 1px solid #3a4875; border-left: 1px solid #3a4875; }
+  .switch-field__corner.br { bottom: 3px; right: 3px; border-bottom: 1px solid #3a4875; border-right: 1px solid #3a4875; }
+
+  .switch-field__switch input:checked ~ .switch-field__track .switch-field__corner.tl { border-color: rgba(74,133,200,0.5); }
+  .switch-field__switch input:checked ~ .switch-field__track .switch-field__corner.br { border-color: rgba(74,133,200,0.5); }
+
+  .switch-field__switch.on-accent input:checked ~ .switch-field__track .switch-field__corner.tl { border-color: rgba(58,170,106,0.5); }
+  .switch-field__switch.on-accent input:checked ~ .switch-field__track .switch-field__corner.br { border-color: rgba(58,170,106,0.5); }

@@ -1,0 +1,12 @@
+.select-field {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-field);
+  color: var(--text);
+  margin: 0;
+  width: -webkit-fill-available;
+}
+
+.select-field--accent {
+  border-color: var(--accent-border);
+}

@@ -1,0 +1,63 @@
+/* Hint/index.css */
+
+.hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.hint__icon {
+  margin-left: 4px;
+  cursor: pointer;
+  display: block;
+  /* увеличиваем зону наведения чтобы не слетал hover */
+  padding: 4px;
+  margin: -4px;
+}
+
+.hint__tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 200px;
+  background: var(--second-bg);
+  border: 1px solid var(--border);
+  pointer-events: none;
+
+  /* сжато по умолчанию */
+  clip-path: inset(0 100% 0 0);
+  /* высота всегда реальная — браузер считает сам */
+}
+
+.hint__tooltip--visible {
+  animation: tooltip-expand 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hint__tooltip-text {
+  display: block;
+  text-align: left;
+  padding: 6px 10px;
+  color: var(--text-h);
+  word-break: break-word;
+  line-height: 1.4;
+
+  /* текст появляется чуть позже начала роста */
+  opacity: 0;
+  animation: none;
+}
+
+.hint__tooltip--visible .hint__tooltip-text {
+  animation: text-fade 0.2s ease forwards 0.25s;
+}
+
+@keyframes tooltip-expand {
+  0%   { clip-path: inset(0 100% 0 0); }
+  50%  { clip-path: inset(0 0% 0 0); }   /* ширина раскрылась */
+  100% { clip-path: inset(0 0% 0 0); }   /* держим */
+}
+
+@keyframes text-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

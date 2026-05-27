@@ -2,17 +2,8 @@ import './index.css'
 import Header from '../Header'
 import Footer from '../Footer'
 import Telemetry from '../Telemetry';
-import FormField from '../FormField';
-
-const PresertOptions = [
-  { label: 'None', value: 'none' },
-  { label: 'Custom', value: 'custom' },
-  { label: 'Api', value: 'api' },
-  { label: 'VK', value: 'vk' },
-  { label: 'Yandex eda', value: 'yandex_eda' },
-  { label: 'Yandex map', value: 'yandex_map' },
-  { label: 'Chibbis', value: 'chibbis' },
-]
+import Form from '../Form';
+import State from '../State';
 
 const App = () => {
 
@@ -71,38 +62,13 @@ const App = () => {
           <Telemetry />
         </div>
 
-        <form className='popup__content'>
-          <fieldset className="popup__settings">
-            <legend className="popup__settings-title">Main</legend>
-            <FormField label="Preset" hint="Выберите пресет парсера" isAccent={true} field={{ type: 'select', value: 'none', options: PresertOptions }} onChange={() => { }} />
-            <FormField label="Source" hint="Введите url адрес сайта" isAccent={true} field={{
-              type: 'input', value: '', placeholder: 'https://example.com', button: (
-                <button className="popup__button popup__button--settings" onClick={() => { }}>
-                  <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.9992 0.5L14.0148 11.0828C14.0361 11.3145 14.1389 11.5312 14.3035 11.6957C14.468 11.8603 14.6847 11.9623 14.9164 11.9852L25.4992 13L14.9164 14.0148C14.6839 14.0361 14.468 14.1389 14.3035 14.3035C14.1389 14.468 14.0369 14.6855 14.0148 14.9164L12.9992 25.5L11.9844 14.9164C11.9623 14.6855 11.8603 14.468 11.6957 14.3035C11.5312 14.1389 11.3145 14.0369 11.0828 14.0148L0.5 13L11.0828 11.9852C11.3137 11.9623 11.5312 11.8603 11.6957 11.6957C11.8603 11.5312 11.9623 11.3145 11.9844 11.0828L12.9992 0.5Z" stroke="#FFE7E1" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M12.9992 0.5C19.8986 0.5 25.4992 6.10064 25.4992 13C25.4992 19.8978 19.8986 25.5 12.9992 25.5C6.10144 25.5 0.5 19.8986 0.5 13C0.500791 6.10064 6.10144 0.5 12.9992 0.5Z" stroke="#FFE7E1" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </button>
-              )
-            }} onChange={() => { }} />
-          </fieldset>
-          <button className="popup__button" onClick={() => { }}>Apply</button>
-        </form>
-
-        <div className='popup__state'>
-            <span className="popup__state-title">State</span>
-            <section className="popup__state-section">
-              <p className="popup__state-item">Preset: <span className="popup__state-value">None</span></p>
-              <p className="popup__state-item">Source: <span className="popup__state-value">example.com</span></p>
-              <p className="popup__state-item">Availability: <span className="popup__state-value">Ready</span></p>
-            </section>
-        </div>
-
+        <Form/>
+        <State/>
       </div>
 
       <Footer />
     </div>
-  )
+  );
 }
 
 export default App

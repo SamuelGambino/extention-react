@@ -1,0 +1,18 @@
+.input-field {
+  position: relative;
+  align-self: start;
+  width: 100%;
+}
+
+.input-field__input {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-field);
+  color: var(--text);
+  margin: 0;
+  width: -webkit-fill-available;
+}
+
+.input-field__input--accent {
+  border-color: var(--accent-border);
+}
