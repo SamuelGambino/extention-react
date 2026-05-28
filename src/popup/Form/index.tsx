@@ -21,16 +21,27 @@ const ClicksOptions = [
   { label: 'All', value: 'vk' }
 ]
 
-const Form = () => {
+const GroupTypes = [
+  { label: 'one_one', value: 'one_one' },
+  { label: 'one_unlimited', value: 'one_unlimited' },
+  { label: 'all_one', value: 'all_one' },
+  { label: 'all_unlimited', value: 'all_unlimited' },
+]
+
+interface FormProps {
+  className?: string;
+}
+
+const Form = ({ className }: FormProps) => {
   return (
-    <form className='form'>
+    <form className={`form ${className ? ` ${className}` : ''}`}>
       <fieldset className="form__settings">
         <legend className="form__settings-title">Main</legend>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Preset</label>
-            <Hint hint='Выберите пресет парсера'/>
+            <Hint hint='Выберите пресет парсера' />
           </div>
           <SelectField isAccent={true} value='none' options={PresertOptions} onChange={() => { }} />
         </div>
@@ -38,7 +49,7 @@ const Form = () => {
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Source</label>
-            <Hint hint='Введите url источника'/>
+            <Hint hint='Введите url источника' hintPosition='left' />
           </div>
           <InputField isAccent={true} placeholder='https://example.com' onChange={() => { }}>
             <button className="form__settings-btn" onClick={() => { }}>
@@ -50,20 +61,21 @@ const Form = () => {
           </InputField>
         </div>
       </fieldset>
+
       <fieldset className="form__settings">
         <legend className="form__settings-title">Settings</legend>
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Clicks</label>
-            <Hint hint='Выберите по какому элементу требуются клики'/>
+            <Hint hint='Выберите по какому элементу требуются клики' />
           </div>
-          <SelectField isAccent={true} value='none' options={ClicksOptions} onChange={() => { }} />
+          <SelectField value='none' options={ClicksOptions} onChange={() => { }} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Pagination</label>
-            <Hint hint='Требуется ли переключение страниц'/>
+            <Hint hint='Требуется ли переключение страниц' hintPosition='left' />
           </div>
           <SwitchField onChange={() => { }} />
         </div>
@@ -71,7 +83,7 @@ const Form = () => {
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Parameters</label>
-            <Hint hint='Есть ли у товара несколько вариаций'/>
+            <Hint hint='Есть ли у товара несколько вариаций' />
           </div>
           <SwitchField onChange={() => { }} />
         </div>
@@ -79,9 +91,217 @@ const Form = () => {
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Modifiers</label>
-            <Hint hint='Есть ли в номенклатуре модификаторы'/>
+            <Hint hint='Есть ли в номенклатуре модификаторы' hintPosition='left' />
           </div>
           <SwitchField onChange={() => { }} />
+        </div>
+      </fieldset>
+
+      <fieldset className="form__settings">
+        <legend className="form__settings-title">Selectors</legend>
+
+        <div className="form__section">
+          <span className="form__section-title">Category</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Container</label>
+              </div>
+              <InputField placeholder='nav.categories-item' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Name</label>
+              </div>
+              <InputField placeholder='a .categories-title' onChange={() => { }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="form__section">
+          <span className="form__section-title">Product</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Container</label>
+              </div>
+              <InputField placeholder='div.product-container' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Picture</label>
+              </div>
+              <InputField placeholder='img.product-picture' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Name</label>
+              </div>
+              <InputField placeholder='h1.product-name' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Description</label>
+              </div>
+              <InputField placeholder='p.product-description' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Weight</label>
+              </div>
+              <InputField placeholder='span.product-weight' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Price</label>
+              </div>
+              <InputField placeholder='span.product-price' onChange={() => { }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="form__section">
+          <span className="form__section-title">Clicks</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Open category</label>
+              </div>
+              <InputField placeholder='a.category-link' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Exit from category</label>
+              </div>
+              <InputField placeholder='button.category-exit' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Open product</label>
+              </div>
+              <InputField placeholder='a.product-link' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Exit from product</label>
+              </div>
+              <InputField placeholder='button.product-exit' onChange={() => { }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="form__section">
+          <span className="form__section-title">Pagination</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Pages container</label>
+              </div>
+              <InputField placeholder='div.pagination' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Next page</label>
+              </div>
+              <InputField placeholder='button.pagination-next' onChange={() => { }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="form__section">
+          <span className="form__section-title">Parameters</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Parameter container</label>
+              </div>
+              <InputField placeholder='div.parameters' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Parameter description</label>
+              </div>
+              <InputField placeholder='p.parameter-description' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Parameter click</label>
+              </div>
+              <InputField placeholder='button.parameter-click' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Parameter price</label>
+              </div>
+              <InputField placeholder='span.parameter-price' onChange={() => { }} />
+            </div>
+          </div>
+        </div>
+
+        <div className="form__section">
+          <span className="form__section-title">Modifiers</span>
+
+          <div className="form__section-content">
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Modifiers group container</label>
+              </div>
+              <InputField placeholder='ul.modifiers' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Modifiers group name</label>
+              </div>
+              <InputField placeholder='p.modifiers-title' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Default group type</label>
+              </div>
+              <SelectField value='none' options={GroupTypes} onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Modifier</label>
+              </div>
+              <InputField placeholder='li.modifier' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Modifier name</label>
+              </div>
+              <InputField placeholder='span.modifier-name' onChange={() => { }} />
+            </div>
+
+            <div className='form__field'>
+              <div className='form__field-title'>
+                <label className='form__field-label'>Modifier price</label>
+              </div>
+              <InputField placeholder='span.modifier-price' onChange={() => { }} />
+            </div>
+          </div>
         </div>
       </fieldset>
     </form>

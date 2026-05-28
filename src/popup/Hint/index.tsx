@@ -4,9 +4,10 @@ import ScrambleText from '../ScrambleText';
 
 interface HintProps {
   hint: string;
+  hintPosition?: 'left' | 'right';
 }
 
-const Hint = ({ hint }: HintProps) => {
+const Hint = ({ hint, hintPosition }: HintProps) => {
   const [playing, setPlaying] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -37,7 +38,7 @@ const Hint = ({ hint }: HintProps) => {
         />
       </svg>
 
-      <div className={`hint__tooltip ${visible ? 'hint__tooltip--visible' : ''}`}>
+      <div className={`hint__tooltip ${visible ? 'hint__tooltip--visible' : ''} ${hintPosition === 'left' ? 'hint__tooltip--left' : ''}`}>
         <ScrambleText
           className="hint__tooltip-text"
           text={hint}

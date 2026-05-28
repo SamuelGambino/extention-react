@@ -16,8 +16,6 @@ const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
           onChange={(e) => onChange(e.target.checked)}
         />
         <div className="switch-field__track">
-          <div className="switch-field__corner tl"></div>
-          <div className="switch-field__corner br"></div>
           <div className="switch-field__segments">
             <div className="switch-field__seg"></div><div className="switch-field__seg"></div><div className="switch-field__seg"></div>
             <div className="switch-field__seg"></div><div className="switch-field__seg"></div><div className="switch-field__seg"></div>

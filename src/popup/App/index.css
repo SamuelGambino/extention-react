@@ -29,10 +29,9 @@
   padding: 5px 0 5vh;
 }
 
-.app-content {  
-  /* Настройка кастомного скроллбара (опционально, для красоты) */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+.popup__form {
+  grid-column: 2;
+  grid-row: 1 / 3;
 }
 
 /* Анимация Октаэдра */

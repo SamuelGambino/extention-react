@@ -11,6 +11,11 @@
   color: var(--text);
   margin: 0;
   width: -webkit-fill-available;
+
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  transition: color 0.22s;
+  line-height: 1.3;
 }
 
 .input-field__input--accent {

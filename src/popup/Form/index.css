@@ -2,11 +2,10 @@
   padding-left: 2px;
   display: flex;
   flex-direction: column;
-  grid-column: 2;
-  grid-row: 1 / 3;
-  flex: 1;
+  max-height: calc(100vh - 173.5px);
   overflow-y: auto;
   gap: 16px;
+  scrollbar: none;
 }
 
 .form__settings {
@@ -79,7 +78,7 @@
   bottom: 0;
   right: 0;
   width: fit-content;
-  padding: 6px 8px;
+  padding: 4px;
 }
 
 .form__field {
@@ -96,4 +95,27 @@
 .form__field-label {
   font-size: 14px;
   color: var(--text);
+}
+
+.form__section {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  gap: 8px;
+}
+
+.form__section-title {
+  font-family: var(--default);
+  font-weight: 400;
+  color: var(--text);
+  font-size: 14px;
+  margin: 0;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.form__section-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }

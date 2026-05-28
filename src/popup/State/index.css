@@ -23,6 +23,12 @@
 }
 
 .state__value {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* color: var(--second-bg); */
+  min-width: 60px;
+  transition: color 0.22s;
   color: var(--text-h);
 }
 

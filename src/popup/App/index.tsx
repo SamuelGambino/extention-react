@@ -62,7 +62,7 @@ const App = () => {
           <Telemetry />
         </div>
 
-        <Form/>
+        <Form className="popup__form" />
         <State/>
       </div>
 

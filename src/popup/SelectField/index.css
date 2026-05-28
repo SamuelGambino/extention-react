@@ -5,6 +5,11 @@
   color: var(--text);
   margin: 0;
   width: -webkit-fill-available;
+
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.22s;
 }
 
 .select-field--accent {

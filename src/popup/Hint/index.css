@@ -1,5 +1,3 @@
-/* Hint/index.css */
-
 .hint {
   position: relative;
   display: inline-flex;
@@ -10,7 +8,6 @@
   margin-left: 4px;
   cursor: pointer;
   display: block;
-  /* увеличиваем зону наведения чтобы не слетал hover */
   padding: 4px;
   margin: -4px;
 }
@@ -21,17 +18,20 @@
   top: 50%;
   transform: translateY(-50%);
   max-width: 200px;
+  width: max-content;
   background: var(--second-bg);
   border: 1px solid var(--border);
   pointer-events: none;
-
-  /* сжато по умолчанию */
   clip-path: inset(0 100% 0 0);
-  /* высота всегда реальная — браузер считает сам */
 }
 
 .hint__tooltip--visible {
   animation: tooltip-expand 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hint__tooltip--left {
+  right: calc(100% + 8px);
+  left: auto;
 }
 
 .hint__tooltip-text {
@@ -41,8 +41,6 @@
   color: var(--text-h);
   word-break: break-word;
   line-height: 1.4;
-
-  /* текст появляется чуть позже начала роста */
   opacity: 0;
   animation: none;
 }
@@ -53,8 +51,8 @@
 
 @keyframes tooltip-expand {
   0%   { clip-path: inset(0 100% 0 0); }
-  50%  { clip-path: inset(0 0% 0 0); }   /* ширина раскрылась */
-  100% { clip-path: inset(0 0% 0 0); }   /* держим */
+  50%  { clip-path: inset(0 0% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
 }
 
 @keyframes text-fade {
