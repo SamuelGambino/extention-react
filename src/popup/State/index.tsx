@@ -13,7 +13,6 @@ const State = () => {
         <p className="state__item">Categories: <span className="state__value">5</span></p>
         <p className="state__item">Products: <span className="state__value">46</span></p>
       </section>
-      <button className="button state__button" onClick={() => { }}>Parse</button>
     </div>
   )
 }

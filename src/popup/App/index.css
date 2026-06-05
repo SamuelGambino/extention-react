@@ -1,14 +1,25 @@
 .popup {
+  position: relative;
+  background-color: var(--bg);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   height: 100%;
   padding: 10px 20px;
-  background-color: #1D2133;
   opacity: 0.85;
   border-radius: 8px;
   gap: 20px;
+}
+
+.popup::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px, transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 3px);
+  pointer-events: none;
 }
 
 .popup__wrapper {
@@ -26,7 +37,7 @@
   flex-direction: column;
   justify-content: space-between;
   margin: 0;
-  padding: 5px 0 5vh;
+  padding: 8px 0 5vh;
 }
 
 .popup__form {

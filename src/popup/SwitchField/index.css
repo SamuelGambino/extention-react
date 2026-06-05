@@ -21,10 +21,14 @@
   position: absolute;
   inset: 0;
   border-radius: 2px;
-  background: #212535;
+  background: transparent;
   border: 1px solid var(--border);
   transition: border-color 0.25s;
   overflow: hidden;
+}
+
+.switch-field input:hover~.switch-field__track {
+  border-color: var(--border-hover);
 }
 
 .switch-field__segments {
@@ -37,8 +41,8 @@
 .switch-field__seg {
   flex: 1;
   border-radius: 1px;
-  background: var(--bg-field);
-  border: 1px solid var(--border);
+  background: #1a2040;
+  border: 1px solid #252d4a;
   transition: background 0.2s, border-color 0.2s;
 }
 
@@ -49,7 +53,7 @@
   width: 22px;
   left: 3px;
   border-radius: 1px;
-  background: #1D2133;
+  background: #232c4e;
   border: 1px solid var(--border);
   transition: left 0.22s cubic-bezier(0.4, 0, 0.2, 1), background 0.22s, border-color 0.22s;
   display: flex;
@@ -62,7 +66,7 @@
   content: '';
   width: 2px;
   height: 10px;
-  background: var(--bg-field);
+  background: var(--border);
   border-radius: 1px;
   transition: background 0.22s;
 }
@@ -87,10 +91,11 @@
 
 .switch-field__switch input:checked~.switch-field__track {
   border-color: #3d5a8a;
+  background: #0d1021;
 }
 
 .switch-field__switch input:checked~.switch-field__thumb {
-  left: 33px;
+  left: 30px;
   background: #1a3a5c;
   border-color: #4a85c8;
 }
@@ -104,33 +109,9 @@
   box-shadow: 0 0 6px rgba(74, 133, 200, 0.3);
 }
 
-.switch-field__switch.on-accent input:checked~.switch-field__track {
-  border-color: #2a6644;
-}
-
-.switch-field__switch.on-accent input:checked~.switch-field__thumb {
-  background: #133322;
-  border-color: #3aaa6a;
-}
-
-.switch-field__switch.on-accent input:checked~.switch-field__thumb::before {
-  background: #4acf84;
-}
-
-.switch-field__switch.on-accent input:checked~.switch-field__thumb::after {
-  border-color: rgba(58, 170, 106, 0.4);
-  box-shadow: 0 0 6px rgba(58, 170, 106, 0.25);
-}
-
 .switch-field__switch input:checked+.switch-field__text-wrap .switch-field__text,
 .switch-field__text-wrap .switch-field__text {
   display: none;
-}
-
-.switch-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .switch-field__text--enabled {

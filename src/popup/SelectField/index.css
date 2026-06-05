@@ -1,17 +1,199 @@
 .select-field {
-  padding: 6px 10px;
+  position: relative;
+  height: 36px;
+  background: transparent;
   border: 1px solid var(--border);
-  background: var(--bg-field);
-  color: var(--text);
-  margin: 0;
-  width: -webkit-fill-available;
-
+  border-radius: 2px;
+  transition: border-color 0.15s;
+  letter-spacing: 0.24em;
   font-size: 10px;
-  letter-spacing: 0.12em;
   text-transform: uppercase;
-  transition: color 0.22s;
 }
 
-.select-field--accent {
-  border-color: var(--accent-border);
+/* Угловые засечки */
+.select-field__corner {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.15s;
+}
+
+.select-field__corner--tl {
+  top: 3px;
+  left: 3px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  transition: top 0.3s ease-in-out, left 0.3s ease-in-out;
+}
+
+.select-field__corner--br {
+  bottom: 3px;
+  right: 3px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  transition: bottom 0.3s ease-in-out, right 0.3s ease-in-out;
+}
+
+.select-field:hover .select-field__corner--tl {
+  top: 3px;
+  left: 6px;
+}
+
+.select-field:hover .select-field__corner--br {
+  bottom: 3px;
+  right: 6px;
+}
+
+/* Открытое / акцентное состояние */
+.select-field--open {
+  background: var(--second-bg);
+}
+
+.select-field--open,
+.select-field:focus-within {
+  border-color: var(--border-hover);
+}
+
+.select-field--open .select-field__corner,
+.select-field:focus-within .select-field__corner {
+  border-color: var(--border-hover);
+}
+
+.select-field--accent.select-field--open {
+  border-color: var(--border-green);
+}
+
+.select-field--accent.select-field--open .select-field__corner {
+  border-color: var(--border-green);
+}
+
+/* Кнопка-триггер */
+.select-field__btn {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 0 12px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.select-field__value {
+  letter-spacing: 0.24em;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-second);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.select-field__arrow {
+  flex-shrink: 0;
+  color: var(--text-second);
+  transition: transform 0.2s, color 0.15s;
+}
+
+.select-field--open .select-field__arrow {
+  transform: rotate(180deg);
+  color: var(--text-second);
+}
+
+/* Выпадающий список */
+.select-field__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: -1px;
+  right: -1px;
+  background: var(--second-bg);
+  border: 1px solid var(--border-hover);
+  border-radius: 2px;
+  z-index: 100;
+  list-style: none;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.select-field--accent .select-field__dropdown {
+  border-color: var(--border-green);
+}
+
+/* Пункт списка */
+.select-field__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 32px;
+  letter-spacing: 0.24em;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-placeholder);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-second);
+  transition: background 0.12s, color 0.12s;
+}
+
+.select-field__item:last-child {
+  border-bottom: none;
+}
+
+.select-field__item:hover {
+  background: var(--bg-hover-light);
+  color: var(--text-hover);
+}
+
+.select-field__item--selected {
+  color: var(--text-second);
+  background: var(--bg);
+}
+
+.select-field__item--selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-hover);
+}
+
+.select-field--accent .select-field__item--selected {
+  color: var(--text-green);
+  background: var(--bg-green);
+}
+
+.select-field--accent .select-field__item--selected::before {
+  background: var(--border-green);
+}
+
+/* Точка-индикатор */
+.select-field__item-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+
+.select-field__item:hover .select-field__item-dot {
+  background: var(--border-hover);
+}
+
+.select-field__item--selected .select-field__item-dot {
+  background: var(--border-hover);
+}
+
+.select-field--accent .select-field__item--selected .select-field__item-dot {
+  background: var(--border-green);
 }

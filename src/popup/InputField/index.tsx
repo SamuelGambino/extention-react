@@ -6,10 +6,9 @@ interface IInputField {
   placeholder?: string;
   value?: string;
   onChange: (value: string) => void;
-  children?: React.ReactNode;
 }
 
-const InputField: React.FC<IInputField> = ({ isAccent, placeholder, value, children, onChange }) => {
+const InputField: React.FC<IInputField> = ({ isAccent, placeholder, value, onChange }) => {
   const [inputValue, setInputValue] = useState<string>(value || '');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -19,14 +18,15 @@ const InputField: React.FC<IInputField> = ({ isAccent, placeholder, value, child
   }
 
   return (
-    <div className='input-field'>
+    <div className={`input-field ${isAccent ? 'input-field--accent' : ''}`}>
+      <div className="input-field__corner input-field__corner--tl"></div>
+      <div className="input-field__corner input-field__corner--br"></div>
       <input
-        className={`input-field__input ${isAccent ? 'input-field__input--accent' : ''}`}
+        className="input-field__input"
         placeholder={placeholder}
         value={inputValue}
         onChange={handleInputChange}
       />
-      {children}
     </div>
   )
 };

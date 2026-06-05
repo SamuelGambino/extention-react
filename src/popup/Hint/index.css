@@ -6,11 +6,10 @@
 }
 
 .hint__icon {
-  margin-left: 4px;
   cursor: pointer;
   display: block;
   padding: 4px;
-  margin: -4px;
+  margin: -4px -4px -4px 0;
 }
 
 .hint__tooltip {
@@ -20,8 +19,9 @@
   transform: translateY(-50%);
   max-width: 200px;
   width: max-content;
-  background: var(--second-bg);
+  background: var(--bg);
   border: 1px solid var(--border);
+  border-radius: 2px;
   pointer-events: none;
   clip-path: inset(0 100% 0 0);
 }

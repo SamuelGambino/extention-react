@@ -1,14 +1,30 @@
 :root {
   --text: #FFFFFF;
   --text-h: #FFE7E1;
-  --bg: #0C0F16;
-  --second-bg: rgba(29, 33, 51, 0.85);
-  --bg-field: rgba(255, 255, 255, 0.03);
-  --border: #383E59;
+  --text-second: #7aaee0; /* текст кнопок и вводимых значений */
+  --text-placeholder: #4a5a84;
+  --text-hover: #a0c8f0;
+  --text-green: #5acf8a;
+
+  --bg: #0e1630; 
+  --second-bg: #0d1021;
+  --bg-hover: #101d3a;
+  --bg-hover-light: #111830;
+  --bg-green: #0a1a12;
+
+  --border: #2e4a80;
+  --border-second: #151c35;
+  --border-hover: #4a6aa8;
+  --border-yellow: #A7A32D;
+  --border-green: #3a8858;
+  
+  --second: #4A4956;
+
+  /* --second-bg: rgba(29, 33, 51, 0.85); */
+  /* --border: #383E59; */
   --accent: #FFE7E1;
   --fill-bg: rgba(255, 255, 255, 0.03);
   --accent-border: #FFE7E1;
-  --second: #4A4956;
   --shadow:
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 
@@ -19,7 +35,7 @@
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
+  background: #0C0F16;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
