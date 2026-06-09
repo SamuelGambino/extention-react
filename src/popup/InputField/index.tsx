@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./index.css"
 
 interface IInputField {
@@ -9,14 +8,6 @@ interface IInputField {
 }
 
 const InputField: React.FC<IInputField> = ({ isAccent, placeholder, value, onChange }) => {
-  const [inputValue, setInputValue] = useState<string>(value || '');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setInputValue(newValue);
-    onChange(newValue);
-  }
-
   return (
     <div className={`input-field ${isAccent ? 'input-field--accent' : ''}`}>
       <div className="input-field__corner input-field__corner--tl"></div>
@@ -24,11 +15,11 @@ const InputField: React.FC<IInputField> = ({ isAccent, placeholder, value, onCha
       <input
         className="input-field__input"
         placeholder={placeholder}
-        value={inputValue}
-        onChange={handleInputChange}
+        value={value ?? ''}
+        onChange={(e) => onChange(e.target.value)}
       />
     </div>
-  )
+  );
 };
 
 export default InputField;

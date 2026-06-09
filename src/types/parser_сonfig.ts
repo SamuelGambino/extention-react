@@ -6,7 +6,7 @@ interface ParserConfiguration {
 
 type PresertOptionsType = 'custom' | 'api' | 'vk' | 'yandex_eda' | 'yandex_map' | 'chibbis';
 
-type PresetDataType = PresetCustom | PresetVk | PresetYandexEda | PresetYandexMap | PresetChibbis;
+type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetYandexMap;
 
 interface PresetCustom {
   settings: {
@@ -73,7 +73,7 @@ interface ModifiersSection {
   mod: {
     container: string;
     name: string;
-    prisce: string;
+    price: string;
   };
 }
 
@@ -83,19 +83,18 @@ interface PresetVk {
   marketId: string;
 }
 
-interface PresetYandexEda {
+interface PresetByApi {
   apiUrl: string;
 }
 
 interface PresetYandexMap {
-  category: CategorySection;
-  product: ProductSection;
-}
-
-interface PresetChibbis {
-  apiUrl: string;
+  selectors: {
+    category: CategorySection;
+    product: ProductSection;
+  }
 }
 
 export type {
   ParserConfiguration,
+  PresertOptionsType
 }

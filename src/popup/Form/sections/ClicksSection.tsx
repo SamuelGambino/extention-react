@@ -1,11 +1,11 @@
+import { Controller, useFormContext } from "react-hook-form";
 import InputField from "../../InputField";
 import "../index.css";
 
-interface IClicksSection {
-  clicks: 'none' | 'products' | 'category' | 'all'
-}
+const ClicksSection = () => {
+  const { control, watch } = useFormContext();
 
-const ClicksSection = ({ clicks }: IClicksSection) => {
+  const clicks = watch('data.settings.clicks');
 
   return (
     <div className="form__section">
@@ -17,14 +17,24 @@ const ClicksSection = ({ clicks }: IClicksSection) => {
             <div className='form__field-title'>
               <label className='form__field-label'>Open product</label>
             </div>
-            <InputField placeholder='a.product-link' onChange={() => { }} />
+            <Controller
+              name="data.selectors.clicks.product.open"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='a.product-link' value={field.value} onChange={field.onChange} />
+              )} />
           </div>
 
           <div className='form__field'>
             <div className='form__field-title'>
               <label className='form__field-label'>Exit from product</label>
             </div>
-            <InputField placeholder='button.product-exit' onChange={() => { }} />
+            <Controller
+              name="data.selectors.clicks.product.exit"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='button.product-exit' value={field.value} onChange={field.onChange} />
+              )} />
           </div>
         </div>
       )}
@@ -35,14 +45,24 @@ const ClicksSection = ({ clicks }: IClicksSection) => {
             <div className='form__field-title'>
               <label className='form__field-label'>Open category</label>
             </div>
-            <InputField placeholder='a.category-link' onChange={() => { }} />
+            <Controller
+              name="data.selectors.clicks.category.exit"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='a.category-link' value={field.value} onChange={field.onChange} />
+              )} />
           </div>
 
           <div className='form__field'>
             <div className='form__field-title'>
               <label className='form__field-label'>Exit from category</label>
             </div>
-            <InputField placeholder='button.category-exit' onChange={() => { }} />
+            <Controller
+              name="data.selectors.clicks.category.exit"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='button.category-exit' value={field.value} onChange={field.onChange} />
+              )} />
           </div>
         </div>
       )}

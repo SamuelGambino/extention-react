@@ -1,7 +1,10 @@
+import { Controller, useFormContext } from "react-hook-form";
 import InputField from "../../InputField";
 import "../index.css";
 
 const ProductSection = () => {
+  const { control } = useFormContext();
+
   return (
     <div className="form__section">
       <span className="form__section-title">Product</span>
@@ -11,42 +14,72 @@ const ProductSection = () => {
           <div className='form__field-title'>
             <label className='form__field-label'>Container</label>
           </div>
-          <InputField placeholder='div.product-container' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.container"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='div.product-container' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Picture</label>
           </div>
-          <InputField placeholder='img.product-picture' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.picture"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='div.product-picture' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Name</label>
           </div>
-          <InputField placeholder='h1.product-name' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.name"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='h1.product-name' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Description</label>
           </div>
-          <InputField placeholder='p.product-description' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.description"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='p.product-description' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Weight</label>
           </div>
-          <InputField placeholder='span.product-weight' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.weight"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='span.product-weight' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Price</label>
           </div>
-          <InputField placeholder='span.product-price' onChange={() => { }} />
+          <Controller
+            name="data.selectors.product.price"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='span.product-price' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
       </div>
     </div>

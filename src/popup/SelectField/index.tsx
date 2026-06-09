@@ -9,14 +9,19 @@ interface IInputField {
 }
 
 const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange }) => {
+  const [selectedValue, setSelectedValue] = useState(value);
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string>(value);
   const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log('Смена значения снаружи')
+    setSelectedValue(value);
+  }, [value])
 
   const selectedLabel = options.find(o => o.value === selectedValue)?.label ?? "";
 
   const handlePick = (val: string) => {
-    setSelectedValue(val);
+    setSelectedValue(val); // обновляем локально для UI
     onChange(val);
     setIsOpen(false);
   };
@@ -30,10 +35,6 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
-  useEffect(() => {
-    setSelectedValue(value);
-  }, [value]);
 
   return (
     <div
@@ -50,7 +51,7 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
       >
         <span className="select-field__value">{selectedLabel}</span>
         <svg className="select-field__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none">
-          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+          <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       </button>
 
@@ -60,7 +61,10 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
             <li
               key={option.value}
               className={`select-field__item ${option.value === selectedValue ? "select-field__item--selected" : ""}`}
-              onClick={() => handlePick(option.value)}
+              onMouseDown={(e) => {
+                e.preventDefault(); // не даём сработать document mousedown
+                handlePick(option.value);
+              }}
             >
               <span className="select-field__item-dot" />
               {option.label}

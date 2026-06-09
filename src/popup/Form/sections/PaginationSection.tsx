@@ -1,7 +1,9 @@
+import { Controller, useFormContext } from "react-hook-form";
 import InputField from "../../InputField";
 import "../index.css";
 
 const PaginationSection = () => {
+  const { control } = useFormContext();
 
   return (
     <div className="form__section">
@@ -12,14 +14,24 @@ const PaginationSection = () => {
           <div className='form__field-title'>
             <label className='form__field-label'>Pages container</label>
           </div>
-          <InputField placeholder='div.pagination' onChange={() => { }} />
+          <Controller
+            name="data.selectors.pagination.container"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='div.pagination' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
 
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>Next page</label>
           </div>
-          <InputField placeholder='button.pagination-next' onChange={() => { }} />
+          <Controller
+            name="data.selectors.pagination.click"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='button.pagination-next' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
       </div>
     </div>

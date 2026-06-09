@@ -3,20 +3,11 @@ import SelectField from "../../SelectField";
 import FieldOptions from "../constants";
 import "../index.css"
 import SwitchField from "../../SwitchField";
+import { Controller, useFormContext } from "react-hook-form";
 
-interface ISettings {
-  clicks: 'none' | 'products' | 'category' | 'all',
-  pagination: boolean,
-  parameters: boolean,
-  modifiers: boolean
-}
+const SettingsBlock = () => {
+  const { control } = useFormContext();
 
-interface ISettingsBlock {
-  settings: ISettings;
-  onChange: (value: ISettings) => void;
-}
-
-const SettingsBlock = ({ settings, onChange }: ISettingsBlock) => {
   return (
     <fieldset className="form__settings">
       <legend className="form__settings-title">Settings</legend>
@@ -25,7 +16,12 @@ const SettingsBlock = ({ settings, onChange }: ISettingsBlock) => {
           <label className='form__field-label'>Clicks</label>
           <Hint hint='Выберите по какому элементу требуются клики' />
         </div>
-        <SelectField value={settings.clicks} options={FieldOptions.ClicksOptions} onChange={(value) => onChange({...settings, clicks: value as ISettings['clicks']})} />
+        <Controller
+          name="data.settings.clicks"
+          control={control}
+          render={({ field }) => (
+            <SelectField value={field.value} options={FieldOptions.ClicksOptions} onChange={field.onChange} />
+          )} />
       </div>
 
       <div className='form__field'>
@@ -33,7 +29,12 @@ const SettingsBlock = ({ settings, onChange }: ISettingsBlock) => {
           <label className='form__field-label'>Pagination</label>
           <Hint hint='Требуется ли переключение страниц' hintPosition='left' />
         </div>
-        <SwitchField value={settings.pagination} onChange={(value) => onChange({...settings, pagination: value})} />
+        <Controller
+          name="data.settings.pagination"
+          control={control}
+          render={({ field }) => (
+            <SwitchField value={field.value} onChange={field.onChange} />
+          )} />
       </div>
 
       <div className='form__field'>
@@ -41,7 +42,12 @@ const SettingsBlock = ({ settings, onChange }: ISettingsBlock) => {
           <label className='form__field-label'>Parameters</label>
           <Hint hint='Есть ли у товара несколько вариаций' />
         </div>
-        <SwitchField value={settings.parameters} onChange={(value) => onChange({...settings, parameters: value})} />
+        <Controller
+          name="data.settings.parameters"
+          control={control}
+          render={({ field }) => (
+            <SwitchField value={field.value} onChange={field.onChange} />
+          )} />
       </div>
 
       <div className='form__field'>
@@ -49,7 +55,12 @@ const SettingsBlock = ({ settings, onChange }: ISettingsBlock) => {
           <label className='form__field-label'>Modifiers</label>
           <Hint hint='Есть ли в номенклатуре модификаторы' hintPosition='left' />
         </div>
-        <SwitchField value={settings.modifiers} onChange={(value) => onChange({...settings, modifiers: value})} />
+        <Controller
+          name="data.settings.modifiers"
+          control={control}
+          render={({ field }) => (
+            <SwitchField value={field.value} onChange={field.onChange} />
+          )} />
       </div>
     </fieldset>
   )

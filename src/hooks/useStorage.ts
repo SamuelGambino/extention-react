@@ -38,10 +38,12 @@ const DEFAULT_STATE: ParserState = {
 
 const useStorage = <T>(key: string, initialValue: T) => {
   const [value, setValue] = useState<T>(initialValue);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   // Чтение и запись в localStorage при монтировании компонента
   useEffect(() => {
     const initializeStorage = async () => { 
+      setIsLoaded(false);
       const data = await browser.storage.local.get(key);
       if (data[key] === undefined) {
         await browser.storage.local.set({ [key]: initialValue });
@@ -49,9 +51,10 @@ const useStorage = <T>(key: string, initialValue: T) => {
       } else {
         setValue(data[key] as T);
       }
+      setIsLoaded(true);
     }
     initializeStorage();
-  }, [key, initialValue])
+  }, [key])
 
   useEffect(() => {
     const handleChanges = (changes: browser.Storage.StorageAreaOnChangedChangesType, areaName: string) => {
@@ -68,7 +71,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return [value, setStorageValue] as const;
+  return [value, setStorageValue, isLoaded] as const;
 }
 
 const useParserConfig = () => {

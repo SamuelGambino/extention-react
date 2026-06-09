@@ -7,21 +7,18 @@ import ParametersSection from "../sections/ParametersSection";
 import CategorySection from "../sections/CategorySection";
 import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
+import { Controller, useFormContext } from 'react-hook-form';
 
-interface ISettings {
-  clicks: 'none' | 'products' | 'category' | 'all',
-  pagination: boolean,
-  parameters: boolean,
-  modifiers: boolean
-}
+const ConfigurationBlock = () => {
+  const { control, watch } = useFormContext();
 
-interface IConfigurationBlock {
-  settings: ISettings;
-  preset: string;
-}
-
-const ConfigurationBlock: React.FC<IConfigurationBlock> = ({ settings, preset }) => {
-  const { clicks, pagination, parameters, modifiers } = settings;
+  const preset = watch('type');
+  const {
+  clicks = 'none',
+  pagination = false,
+  parameters = false,
+  modifiers = false
+} = watch('data.settings');
   const hasSections = preset === 'custom' || preset === 'api';
 
   return (
@@ -34,7 +31,12 @@ const ConfigurationBlock: React.FC<IConfigurationBlock> = ({ settings, preset })
             <label className='form__field-label'>Market ID</label>
             <Hint hint='ID группы в ВКонтакте' />
           </div>
-          <InputField placeholder='123123123' onChange={() => { }} />
+          <Controller
+            name="data.marketId"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='123123123' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
       )}
 
@@ -44,7 +46,12 @@ const ConfigurationBlock: React.FC<IConfigurationBlock> = ({ settings, preset })
             <label className='form__field-label'>API URL</label>
             <Hint hint='API URL для получения меню из Яндекс Еды' />
           </div>
-          <InputField placeholder='https://api.yandex.ru/eda/v1/menu' onChange={() => { }} />
+          <Controller
+            name="data.apiUrl"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='https://api.yandex.ru/eda/v1/menu' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
       )}
 
@@ -54,15 +61,24 @@ const ConfigurationBlock: React.FC<IConfigurationBlock> = ({ settings, preset })
             <label className='form__field-label'>API URL</label>
             <Hint hint='API URL для получения меню из Chibbis' />
           </div>
-          <InputField placeholder='https://chibbis.ru/webapi/restaurants' onChange={() => { }} />
+          <Controller
+            name="data.apiUrl"
+            control={control}
+            render={({ field }) => (
+              <InputField placeholder='https://chibbis.ru/webapi/restaurants' value={field.value} onChange={field.onChange} />
+            )} />
         </div>
       )}
+
+      {preset === 'yandex_map' && <CategorySection />}
+
+      {preset === 'yandex_map' && <ProductSection />}
 
       {hasSections && <CategorySection />}
 
       {hasSections && <ProductSection />}
 
-      {hasSections && clicks !== 'none' && <ClicksSection clicks={clicks} />}
+      {hasSections && clicks !== 'none' && <ClicksSection />}
 
       {hasSections && pagination && <PaginationSection />}
 

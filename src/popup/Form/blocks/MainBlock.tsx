@@ -1,3 +1,4 @@
+import { Controller, useFormContext } from "react-hook-form";
 import Button from "../../Button";
 import Hint from "../../Hint";
 import InputField from "../../InputField";
@@ -5,12 +6,10 @@ import SelectField from "../../SelectField";
 import FieldOptions from "../constants";
 import "../index.css"
 
-interface IInputField {
-  preset: string;
-  onPresetChange: (value: string) => void;
-}
+const MainBlock = () => {
+  const { control } = useFormContext();
+  console.log('control:', control);
 
-const MainBlock: React.FC<IInputField> = ({ preset, onPresetChange }) => {
   return (
     <fieldset className="form__settings">
       <legend className="form__settings-title">Main</legend>
@@ -20,7 +19,13 @@ const MainBlock: React.FC<IInputField> = ({ preset, onPresetChange }) => {
           <label className='form__field-label'>Preset</label>
           <Hint hint='Выберите пресет парсера' />
         </div>
-        <SelectField isAccent={true} value={preset} options={FieldOptions.PresertOptions} onChange={onPresetChange} />
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <SelectField isAccent={true} value={field.value} options={FieldOptions.PresertOptions}
+              onChange={(val) => field.onChange(val)} />
+            )} />
       </div>
 
       <div className='form__field'>
@@ -29,8 +34,12 @@ const MainBlock: React.FC<IInputField> = ({ preset, onPresetChange }) => {
           <Hint hint='Введите url источника' hintPosition='left' />
           <Button title="auto-fill" className="form__button--small form__button--main" onClick={() => { }} />
         </div>
-        <InputField isAccent={true} placeholder='https://example.com' onChange={() => { }}>
-        </InputField>
+        <Controller
+          name="source"
+          control={control}
+          render={({ field }) => (
+            <InputField value={field.value} isAccent={true} placeholder='https://example.com' onChange={field.onChange} />
+          )} />
       </div>
     </fieldset>
   )
