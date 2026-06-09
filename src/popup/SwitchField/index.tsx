@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./index.css";
 
 interface ISwitchField {
@@ -7,14 +8,22 @@ interface ISwitchField {
 }
 
 const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
+  const [switchValue, setSwitchValue] = useState(value ?? false);
+
+  useEffect(() => {
+    setSwitchValue(value ?? false);
+  }, [value]);
 
   return (
     <div className={`switch-field`}>
       <label className={`switch-field__switch ${isAccent ? 'switch-field__switch--accent' : ''}`}>
         <input
           type='checkbox'
-          checked={value}
-          onChange={(e) => onChange(e.target.checked)}
+          checked={switchValue}
+          onChange={(e) => {
+            setSwitchValue(e.target.checked);
+            onChange(e.target.checked);
+          }}
         />
         <div className="switch-field__track">
           <div className="switch-field__segments">
@@ -24,8 +33,8 @@ const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
         </div>
         <div className="switch-field__thumb"></div>
       </label>
-      <span className={`switch-field__text ${value ? 'switch-field__text--enabled' : 'switch-field__text--disabled'}`}>
-        {value ? 'Enabled' : 'Disabled'}
+      <span className={`switch-field__text ${switchValue ? 'switch-field__text--enabled' : 'switch-field__text--disabled'}`}>
+        {switchValue ? 'Enabled' : 'Disabled'}
       </span>
     </div>
   );

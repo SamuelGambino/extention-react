@@ -7,22 +7,22 @@ import ParametersSection from "../sections/ParametersSection";
 import CategorySection from "../sections/CategorySection";
 import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
+import type { ParserConfiguration } from "../../../types/parser_сonfig";
 
 const ConfigurationBlock = () => {
-  const { control, watch } = useFormContext();
+  const { control } = useFormContext<ParserConfiguration>();
 
-  const preset = watch('type');
-  const {
-  clicks = 'none',
-  pagination = false,
-  parameters = false,
-  modifiers = false
-} = watch('data.settings');
+  const preset = useWatch({ control, name: 'type' });
+  const settings = useWatch({ control, name: 'data.settings' });
+  const clicks = settings?.clicks ?? 'none';
+  const pagination = settings?.pagination ?? false;
+  const parameters = settings?.parameters ?? false;
+  const modifiers = settings?.modifiers ?? false;
   const hasSections = preset === 'custom' || preset === 'api';
 
   return (
-    <fieldset className="form__settings">
+    <fieldset className="form__settings" key={preset}>
       <legend className="form__settings-title">Configuration</legend>
 
       {preset === 'vk' && (

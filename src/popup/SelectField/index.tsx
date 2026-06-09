@@ -14,7 +14,6 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('Смена значения снаружи')
     setSelectedValue(value);
   }, [value])
 

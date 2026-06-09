@@ -7,8 +7,7 @@ interface FormProps {
 
 const Form = ({ className }: FormProps) => {
   const [savedConfig, saveConfig, isConfigLoaded] = useParserConfig();
-  console.log('saveConfig:', saveConfig);
-  
+
   if (!isConfigLoaded) return null;
 
   return <FormInner className={className} savedConfig={savedConfig} saveConfig={saveConfig} />;

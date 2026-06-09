@@ -8,7 +8,6 @@ import "../index.css"
 
 const MainBlock = () => {
   const { control } = useFormContext();
-  console.log('control:', control);
 
   return (
     <fieldset className="form__settings">

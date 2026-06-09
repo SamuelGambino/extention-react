@@ -4,7 +4,7 @@ import SettingsBlock from "./blocks/SettingsBlock";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
 import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { ParserConfiguration } from "../../types/parser_сonfig";
 
 interface FormProps {
@@ -14,25 +14,31 @@ interface FormProps {
 }
 
 const FormInner = ({ className, savedConfig, saveConfig }: FormProps) => {
-  const methods = useForm({ defaultValues: savedConfig });
+  const methods = useForm<ParserConfiguration>({ defaultValues: savedConfig });
+  const { control, reset } = methods;
+  const lastSavedConfigRef = useRef(JSON.stringify(savedConfig));
 
   useEffect(() => {
-    methods.reset(savedConfig);
-  }, []);
+    const serializedSavedConfig = JSON.stringify(savedConfig);
+
+    if (serializedSavedConfig === lastSavedConfigRef.current) return;
+
+    lastSavedConfigRef.current = serializedSavedConfig;
+    reset(savedConfig);
+  }, [reset, savedConfig]);
+
+  const formValues = useWatch({ control });
 
   useEffect(() => {
-    console.log('watch useEffect mounted');
-    const subscription = methods.watch((values) => {
-      console.log('watch triggered:', values);
-      saveConfig(values as ParserConfiguration);
-    });
-    return () => {
-      console.log('watch useEffect cleanup');
-      subscription.unsubscribe()
-    };
-  }, [methods.watch]);
+    const serializedFormValues = JSON.stringify(formValues);
 
-  const preset = useWatch({ control: methods.control, name: 'type' });
+    if (serializedFormValues === lastSavedConfigRef.current) return;
+
+    lastSavedConfigRef.current = serializedFormValues;
+    saveConfig(formValues as ParserConfiguration);
+  }, [formValues, saveConfig]);
+
+  const preset = useWatch({ control, name: 'type' });
   const hasSettings = preset === 'custom' || preset === 'api';
 
   return (

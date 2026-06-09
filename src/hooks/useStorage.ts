@@ -54,7 +54,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
       setIsLoaded(true);
     }
     initializeStorage();
-  }, [key])
+  }, [key, initialValue])
 
   useEffect(() => {
     const handleChanges = (changes: browser.Storage.StorageAreaOnChangedChangesType, areaName: string) => {
