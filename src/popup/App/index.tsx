@@ -62,8 +62,11 @@ const App = () => {
           <Telemetry />
         </div>
 
-        <Form className="popup__form" />
-        <State/>
+        <div className="popup__content">
+          
+          <Form className="popup__form" />
+        </div>
+        <State />
       </div>
 
       <Footer />

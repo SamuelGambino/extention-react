@@ -6,11 +6,11 @@ interface FormProps {
 }
 
 const Form = ({ className }: FormProps) => {
-  const [savedConfig, saveConfig, isConfigLoaded] = useParserConfig();
+  const {value, setStorageValue, isLoaded} = useParserConfig();
 
-  if (!isConfigLoaded) return null;
+  if (!isLoaded) return null;
 
-  return <FormInner className={className} savedConfig={savedConfig} saveConfig={saveConfig} />;
+  return <FormInner className={className} savedConfig={value} saveConfig={setStorageValue} />;
 }
 
 export default Form;

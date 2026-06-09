@@ -1,29 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import type { ParserConfiguration } from "../types/parser_сonfig";
+import type { ParserConfig } from "../types/parser_сonfig";
 import type { ParserState } from "../types/parsing_state";
 
-const DEFAULT_CONFIG: ParserConfiguration = {
-  type: 'custom',
-  source: '',
-  data: {
-    settings: {
-      clicks: 'none',
-      pagination: false,
-      parameters: false,
-      modifiers: false,
-    }, 
-    selectors: {
-      category: {
-        container: "",
+const DEFAULT_CONFIG: ParserConfig = {
+  actualTab: 0,
+  tabs: [
+    {
+      tabId: crypto.randomUUID(),
+      type: 'custom',
+      source: '',
+      data: {
+        settings: {
+          clicks: 'none',
+          pagination: false,
+          parameters: false,
+          modifiers: false,
+        },
+        selectors: {
+          category: {
+            container: "",
+          },
+          product: {
+            container: "",
+            name: "",
+            price: "",
+          },
+        },
       },
-      product: {
-        container: "",
-        name: "",
-        price: "",
-      },
-    },
-  },
+    }
+  ]
 }
 
 const DEFAULT_STATE: ParserState = {
@@ -42,7 +48,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
 
   // Чтение и запись в localStorage при монтировании компонента
   useEffect(() => {
-    const initializeStorage = async () => { 
+    const initializeStorage = async () => {
       setIsLoaded(false);
       const data = await browser.storage.local.get(key);
       if (data[key] === undefined) {
@@ -71,11 +77,11 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return [value, setStorageValue, isLoaded] as const;
+  return { value, setStorageValue, isLoaded };
 }
 
 const useParserConfig = () => {
-  return useStorage<ParserConfiguration>("parser_config", DEFAULT_CONFIG);
+  return useStorage<ParserConfig>("parser_config", DEFAULT_CONFIG);
 }
 
 const useParsingState = () => {

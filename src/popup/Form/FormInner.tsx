@@ -5,16 +5,16 @@ import ConfigurationBlock from "./blocks/ConfigurationBlock";
 import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
-import type { ParserConfiguration } from "../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../types/parser_сonfig";
 
 interface FormProps {
   className?: string;
-  savedConfig: ParserConfiguration;
-  saveConfig: (values: ParserConfiguration) => void;
+  savedConfig: ParserTabConfig;
+  saveConfig: (values: ParserTabConfig) => void;
 }
 
 const FormInner = ({ className, savedConfig, saveConfig }: FormProps) => {
-  const methods = useForm<ParserConfiguration>({ defaultValues: savedConfig });
+  const methods = useForm<ParserTabConfig>({ defaultValues: savedConfig });
   const { control, reset } = methods;
   const lastSavedConfigRef = useRef(JSON.stringify(savedConfig));
 
@@ -35,7 +35,7 @@ const FormInner = ({ className, savedConfig, saveConfig }: FormProps) => {
     if (serializedFormValues === lastSavedConfigRef.current) return;
 
     lastSavedConfigRef.current = serializedFormValues;
-    saveConfig(formValues as ParserConfiguration);
+    saveConfig(formValues as ParserTabConfig);
   }, [formValues, saveConfig]);
 
   const preset = useWatch({ control, name: 'type' });
