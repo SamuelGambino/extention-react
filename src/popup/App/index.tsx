@@ -2,8 +2,8 @@ import './index.css'
 import Header from '../Header'
 import Footer from '../Footer'
 import Telemetry from '../Telemetry';
-import Form from '../Form';
 import State from '../State';
+import MainContent from '../MainContent';
 
 const App = () => {
 
@@ -62,10 +62,7 @@ const App = () => {
           <Telemetry />
         </div>
 
-        <div className="popup__content">
-          
-          <Form className="popup__form" />
-        </div>
+        <MainContent />
         <State />
       </div>
 

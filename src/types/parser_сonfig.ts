@@ -1,5 +1,5 @@
 interface ParserConfig {
-  actualTab: string | number;
+  actualTab?: string;
   tabs: ParserTabConfig[];
 }
 

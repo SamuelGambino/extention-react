@@ -1,0 +1,36 @@
+.tabs {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.tabs__item {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tabs__btn {
+  display: flex;
+  padding: 4px 8px;
+  font-size: xx-small;
+  text-transform: uppercase;
+  max-width: 116px;
+  min-width: 68px;
+  width: 100%;
+  text-overflow: ellipsis;
+}
+
+.tabs__btn--active {
+  background-color: aqua;
+}
+
+.tabs__btn-close {
+  padding: 4px;
+  margin: 0;
+}
+
+.tabs__item--right {
+  margin-left: auto;
+}

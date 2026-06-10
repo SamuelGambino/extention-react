@@ -4,7 +4,6 @@ import type { ParserConfig } from "../types/parser_сonfig";
 import type { ParserState } from "../types/parsing_state";
 
 const DEFAULT_CONFIG: ParserConfig = {
-  actualTab: 0,
   tabs: [
     {
       tabId: crypto.randomUUID(),
