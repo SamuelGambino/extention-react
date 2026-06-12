@@ -3,24 +3,35 @@ import "./index.css";
 
 interface IInputField {
   isAccent?: boolean;
-  value: string;
+  value?: string;
   options: { label: string; value: string }[];
   onChange: (value: string) => void;
 }
 
 const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange }) => {
-  const [selectedValue, setSelectedValue] = useState(value);
+  const normalizedValue = value ?? '';
+  const [selectedState, setSelectedState] = useState({
+    propValue: normalizedValue,
+    value: normalizedValue,
+  });
+
   const [isOpen, setIsOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setSelectedValue(value);
-  }, [value])
+  if (selectedState.propValue !== normalizedValue) {
+    setSelectedState({
+      propValue: normalizedValue,
+      value: normalizedValue,
+    });
+  }
 
-  const selectedLabel = options.find(o => o.value === selectedValue)?.label ?? "";
+  const selectedLabel = options.find(o => o.value === selectedState.value)?.label ?? "";
 
   const handlePick = (val: string) => {
-    setSelectedValue(val); // обновляем локально для UI
+    setSelectedState({
+      propValue: normalizedValue,
+      value: val,
+    });
     onChange(val);
     setIsOpen(false);
   };
@@ -59,7 +70,7 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
           {options.map(option => (
             <li
               key={option.value}
-              className={`select-field__item ${option.value === selectedValue ? "select-field__item--selected" : ""}`}
+              className={`select-field__item ${option.value === selectedState.value ? "select-field__item--selected" : ""}`}
               onMouseDown={(e) => {
                 e.preventDefault(); // не даём сработать document mousedown
                 handlePick(option.value);

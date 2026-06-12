@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useParserConfig } from "../../hooks/useStorage";
 import Form from "../Form";
 import Tabs from "../Tabs";
 import "./index.css";
-import type { ParserConfig, ParserTabConfig } from "../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../types/parser_сonfig";
 
 const MainContent = () => {
   const { value, setStorageValue, isLoaded } = useParserConfig();
-  if (!isLoaded) return null;
-  const [parserConfig, setParserConfig] = useState<ParserConfig>(value);
+  const configRef = useRef(value);
 
   useEffect(() => {
-    setParserConfig(value);
-  }, [value])
+    configRef.current = value;
+  }, [value]);
+
 
   const getActualConfig = () => {
     if (value.actualTab) {
@@ -21,44 +21,48 @@ const MainContent = () => {
     return value.tabs[0];
   }
 
-  const openTab = (tabId: string) => {
+  const openTab = useCallback((tabId: string) => {
+    const currentValue = configRef.current;
     setStorageValue({
-      ...value,
-      actualTab: tabId
+      ...currentValue,
+      actualTab: tabId,
     });
-  }
+  }, [setStorageValue]);
 
-  const closeTab = (tabId: string) => {
-    const updatedTabs = value.tabs.filter((tab) => tab.tabId !== tabId);
+  const closeTab = useCallback((tabId: string) => {
+    const currentValue = configRef.current;
+    const updatedTabs = currentValue.tabs.filter((tab) => tab.tabId !== tabId);
 
-    let newActualTab = value.actualTab;
+    let newActualTab = currentValue.actualTab;
 
-    if (value.actualTab === tabId) {
+    if (currentValue.actualTab === tabId) {
       newActualTab = updatedTabs.length > 0 ? updatedTabs[0].tabId : undefined;
     }
 
     setStorageValue({
-      ...value,
+      ...currentValue,
       tabs: updatedTabs,
       actualTab: newActualTab
     });
-  }
+  }, [setStorageValue]);
 
-  const updatedData = (newData: ParserTabConfig) => {
-    const newTabs = value.tabs.map((tab) => {
+  const updatedData = useCallback((newData: ParserTabConfig) => {
+    const currentValue = configRef.current;
+    const newTabs = currentValue.tabs.map((tab) => {
       if (tab.tabId === newData.tabId) {
         return newData;
       } else return tab;
     });
 
     setStorageValue({
-      ...value,
-      tabs: newTabs
-    })
-  }
+      ...currentValue,
+      tabs: newTabs,
+    });
+  }, [setStorageValue]);
 
-  const createTab = () => {
-    const currentTab = value.tabs.find((tab) => tab.tabId === value.actualTab);
+  const createTab = useCallback(() => {
+    const currentValue = configRef.current;
+    const currentTab = currentValue.tabs.find((tab) => tab.tabId === currentValue.actualTab) ?? currentValue.tabs[0];
 
     if (!currentTab) return;
 
@@ -66,22 +70,24 @@ const MainContent = () => {
       ...currentTab,
       tabId: crypto.randomUUID(),
       tabName: "Новая вкладка",
-      data: { ...currentTab.data }
+      data: structuredClone(currentTab.data),
     };
 
     setStorageValue({
-      ...value,
-      tabs: [...value.tabs, newTab], 
-      actualTab: newTab.tabId 
+      ...currentValue,
+      tabs: [...currentValue.tabs, newTab],
+      actualTab: newTab.tabId
     });
-  }
+  }, [setStorageValue]);
 
   const currentConfig = getActualConfig();
 
+  if (!isLoaded || !currentConfig) return null;
+
   return (
     <div className="main-content">
-      <Tabs data={parserConfig} onChange={openTab} onClose={closeTab} onCreate={createTab} />
-      <Form savedConfig={currentConfig} saveConfig={updatedData} />
+      <Tabs data={value} onChange={openTab} onClose={closeTab} onCreate={createTab} />
+      <Form key={currentConfig.tabId} savedConfig={currentConfig} saveConfig={updatedData} />
     </div>
   )
 }
