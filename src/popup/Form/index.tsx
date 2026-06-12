@@ -15,7 +15,7 @@ interface FormProps {
 
 const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   const methods = useForm<ParserTabConfig>({ defaultValues: savedConfig });
-  const { control, reset } = methods;
+  const { control, reset, watch } = methods;
   const lastSavedConfigRef = useRef(JSON.stringify(savedConfig));
 
   useEffect(() => {
@@ -27,16 +27,24 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
     reset(savedConfig);
   }, [reset, savedConfig]);
 
-  const formValues = useWatch({ control });
-
   useEffect(() => {
-    const serializedFormValues = JSON.stringify(formValues);
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-    if (serializedFormValues === lastSavedConfigRef.current) return;
+    const subscription = watch((values) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const serialized = JSON.stringify(values);
+        if(serialized === lastSavedConfigRef.current) return;
+        lastSavedConfigRef.current = serialized;
+        saveConfig(values as ParserTabConfig);
+      }, 500);
+    })
 
-    lastSavedConfigRef.current = serializedFormValues;
-    saveConfig(formValues as ParserTabConfig);
-  }, [formValues, saveConfig]);
+    return () => {
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const preset = useWatch({ control, name: 'type' });
   const hasSettings = preset === 'custom' || preset === 'api';
