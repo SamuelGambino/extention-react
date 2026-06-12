@@ -1,4 +1,11 @@
-interface ParserConfiguration {
+interface ParserConfig {
+  actualTab?: string;
+  tabs: ParserTabConfig[];
+}
+
+interface ParserTabConfig {
+  tabName?: string;
+  tabId: string;
   type: PresertOptionsType;
   source: string;
   data: PresetDataType;
@@ -95,6 +102,6 @@ interface PresetYandexMap {
 }
 
 export type {
-  ParserConfiguration,
-  PresertOptionsType
+  ParserTabConfig,
+  ParserConfig
 }

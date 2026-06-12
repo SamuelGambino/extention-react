@@ -8,10 +8,10 @@ import CategorySection from "../sections/CategorySection";
 import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import type { ParserConfiguration } from "../../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../../types/parser_сonfig";
 
 const ConfigurationBlock = () => {
-  const { control } = useFormContext<ParserConfiguration>();
+  const { control } = useFormContext<ParserTabConfig>();
 
   const preset = useWatch({ control, name: 'type' });
   const settings = useWatch({ control, name: 'data.settings' });
