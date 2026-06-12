@@ -1,33 +1,35 @@
 import "./index.css";
 import type { ParserConfig } from "../../types/parser_сonfig";
+import Button from "../Button";
+import TabItem from "./TabItem";
 
 interface TabsProps {
   data: ParserConfig;
   onChange: (value: string) => void;
   onClose: (value: string) => void;
   onCreate: () => void;
+  onRename: (tabId: string, newName: string) => void;
 }
 
-const Tabs: React.FC<TabsProps> = ({ data, onChange, onClose, onCreate }) => {
-
+const Tabs: React.FC<TabsProps> = ({ data, onChange, onClose, onCreate, onRename }) => {
   return (
-    <ul className="tabs">
-      {data.tabs.map((tab) => {
-        return (
-          <li className="tabs__item" key={tab.tabId}>
-            <button className={`tabs__btn ${tab.tabId === data.actualTab ? ` tabs__btn--active` : ''}`} onClick={() => {
-              onChange(tab.tabId);
-            }}>{tab.tabName ?? tab.type}
-            </button>
-            {data.tabs.length > 1 && <button className="tabs__btn-close" onClick={() => { onClose(tab.tabId) }}>X</button>}
-          </li>
-        )
-      })}
-      <li className="tabs__item tabs__item--right">
-        <button className="tabs__btn-create" onClick={onCreate}>+</button>
-      </li>
-    </ul>
-  )
-}
+    <div className="tabs">
+      <ul className="tabs__list">
+        {data.tabs.map((tab) => (
+          <TabItem
+            key={tab.tabId}
+            tab={tab}
+            isActive={tab.tabId === data.actualTab}
+            canClose={data.tabs.length > 1}
+            onSelect={() => onChange(tab.tabId)}
+            onClose={() => onClose(tab.tabId)}
+            onRename={(newName) => onRename(tab.tabId, newName)}
+          />
+        ))}
+      </ul>
+      <Button onClick={onCreate} title="+" className="tabs__btn-create" />
+    </div>
+  );
+};
 
 export default Tabs;

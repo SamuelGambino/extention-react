@@ -80,13 +80,21 @@ const MainContent = () => {
     });
   }, [setStorageValue]);
 
+  const renameTab = useCallback((tabId: string, newName: string) => {
+    const currentValue = configRef.current;
+    const newTabs = currentValue.tabs.map((tab) =>
+      tab.tabId === tabId ? { ...tab, tabName: newName } : tab
+    );
+    setStorageValue({ ...currentValue, tabs: newTabs });
+  }, [setStorageValue]);
+
   const currentConfig = getActualConfig();
 
   if (!isLoaded || !currentConfig) return null;
 
   return (
     <div className="main-content">
-      <Tabs data={value} onChange={openTab} onClose={closeTab} onCreate={createTab} />
+      <Tabs data={value} onChange={openTab} onClose={closeTab} onCreate={createTab} onRename={renameTab} />
       <Form key={currentConfig.tabId} savedConfig={currentConfig} saveConfig={updatedData} />
     </div>
   )
