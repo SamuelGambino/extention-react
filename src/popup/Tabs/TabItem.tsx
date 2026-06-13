@@ -1,6 +1,7 @@
 import "./index.css";
 import { useState, useRef, useEffect } from "react";
 import type { ParserTabConfig } from "../../types/parser_сonfig";
+import { useTabsConfig } from "../../hooks/useTabsConfig";
 
 interface TabItemProps {
   tab: ParserTabConfig;
@@ -8,10 +9,10 @@ interface TabItemProps {
   canClose: boolean;
   onSelect: () => void;
   onClose: () => void;
-  onRename: (newName: string) => void;
 }
 
-const TabItem: React.FC<TabItemProps> = ({ tab, isActive, canClose, onSelect, onClose, onRename }) => {
+const TabItem: React.FC<TabItemProps> = ({ tab, isActive, canClose, onSelect, onClose }) => {
+  const { renameTab } = useTabsConfig();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(tab.tabName ?? tab.type);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,7 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, canClose, onSelect, on
   const commitRename = () => {
     const trimmed = editValue.trim();
     if (trimmed && trimmed !== tab.tabName) {
-      onRename(trimmed);
+      renameTab(trimmed);
     }
     setIsEditing(false);
   };

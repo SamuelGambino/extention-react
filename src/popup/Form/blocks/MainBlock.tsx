@@ -1,4 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
+import { useAutoFill } from "../../../hooks/useAutoFill"
 import Button from "../../Button";
 import Hint from "../../Hint";
 import InputField from "../../InputField";
@@ -8,6 +9,7 @@ import "../index.css"
 
 const MainBlock = () => {
   const { control } = useFormContext();
+  const { autoFill } = useAutoFill();
 
   return (
     <fieldset className="form__settings">
@@ -31,7 +33,7 @@ const MainBlock = () => {
         <div className='form__field-title'>
           <label className='form__field-label'>Source</label>
           <Hint hint='Введите url источника' hintPosition='left' />
-          <Button title="auto-fill" className="form__button--small form__button--main" onClick={() => { }} />
+          <Button title="auto-fill" className="form__button--small form__button--main" onClick={autoFill} />
         </div>
         <Controller
           name="source"
