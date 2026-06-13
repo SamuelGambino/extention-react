@@ -36,8 +36,11 @@ const DEFAULT_STATE: ParserState = {
     isReady: false,
   },
   parsing: {
+    isRunning: false,
     categories: 0,
+    categoriesTotal: 0,
     products: 0,
+    productsTotal: 0,
   }
 }
 
@@ -76,7 +79,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return { value, setStorageValue, isLoaded };
+  return [ value, setStorageValue, isLoaded ] as const;
 }
 
 const useParserConfig = () => {

@@ -6,7 +6,7 @@ import "./index.css";
 import type { ParserTabConfig } from "../../types/parser_сonfig";
 
 const MainContent = () => {
-  const { value, setStorageValue, isLoaded } = useParserConfig();
+  const [ value, setStorageValue, isLoaded ] = useParserConfig();
   const configRef = useRef(value);
 
   useEffect(() => {
