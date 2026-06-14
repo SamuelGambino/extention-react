@@ -1,12 +1,13 @@
 interface ParserState {
-  availability: {
+  parsing: {
     isReady: boolean;
     message?: string;
-  };
-  parsing: {
     type?: PresertOptionsType;
     source?: string;
     isRunning: boolean;
+    waitingForStep?: boolean;
+  };
+  data: {
     categories: number;
     categoriesTotal: number;
     products: number;
@@ -16,15 +17,18 @@ interface ParserState {
     modifiers?: number;
     modifiersTotal?: number;
   }
-  logs?: {
-    status: "success" | "warn" | "danger"
-    title: string;
-    value: string;
-  }[];
+  logs?: Log[];
 };
+
+interface Log {
+  status: "success" | "warn" | "danger"
+  title: string;
+  value: string;
+}
 
 type PresertOptionsType = 'custom' | 'api' | 'vk' | 'yandex_eda' | 'yandex_map' | 'chibbis';
 
 export type {
-  ParserState
+  ParserState,
+  Log
 }

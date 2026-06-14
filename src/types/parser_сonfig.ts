@@ -90,7 +90,7 @@ interface PresetVk {
   marketId: string;
 }
 
-interface PresetByApi {
+export interface PresetByApi {
   apiUrl: string;
 }
 

@@ -24,17 +24,17 @@ const State = () => {
       <section className="state__section">
         <p className="state__item">
           <span className="state__label">Preset</span>
-          <span className="state__value">{ stateValue.parsing.isRunning ? stateValue.parsing.type : getActualConfig()?.type }</span>
+          <span className="state__value">{stateValue.parsing.isRunning ? stateValue.parsing.type : getActualConfig()?.type}</span>
         </p>
         <p className="state__item">
           <span className="state__label">Source</span>
-          <span className="state__value">{ stateValue.parsing.isRunning ? stateValue.parsing.source : getActualConfig()?.source }</span>
+          <span className="state__value">{stateValue.parsing.isRunning ? stateValue.parsing.source : getActualConfig()?.source}</span>
         </p>
         <p className="state__item">
           <span className="state__label">Availability</span>
-          <span className={`state__badge state__badge--${stateValue.availability.isReady ? 'success' : 'accent'}`}>
+          <span className={`state__badge state__badge--${stateValue.parsing.isReady ? 'success' : 'accent'}`}>
             <span className="state__badge-dot" />
-            {stateValue.availability ? "Ready" : "Wait"}
+            {stateValue.parsing.isReady ? "Ready" : "Wait"}
           </span>
         </p>
       </section>
@@ -42,22 +42,22 @@ const State = () => {
       <section className="state__section">
         <p className="state__item">
           <span className="state__label">Categories</span>
-          <span className="state__value">{stateValue.parsing.categories}</span>
+          <span className="state__value">{stateValue.data.categories}</span>
         </p>
 
         <p className="state__item">
           <span className="state__label">Products</span>
-          <span className="state__value">{stateValue.parsing.products} / {stateValue.parsing.productsTotal}</span>
+          <span className="state__value">{stateValue.data.products} / {stateValue.data.productsTotal}</span>
         </p>
         <div className="state__bar-wrap">
           <div className="state__bar">
             <div
               className="state__bar-fill"
-              style={{ width: `${(stateValue.parsing.products / stateValue.parsing.productsTotal) * 100}%` }}
+              style={{ width: `${(stateValue.data.products / stateValue.data.productsTotal) * 100}%` }}
             />
           </div>
           <span className="state__value">
-            {Math.round((stateValue.parsing.products / stateValue.parsing.productsTotal) * 100)}%
+            {Math.round((stateValue.data.products / stateValue.data.productsTotal) * 100)}%
           </span>
         </div>
       </section>

@@ -2,6 +2,7 @@ import "./index.css";
 import MainBlock from "./blocks/MainBlock";
 import SettingsBlock from "./blocks/SettingsBlock";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
+import browser from "webextension-polyfill";
 import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
@@ -34,7 +35,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         const serialized = JSON.stringify(values);
-        if(serialized === lastSavedConfigRef.current) return;
+        if (serialized === lastSavedConfigRef.current) return;
         lastSavedConfigRef.current = serialized;
         saveConfig(values as ParserTabConfig);
       }, 500);
@@ -59,9 +60,15 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
         <ConfigurationBlock />
 
         <div className="form__actions">
-          <Button title="Check state" className="form__button--state" onClick={() => { }} />
-          <Button title="Parse" className="form__button--main" onClick={() => { }} />
-          <Button title="Parse by steps" onClick={() => { }} />
+          <Button title="Check state" className="form__button--state" onClick={() => {
+            browser.runtime.sendMessage({ action: "Check_state" });
+          }} />
+          <Button title="Parse" className="form__button--main" onClick={() => {
+            browser.runtime.sendMessage({ action: "Parse" });
+          }} />
+          <Button title="Parse by steps" onClick={() => {
+            browser.runtime.sendMessage({ action: "Parse_by_steps" });
+          }} />
         </div>
       </form>
     </FormProvider>

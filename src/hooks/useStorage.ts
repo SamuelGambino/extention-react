@@ -32,15 +32,15 @@ const DEFAULT_CONFIG: ParserConfig = {
 }
 
 const DEFAULT_STATE: ParserState = {
-  availability: {
-    isReady: false,
-  },
   parsing: {
+    isReady: false,
     isRunning: false,
+  },
+  data: {
     categories: 0,
     categoriesTotal: 0,
     products: 0,
-    productsTotal: 0,
+    productsTotal: 0,    
   }
 }
 
