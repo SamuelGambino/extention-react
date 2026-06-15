@@ -1,5 +1,5 @@
-import type { ParserTabConfig } from "../../types/parser_сonfig";
-import type { Log, ParserState } from "../../types/parsing_state";
+import type { ParserTabConfig } from "../../popup/types/parser_сonfig";
+import type { Log, ParserState } from "../../popup/types/parsing_state";
 import { setState, getState } from "../storage";
 
 export type ParseMode = 'check' | 'parse' | 'steps';
@@ -18,8 +18,7 @@ export abstract class BaseParser {
 
   // Steps
   abstract checkAvailability(): Promise<void>; // 1 - elements count
-  abstract parseFirst(): Promise<void>; // 2 - first prod
-  abstract parseRest(): Promise<void>; // 3+ - other cats
+  abstract parseRest(): Promise<void>; // 2+
   abstract exportData(): Promise<void>; // last step - export
 
   // Pause in step mode
@@ -74,24 +73,16 @@ export abstract class BaseParser {
   // Run steps
   async run() {
     try {
-      // step 1
       await this.checkAvailability();
       if (this.mode === 'check') return;
 
       await this.waitForNextStep();
       if (this.stopped) return;
 
-      // step 2
-      await this.parseFirst();
-      await this.waitForNextStep();
-      if (this.stopped) return;
-
-      // step 3+
       await this.parseRest();
       await this.waitForNextStep();
       if (this.stopped) return;
 
-      // last step
       await this.exportData();
 
       await this.setParsingState({ isRunning: false });

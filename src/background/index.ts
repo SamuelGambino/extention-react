@@ -3,7 +3,7 @@ import { getActualConfig } from "./storage";
 import { Custom } from "./parsers/Custom";
 import { Api } from "./parsers/Api";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
-import type { ParserTabConfig } from "../types/parser_сonfig";
+import type { ParserTabConfig } from "../popup/types/parser_сonfig";
 import { Vk } from "./parsers/Vk";
 import { YandexEda } from "./parsers/YandexEda";
 import { YandexMap } from "./parsers/YandexMap";

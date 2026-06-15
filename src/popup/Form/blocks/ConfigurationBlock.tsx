@@ -8,7 +8,7 @@ import CategorySection from "../sections/CategorySection";
 import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import type { ParserTabConfig } from "../../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../types/parser_сonfig";
 
 const ConfigurationBlock = () => {
   const { control } = useFormContext<ParserTabConfig>();

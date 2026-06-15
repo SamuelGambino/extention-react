@@ -1,5 +1,5 @@
 import { Controller, useFormContext } from "react-hook-form";
-import { useAutoFill } from "../../../hooks/useAutoFill"
+import { useAutoFill } from "../../hooks/useAutoFill"
 import Button from "../../Button";
 import Hint from "../../Hint";
 import InputField from "../../InputField";

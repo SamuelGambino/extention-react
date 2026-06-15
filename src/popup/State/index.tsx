@@ -1,4 +1,4 @@
-import { useParserConfig, useParsingState } from "../../hooks/useStorage";
+import { useParserConfig, useParsingState } from "../hooks/useStorage";
 import "./index.css"
 
 const State = () => {

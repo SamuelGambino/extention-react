@@ -1,4 +1,4 @@
-import { useTabsConfig } from "../../hooks/useTabsConfig";
+import { useTabsConfig } from "../hooks/useTabsConfig";
 import Form from "../Form";
 import Tabs from "../Tabs";
 import "./index.css";

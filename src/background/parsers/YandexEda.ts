@@ -1,13 +1,15 @@
-import browser from "webextension-polyfill";
 import { BaseParser } from "./BaseParser";
-import type { ParserState } from "../../types/parsing_state";
-import type { PresetByApi } from "../../types/parser_сonfig";
+import type { ParserState } from "../../popup/types/parsing_state";
+import type { PresetByApi } from "../../popup/types/parser_сonfig";
+import type { Categories, ModGroups, Mods, Product, YandexEdaResp } from "../types/YandexEdaParser";
+
+
 
 export class YandexEda extends BaseParser {
-  private categories = [];
-  private modifiers_groups = [];
-  private modifiers = [];
-  private products = [];
+  private categories: Categories[] = [];
+  private modifiers_groups: ModGroups[] = [];
+  private modifiers: Mods[] = [];
+  private products: Product[] = [];
   private response = Response || null;
 
   async checkAvailability() {
@@ -17,7 +19,7 @@ export class YandexEda extends BaseParser {
     try {
       await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Запрос на api..." });
       const resp = await fetch(configData.apiUrl);
-      this.response = resp.json();
+      this.response = await resp.json();
     } catch (e) {
       await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошиюка при запросе - " + e });
     }
@@ -54,15 +56,27 @@ export class YandexEda extends BaseParser {
     await this.setLog({ status: "success", title: "[YandexEda]:Check", value: "Получены метаданные" });
   }
 
-  async parseFirst() {
-    await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг первого товара..." });
-    // логика парсинга первой категории/товара
-  }
-
   async parseRest() {
-    // логика парсинга остальных категорий
-    // для каждой категории:
-    // await this.setParsingState({ step: 'parsing_category', currentCategory: 1 });
+    await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг первого товара..." });
+
+    for (const category of this.response.payload.categories) {
+      if (category.name === "Выбор пользователей") return;
+      this.categories.push({
+        id: category.id,
+        name: category.name,
+        parent: 0,
+      });
+
+      if (Array.isArray(category.items)) {
+        for (const item of category.items) {
+          await this.getProductData(item, category.id);
+        }
+      }
+
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана категория ${category.name}` });
+      await this.waitForNextStep();
+    }
+    await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработка завершена!" });
     await this.waitForNextStep();
   }
 
@@ -71,55 +85,8 @@ export class YandexEda extends BaseParser {
     // логика экспорта
   }
 
-  async getProducts() {
-    try {
-      await this.importCategories();
-      return {
-        categories: this.categories,
-        products: this.products,
-        modifiers_groups: this.modifiers_groups,
-        modifiers: this.modifiers
-      };
-    } catch (error) {
-      console.error('YandexEdaParser error:', error);
-      throw error;
-    }
-  }
-
-  // Обработка категорий — делаем последовательно, чтобы сохранить порядок
-  async importCategories() {
-    const configData = this.config?.data as PresetByApi || "";
-
-    try {
-      console.log('Fetching API URL:', configData.apiUrl);
-      const response = await fetch(configData.apiUrl);
-      const data = await response.json();
-
-      // Обрабатываем категории последовательно (for...of + await), чтобы продукты шли в том же порядке
-      for (const category of data.payload.categories) {
-        this.categories.push({
-          id: category.id,
-          name: category.name,
-          parent: 0,
-        });
-
-        // обработка товаров категории тоже последовательно (чтобы сохранить порядок внутри категории)
-        if (Array.isArray(category.items)) {
-          for (const item of category.items) {
-            // await — гарантируем последовательность
-            await this.getProductData(item, category.id);
-          }
-        }
-      }
-
-    } catch (error) {
-      console.error('Error importing categories:', error);
-      throw error;
-    }
-  }
-
-  async getProductData(product, categoryId) {
-    const product_data = {
+  async getProductData(product, categoryId: string) {
+    const product_data: Product = {
       product_id: product.id,
       name: product.name,
       picture: '',
@@ -148,7 +115,6 @@ export class YandexEda extends BaseParser {
         const second = (typeof weightMatch[0][1] !== 'undefined') ? Number(weightMatch[0][1]) : 1;
         index = [first, second];
       } else {
-        // fallback
         index = [1, 10];
       }
     }
@@ -179,8 +145,9 @@ export class YandexEda extends BaseParser {
     this.products.push(product_data);
   }
 
-  getModifiers(product_data, group) {
-    const group_modifiers = {
+  getModifiers(product_data: Product, group) {
+    const group_modifiers: ModGroups = {
+      id: 0,
       name: group.name,
       type: 'one_one',
       required: false,
@@ -190,7 +157,7 @@ export class YandexEda extends BaseParser {
     };
 
     if (Array.isArray(group.options)) {
-      group.options.forEach((option) => {
+      group.options.forEach((option: {id:number, name: string, price: number }) => {
         group_modifiers.modifiers.push({
           id: option.id,
           name: option.name,
@@ -203,7 +170,7 @@ export class YandexEda extends BaseParser {
     product_data.modifiers.push(group_id);
   }
 
-  importModifiersGroup(group_modifiers) {
+  importModifiersGroup(group_modifiers: ModGroups) {
     const group_id = this.modifiers_groups.length + 1;
 
     this.modifiers_groups.push({
@@ -222,7 +189,7 @@ export class YandexEda extends BaseParser {
     return group_id;
   }
 
-  matchIndex(weightString) {
+  matchIndex(weightString: string) {
     if (!weightString || typeof weightString !== 'string') return null;
 
     const numRegex = /(\d+)/g;
