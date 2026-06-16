@@ -1,16 +1,14 @@
 import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../popup/types/parsing_state";
 import type { PresetByApi } from "../../popup/types/parser_сonfig";
-import type { Categories, ModGroups, Mods, Product, YandexEdaResp } from "../types/YandexEdaParser";
-
-
+import type { Categories, ModGroups, Mods, Product, YandexEdaResp, YandexEdaRespGroup, YandexEdaRespItem } from "../types/YandexEdaParser";
 
 export class YandexEda extends BaseParser {
   private categories: Categories[] = [];
   private modifiers_groups: ModGroups[] = [];
   private modifiers: Mods[] = [];
   private products: Product[] = [];
-  private response = Response || null;
+  private response: YandexEdaResp | null = null;
 
   async checkAvailability() {
     await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Получение метаданных..." });
@@ -32,6 +30,7 @@ export class YandexEda extends BaseParser {
     };
 
     try {
+      if (!this.response) throw Error("Response is null");
       meta.categoriesTotal = this.response.payload.categories.length;
       for (const category of this.response.payload.categories) {
         if (Array.isArray(category.items)) {
@@ -58,6 +57,7 @@ export class YandexEda extends BaseParser {
 
   async parseRest() {
     await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг первого товара..." });
+    if (!this.response) throw Error("Response is null");
 
     for (const category of this.response.payload.categories) {
       if (category.name === "Выбор пользователей") return;
@@ -85,7 +85,7 @@ export class YandexEda extends BaseParser {
     // логика экспорта
   }
 
-  async getProductData(product, categoryId: string) {
+  async getProductData(product: YandexEdaRespItem, categoryId: number) {
     const product_data: Product = {
       product_id: product.id,
       name: product.name,
@@ -119,33 +119,26 @@ export class YandexEda extends BaseParser {
       }
     }
 
-    if (Array.isArray(product.weights) && product.weights.length) {
-      product_data.price = product.weights.map((w, idx) => ({
-        id: w.id || `${product.id}_${idx + 1}`, // берем реальный id или генерируем уникальный
-        price: w.price ?? product.price,
-        index: [w.amount ?? index[0], w.multiplier ?? index[1]]
-      }));
-    } else {
-      // Один параметр по умолчанию
-      product_data.price = [{
-        id: product.id,       // один параметр — используем id продукта
-        price: product.price,
-        index: index
-      }];
-    }
+    product_data.price = [{
+      id: product.id,
+      price: product.price,
+      index: index
+    }];
 
-    // Обработка модификаторов
     if (product.optionsGroups && product.optionsGroups.length) {
       for (const group of product.optionsGroups) {
         this.getModifiers(product_data, group);
       }
     }
 
-    // Сохраняем продукт (в порядке вызова importCategories -> for..of)
     this.products.push(product_data);
+    if (this.products.length === 1) {
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${this.products[0]}` });
+      await this.waitForNextStep();
+    }
   }
 
-  getModifiers(product_data: Product, group) {
+  async getModifiers(product_data: Product, group: YandexEdaRespGroup) {
     const group_modifiers: ModGroups = {
       id: 0,
       name: group.name,
@@ -157,34 +150,40 @@ export class YandexEda extends BaseParser {
     };
 
     if (Array.isArray(group.options)) {
-      group.options.forEach((option: {id:number, name: string, price: number }) => {
+      group.options.forEach((option: { id: number, name: string, price: number }) => {
         group_modifiers.modifiers.push({
           id: option.id,
           name: option.name,
           price: option.price,
+          group_id: 0,
         });
       });
     }
 
-    const group_id = this.importModifiersGroup(group_modifiers);
+    const group_id = await this.importModifiersGroup(group_modifiers);
     product_data.modifiers.push(group_id);
   }
 
-  importModifiersGroup(group_modifiers: ModGroups) {
+  async importModifiersGroup(group_modifiers: ModGroups) {
     const group_id = this.modifiers_groups.length + 1;
 
-    this.modifiers_groups.push({
-      id: group_id,
-      ...group_modifiers
+    group_modifiers.id = group_id;
+    this.modifiers_groups.push({ ...group_modifiers });
+
+    if (this.modifiers_groups.length === 1) {
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первая группа модификаторов ${this.modifiers_groups[0]}` });
+      await this.waitForNextStep();
+    }
+
+    group_modifiers.modifiers.forEach(modifier => {
+      modifier.group_id = group_id;
+      this.modifiers.push({ ...modifier });
     });
 
-    // Добавляем модификаторы в общий список
-    group_modifiers.modifiers.forEach(modifier => {
-      this.modifiers.push({
-        ...modifier,
-        group_id: group_id
-      });
-    });
+    if (this.modifiers.length === 1) {
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор ${this.modifiers[0]}` });
+      await this.waitForNextStep();
+    }
 
     return group_id;
   }

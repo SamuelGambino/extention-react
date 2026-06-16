@@ -21,11 +21,6 @@ export class Custom extends BaseParser {
     await this.setLog({ status: "success", title: "[Custom]:Check", value: "Получены метаданные" });
   }
 
-  async parseFirst() {
-    await this.setLog({ status: "warn", title: "[Custom]:Parse", value: "Парсинг первого товара..." });
-    // логика парсинга первой категории/товара
-  }
-
   async parseRest() {
     // логика парсинга остальных категорий
     // для каждой категории:
