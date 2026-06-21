@@ -6,7 +6,7 @@ import browser from "webextension-polyfill";
 import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
-import type { ParserTabConfig } from "../types/parser_сonfig";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 
 interface FormProps {
   className?: string;

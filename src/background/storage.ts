@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
-import type { ParserConfig } from "../popup/types/parser_сonfig";
-import type { ParserState } from "../popup/types/parsing_state";
+import type { ParserConfig } from "../globalTypes/parser_сonfig";
+import type { ParserState } from "../globalTypes/parsing_state";
 
 export const getConfig = async (): Promise<ParserConfig> => {
   const data = await browser.storage.local.get("parser_config");
@@ -22,4 +22,13 @@ export const getState = async (): Promise<ParserState> => {
 
 export const setState = async (state: ParserState) => {
   await browser.storage.local.set({ parser_state: state });
+};
+
+export const getToken = async (source: string): Promise<{expiresAt: number, token: string}> => {
+  const data = await browser.storage.local.get([source]);
+  return data[source] as {expiresAt: number, token: string};
+};
+
+export const setToken = async (source: string, data: {expiresAt: number, token: string}) => {
+  await browser.storage.local.set({ [source]: data });
 };

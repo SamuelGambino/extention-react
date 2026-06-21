@@ -1,5 +1,5 @@
 import "./index.css";
-import type { ParserConfig } from "../types/parser_сonfig";
+import type { ParserConfig } from "../../globalTypes/parser_сonfig";
 import Button from "../Button";
 import TabItem from "./TabItem";
 

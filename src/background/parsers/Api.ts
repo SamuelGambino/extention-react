@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 import { BaseParser } from "./BaseParser";
-import type { ParserState } from "../../popup/types/parsing_state";
+import type { ParserState } from "../../globalTypes/parsing_state";
 
 export class Api extends BaseParser {
   async checkAvailability() {

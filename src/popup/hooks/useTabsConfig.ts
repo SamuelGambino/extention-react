@@ -1,7 +1,7 @@
 // hooks/useTabsConfig.ts
 import { useCallback, useEffect, useRef } from "react";
 import { useParserConfig } from "./useStorage";
-import type { ParserTabConfig } from "../types/parser_сonfig";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 
 const useTabsConfig = () => {
   const [value, setStorageValue, isLoaded] = useParserConfig();

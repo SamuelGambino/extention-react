@@ -1,6 +1,6 @@
 // hooks/useTabConfig.ts
 import { useFormContext } from "react-hook-form";
-import type { ParserTabConfig } from "../types/parser_сonfig";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import browser from "webextension-polyfill";
 
 const useAutoFill = () => {

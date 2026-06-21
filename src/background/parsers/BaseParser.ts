@@ -1,12 +1,17 @@
-import type { ParserTabConfig } from "../../popup/types/parser_сonfig";
-import type { Log, ParserState } from "../../popup/types/parsing_state";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
+import type { Log, ParserState } from "../../globalTypes/parsing_state";
 import { setState, getState } from "../storage";
+import type { Categories, ExportData, ModGroups, Mods, Product } from "../types/ExportTypes";
 
 export type ParseMode = 'check' | 'parse' | 'steps';
 
 export abstract class BaseParser {
   protected config: ParserTabConfig;
   protected mode: ParseMode;
+  protected categories: Categories[] = [];
+  protected modifiers_groups: ModGroups[] = [];
+  protected modifiers: Mods[] = [];
+  protected products: Product[] = [];
   private pausePromise: Promise<void> | null = null;
   private resumeResolve: (() => void) | null = null;
   private stopped = false;
@@ -19,7 +24,10 @@ export abstract class BaseParser {
   // Steps
   abstract checkAvailability(): Promise<void>; // 1 - elements count
   abstract parseRest(): Promise<void>; // 2+
-  abstract exportData(): Promise<void>; // last step - export
+
+  protected async exportData() {
+    // логика экспорта одна для всех
+  };
 
   // Pause in step mode
   protected async waitForNextStep() {
@@ -70,8 +78,12 @@ export abstract class BaseParser {
     });
   }
 
+  protected async sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   // Run steps
-  async run() {
+  async run(): Promise<ExportData | undefined> {
     try {
       await this.checkAvailability();
       if (this.mode === 'check') return;
@@ -83,9 +95,12 @@ export abstract class BaseParser {
       await this.waitForNextStep();
       if (this.stopped) return;
 
-      await this.exportData();
-
-      await this.setParsingState({ isRunning: false });
+      return {
+        categories: this.categories,
+        products: this.products,
+        modifiers: this.modifiers,
+        modifiers_groups: this.modifiers_groups,
+      }
     } catch (e) {
       await this.setParsingState({ isRunning: false });
       await this.setLog({ status: "danger", title: "[BaseParser]", value: `${e}` });

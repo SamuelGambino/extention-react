@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import type { ParserConfig } from "../types/parser_сonfig";
-import type { ParserState } from "../types/parsing_state";
+import type { ParserConfig } from "../../globalTypes/parser_сonfig";
+import type { ParserState } from "../../globalTypes/parsing_state";
 
 const DEFAULT_CONFIG: ParserConfig = {
   tabs: [

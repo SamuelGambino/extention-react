@@ -90,7 +90,7 @@ interface PresetVk {
   marketId: string;
 }
 
-export interface PresetByApi {
+interface PresetByApi {
   apiUrl: string;
 }
 
@@ -103,5 +103,7 @@ interface PresetYandexMap {
 
 export type {
   ParserTabConfig,
-  ParserConfig
+  ParserConfig,
+  PresetByApi,
+  PresetVk
 }

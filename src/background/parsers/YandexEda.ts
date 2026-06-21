@@ -1,13 +1,10 @@
 import { BaseParser } from "./BaseParser";
-import type { ParserState } from "../../popup/types/parsing_state";
-import type { PresetByApi } from "../../popup/types/parser_сonfig";
-import type { Categories, ModGroups, Mods, Product, YandexEdaResp, YandexEdaRespGroup, YandexEdaRespItem } from "../types/YandexEdaParser";
+import type { ParserState } from "../../globalTypes/parsing_state";
+import type { PresetByApi } from "../../globalTypes/parser_сonfig";
+import type { YandexEdaResp, YandexEdaRespGroup, YandexEdaRespItem } from "../types/YandexEdaParserTypes";
+import type { ModGroups, Product } from "../types/ExportTypes";
 
 export class YandexEda extends BaseParser {
-  private categories: Categories[] = [];
-  private modifiers_groups: ModGroups[] = [];
-  private modifiers: Mods[] = [];
-  private products: Product[] = [];
   private response: YandexEdaResp | null = null;
 
   async checkAvailability() {
@@ -78,11 +75,6 @@ export class YandexEda extends BaseParser {
     }
     await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработка завершена!" });
     await this.waitForNextStep();
-  }
-
-  async exportData() {
-    await this.setLog({ status: "warn", title: "[YandexEda]:Export", value: "Экспорт данных..." });
-    // логика экспорта
   }
 
   async getProductData(product: YandexEdaRespItem, categoryId: number) {
@@ -161,7 +153,7 @@ export class YandexEda extends BaseParser {
     }
 
     const group_id = await this.importModifiersGroup(group_modifiers);
-    product_data.modifiers.push(group_id);
+    product_data.modifiers?.push(group_id);
   }
 
   async importModifiersGroup(group_modifiers: ModGroups) {

@@ -1,6 +1,6 @@
 import "./index.css";
 import { useState, useRef, useEffect } from "react";
-import type { ParserTabConfig } from "../types/parser_сonfig";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import { useTabsConfig } from "../hooks/useTabsConfig";
 
 interface TabItemProps {
