@@ -15,10 +15,13 @@ export class YandexEda extends BaseParser {
       await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Запрос на api..." });
       const resp = await fetch(configData.apiUrl);
       this.response = await resp.json();
+      if (!resp.ok) {
+        throw new Error(`HTTP error ${resp.status}: ${resp.statusText}`);
+      }
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошиюка при запросе - " + e });
+      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошибка  при запросе - " + e });
     }
-    await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Отбработка ответа..." });
+    await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Обработка ответа..." });
     const meta = {
       categoriesTotal: 0,
       productsTotal: 0,
@@ -27,9 +30,11 @@ export class YandexEda extends BaseParser {
     };
 
     try {
-      if (!this.response) throw Error("Response is null");
-      meta.categoriesTotal = this.response.payload.categories.length;
-      for (const category of this.response.payload.categories) {
+      const categories = this.response?.payload?.categories;
+      if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
+
+      meta.categoriesTotal = categories.length;
+      for (const category of categories) {
         if (Array.isArray(category.items)) {
           meta.productsTotal += category.items.length;
           for (const item of category.items) {
@@ -45,18 +50,19 @@ export class YandexEda extends BaseParser {
         }
       }
       await this.setDataState(meta as Partial<ParserState['data']>);
+      await this.setLog({ status: "success", title: "[YandexEda]:Check", value: "Получены метаданные" });
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошиюка при обработке данных - " + e });
+      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошибка при обработке данных - " + e });
+      throw e;
     }
-
-    await this.setLog({ status: "success", title: "[YandexEda]:Check", value: "Получены метаданные" });
   }
 
   async parseRest() {
     await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг первого товара..." });
-    if (!this.response) throw Error("Response is null");
+    const categories = this.response?.payload?.categories;
+    if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
-    for (const category of this.response.payload.categories) {
+    for (const category of categories) {
       if (category.name === "Выбор пользователей") return;
       this.categories.push({
         id: category.id,
@@ -125,7 +131,7 @@ export class YandexEda extends BaseParser {
 
     this.products.push(product_data);
     if (this.products.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${this.products[0]}` });
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${product_data.name}` });
       await this.waitForNextStep();
     }
   }
@@ -163,7 +169,7 @@ export class YandexEda extends BaseParser {
     this.modifiers_groups.push({ ...group_modifiers });
 
     if (this.modifiers_groups.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первая группа модификаторов ${this.modifiers_groups[0]}` });
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первая группа модификаторов ${group_modifiers.name}` });
       await this.waitForNextStep();
     }
 
@@ -173,7 +179,7 @@ export class YandexEda extends BaseParser {
     });
 
     if (this.modifiers.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор ${this.modifiers[0]}` });
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор  ${this.modifiers[0].name}` });
       await this.waitForNextStep();
     }
 

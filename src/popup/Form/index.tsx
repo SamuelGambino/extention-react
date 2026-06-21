@@ -14,6 +14,14 @@ interface FormProps {
   saveConfig: (values: ParserTabConfig) => void;
 }
 
+const sendRuntimeMessage = async (action: 'Check_state' | 'Parse' | 'Parse_by_steps') => {
+  try {
+    await browser.runtime.sendMessage({ action });
+  } catch (error) {
+    console.error(`Failed to send ${action} message to background worker:`, error);
+  }
+};
+
 const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   const methods = useForm<ParserTabConfig>({ defaultValues: savedConfig });
   const { control, reset, watch } = methods;
@@ -61,13 +69,13 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
 
         <div className="form__actions">
           <Button title="Check state" className="form__button--state" onClick={() => {
-            browser.runtime.sendMessage({ action: "Check_state" });
+            void sendRuntimeMessage("Check_state");
           }} />
           <Button title="Parse" className="form__button--main" onClick={() => {
-            browser.runtime.sendMessage({ action: "Parse" });
+            void sendRuntimeMessage("Parse");
           }} />
           <Button title="Parse by steps" onClick={() => {
-            browser.runtime.sendMessage({ action: "Parse_by_steps" });
+            void sendRuntimeMessage("Parse_by_steps");
           }} />
         </div>
       </form>

@@ -23,62 +23,83 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
 
 let activeParser: BaseParser | null = null;
 
-browser.runtime.onMessage.addListener((message: any) => {
-  (async () => {
-    const config = await getActualConfig();
-    const exporter = new Exporter();
+type RuntimeMessage = {
+  action?: 'Check_state' | 'Parse' | 'Parse_by_steps' | 'Next_step' | 'Stop';
+};
 
+type RuntimeMessageResponse = {
+  ok: boolean;
+};
 
-    if (message.action === 'Check_state') {
-      const Parser = PARSER_MAP[config.type];
-      activeParser = new Parser(config, 'check');
-      await activeParser.run();
+const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessageResponse> => {
+  const message = rawMessage as RuntimeMessage;
+
+  if (!message.action) {
+    return { ok: false };
+  }
+
+  const config = await getActualConfig();
+  const exporter = new Exporter();
+
+  if (message.action === 'Check_state') {
+    const Parser = PARSER_MAP[config.type];
+    activeParser = new Parser(config, 'check');
+    await activeParser.run();
+    return { ok: true };
+  }
+
+  if (message.action === 'Parse') {
+    const Parser = PARSER_MAP[config.type];
+
+    activeParser = new Parser(config, 'parse');
+    const result = await activeParser.run();
+    if (!result) {
+      const state = await getState();
+      const logs = state.logs ?? [];
+      await setState({
+        ...state,
+        parsing: { ...state.parsing, ...{ isRunning: false } },
+        logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
+      });
+      return { ok: false };
+    }
+    await exporter.export(result, config);
+    return { ok: true };
+  }
+
+  if (message.action === 'Parse_by_steps') {
+    const Parser = PARSER_MAP[config.type];
+    activeParser = new Parser(config, 'steps');
+    const result = await activeParser.run();
+    if (!result) {
+      const state = await getState();
+      const logs = state.logs ?? [];
+      await setState({
+        ...state,
+        parsing: { ...state.parsing, ...{ isRunning: false } },
+        logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
+      });
+      return { ok: false };
     }
 
-    if (message.action === 'Parse') {
-      const Parser = PARSER_MAP[config.type];
+    await exporter.export(result, config);
+    return { ok: true };
+  }
 
-      activeParser = new Parser(config, 'parse');
-      const result = await activeParser.run();
-      if (!result) {
-        const state = await getState();
-        const logs = state.logs ?? [];
-        await setState({
-          ...state,
-          parsing: { ...state.parsing, ...{ isRunning: false } },
-          logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
-        });
-        return;
-      };
-      exporter.export(result, config);
-    }
+  if (message.action === 'Next_step') {
+    activeParser?.resume();
+    return { ok: true };
+  }
 
-    if (message.action === 'Parse_by_steps') {
-      const Parser = PARSER_MAP[config.type];
-      activeParser = new Parser(config, 'steps');
-      const result = await activeParser.run();
-      if (!result) {
-        const state = await getState();
-        const logs = state.logs ?? [];
-        await setState({
-          ...state,
-          parsing: { ...state.parsing, ...{ isRunning: false } },
-          logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
-        });
-        return;
-      };
-      exporter.export(result, config);
-    }
+  if (message.action === 'Stop') {
+    activeParser?.stop();
+    activeParser = null;
+    return { ok: true };
+  }
 
-    if (message.action === 'Next_step') {
-      activeParser?.resume();
-    }
+  return { ok: false };
+};
 
-    if (message.action === 'Stop') {
-      activeParser?.stop();
-      activeParser = null;
-    }
-  })();
-
-  return true;
+browser.runtime.onMessage.addListener((rawMessage: unknown) => {
+  return handleRuntimeMessage(rawMessage);
 });

@@ -43,14 +43,15 @@ export abstract class BaseParser {
     this.pausePromise = null;
   }
 
-  // start when message "next_step"
   public resume() {
+    void this.setParsingState({ waitingForStep: false });
     this.resumeResolve?.();
   }
 
   public stop() {
     this.stopped = true;
-    this.resumeResolve?.(); // unlock
+    void this.setParsingState({ isRunning: false, waitingForStep: false });
+    this.resumeResolve?.(); 
   }
 
   protected async setDataState(patch: Partial<ParserState['data']>) {

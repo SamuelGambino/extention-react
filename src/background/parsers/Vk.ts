@@ -5,6 +5,7 @@ import type { Product } from "../types/ExportTypes";
 import { getToken, setToken } from "../storage";
 import type { PresetVk } from "../../globalTypes/parser_сonfig";
 import type { fullResponse, VkItemsResp } from "../types/VkParserTypes";
+import type Browser from "webextension-polyfill";
 
 export class Vk extends BaseParser {
   private token: string = '';
@@ -41,7 +42,7 @@ export class Vk extends BaseParser {
       }
 
       return new Promise<string>((resolve) => {
-        const listener = async (updatedTabId: number, changeInfo: any) => {
+        const listener = async (updatedTabId: number, changeInfo: Browser.Tabs.OnUpdatedChangeInfoType) => {
           if (updatedTabId === tabId && changeInfo.url?.startsWith("https://export.vk.foodsoul.pro/#")) {
             const tokenMatch = changeInfo.url.match(/access_token=([^&]+)/);
             if (tokenMatch) {
@@ -66,18 +67,32 @@ export class Vk extends BaseParser {
     }
   }
 
-  async callVkApi(method: string, params = {}) {
-    const groupId = this.config.data as PresetVk;
+  async callVkApi(method: string, params: Record<string, string | number> = {}) {
+    if (!this.token) {
+      await this.authVk();
+    }
+    if (!this.token) {
+      throw new Error("Не удалось получить VK access token");
+    }
+
+    const configData = this.config.data as PresetVk;
+    const groupId = configData.marketId;
+    if (!groupId) {
+      throw new Error("Не указан ID сообщества VK");
+    }
     const query = new URLSearchParams({
       access_token: this.token,
       v: this.apiVersion,
       owner_id: `-${groupId}`,
-      ...params
     });
+    Object.entries(params).forEach(([key, value]) => query.set(key, String(value)));
     const url = `https://api.vk.com/method/${method}?${query.toString()}`;
     const response = await fetch(url);
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(`VK HTTP error ${response.status}: ${response.statusText}`);
+    }
 
+    const data = await response.json();
     if (data.error) {
       throw new Error(`VK API error: ${data.error.error_msg}`);
     }
@@ -91,7 +106,10 @@ export class Vk extends BaseParser {
       extended: 1
     });
 
-    if (!response.items || response.items.length === 0) throw Error("Пустой товет на запрос товаров категории " + this.categories.find(cat => { if (catId === cat.id) return cat.name }));
+    if (!response.items || response.items.length === 0) {
+      const category = this.categories.find(cat => catId === cat.id);
+      throw Error("Пустой ответ на запрос товаров категории " + (category?.name ?? catId));
+    }
 
     return response.items.map((item: VkItemsResp) => ({
       product_id: item.id,
@@ -112,11 +130,12 @@ export class Vk extends BaseParser {
     await this.setLog({ status: "warn", title: "[VK]:Check", value: "Получение метаданных..." });
 
     try {
+      await this.authVk();
       await this.setLog({ status: "warn", title: "[VK]:Check", value: "Запрос на api..." });
       const response = await this.callVkApi('market.getAlbums');
-      this.responseData.categories = await response.json().items;
+      this.responseData.categories = response.items ?? [];
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[VK]:Check", value: "Ошиюка при запросе категорий - " + e });
+      await this.setLog({ status: "danger", title: "[VK]:Check", value: "Ошибка при запросе категорий - " + e });
     }
     try {
       await this.setLog({ status: "warn", title: "[VK]:Check", value: "Запрос на api..." });
@@ -124,9 +143,9 @@ export class Vk extends BaseParser {
         count: 200,
         extended: 1
       });
-      this.responseData.items = await response.json().items;
+      this.responseData.items = response.items ?? [];
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[VK]:Check", value: "Ошиюка при запросе товаров - " + e });
+      await this.setLog({ status: "danger", title: "[VK]:Check", value: "Ошибка при запросе товаров - " + e });
     }
     const meta = {
       categoriesTotal: this.responseData.categories.length,
@@ -144,7 +163,7 @@ export class Vk extends BaseParser {
 
     try {
       if (this.responseData.categories && this.responseData.categories.length) {
-        this.responseData.categories.forEach(album => {
+        this.responseData.categories.forEach((album) => {
           this.categories.push({
             id: album.id,
             name: album.title,
@@ -153,9 +172,9 @@ export class Vk extends BaseParser {
         });
       }
 
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработаны категории" });
+      await this.setLog({ status: "success", title: "[VK]:Parse", value: "Обработаны категории" });
     } catch (err) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Parse", value: 'Ошибка обработке категорий: ' + err });
+      await this.setLog({ status: "danger", title: "[VK]:Parse", value: 'Ошибка обработке категорий: ' + err });
     }
     await this.waitForNextStep();
 
@@ -177,9 +196,9 @@ export class Vk extends BaseParser {
         })
       });
 
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработаны все товары" });
+      await this.setLog({ status: "success", title: "[VK]:Parse", value: "Обработаны все товары" });
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Parse", value: 'Ошибка обработке всех товаров: ' + e });
+      await this.setLog({ status: "danger", title: "[VK]:Parse", value: 'Ошибка обработке всех товаров: ' + e });
     }
     await this.waitForNextStep();
 
@@ -198,9 +217,9 @@ export class Vk extends BaseParser {
 
         await this.sleep(400);
       }
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработаны товары по категориям" });
+      await this.setLog({ status: "success", title: "[VK]:Parse", value: "Обработаны товары по категориям" });
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Parse", value: 'Ошибка обработке товаров по категориям: ' + e });
+      await this.setLog({ status: "danger", title: "[VK]:Parse", value: 'Ошибка обработке товаров по категориям: ' + e });
     }
 
     const uncategorizedProducts = allProducts
@@ -210,7 +229,7 @@ export class Vk extends BaseParser {
         category: 1000
       }));
 
-    await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Парсинг завершен" });
+    await this.setLog({ status: "success", title: "[VK]:Parse", value: "Парсинг завершен" });
     this.products.push(...uncategorizedProducts);
   }
 }

@@ -126,21 +126,19 @@ export class Exporter {
   }
 
   protected async download(xml: string, filename: string) {
-    const blob = new Blob([xml], { type: 'application/xml' });
-    const url = URL.createObjectURL(blob);
+    const url = `data:application/xml;charset=utf-8,${encodeURIComponent(xml)}`;
+    const safeFilename = filename.endsWith('.xml') ? filename : `${filename}.xml`;
 
     try {
       const downloadId = await browser.downloads.download({
         url,
-        filename,
+        filename: safeFilename,
         saveAs: true,
       });
 
       console.log('Download started:', downloadId);
     } catch (error) {
       console.error('Download failed:', error);
-    } finally {
-      URL.revokeObjectURL(url);
     }
   }
 }
