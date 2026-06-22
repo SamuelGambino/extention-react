@@ -58,12 +58,12 @@ export class YandexEda extends BaseParser {
   }
 
   async parseRest() {
-    await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг первого товара..." });
+    await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг данных..." });
     const categories = this.response?.payload?.categories;
     if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
     for (const category of categories) {
-      if (category.name === "Выбор пользователей") return;
+      if (!category.id) continue;
       this.categories.push({
         id: category.id,
         name: category.name,
@@ -73,6 +73,7 @@ export class YandexEda extends BaseParser {
       if (Array.isArray(category.items)) {
         for (const item of category.items) {
           await this.getProductData(item, category.id);
+          await this.setDataState({} as Partial<ParserState['data']>);
         }
       }
 

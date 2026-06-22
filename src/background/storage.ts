@@ -24,11 +24,16 @@ export const setState = async (state: ParserState) => {
   await browser.storage.local.set({ parser_state: state });
 };
 
-export const getToken = async (source: string): Promise<{expiresAt: number, token: string}> => {
+export const getToken = async (source: string): Promise<{ expiresAt: number, token: string }> => {
   const data = await browser.storage.local.get([source]);
-  return data[source] as {expiresAt: number, token: string};
+  return data[source] as { expiresAt: number, token: string };
 };
 
-export const setToken = async (source: string, data: {expiresAt: number, token: string}) => {
+export const setToken = async (source: string, data: { expiresAt: number, token: string }) => {
   await browser.storage.local.set({ [source]: data });
+};
+
+export const setParsingState = async (isRunning: boolean) => {
+  const data = await getState();
+  await browser.storage.local.set({ parser_state: {...data, parsing: { ...data.parsing, isRunning }}});
 };

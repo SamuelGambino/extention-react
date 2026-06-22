@@ -2,25 +2,16 @@ import "./index.css";
 import MainBlock from "./blocks/MainBlock";
 import SettingsBlock from "./blocks/SettingsBlock";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
-import browser from "webextension-polyfill";
-import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
+import ActionButtons from "../ActionButtons";
 
 interface FormProps {
   className?: string;
   savedConfig: ParserTabConfig;
   saveConfig: (values: ParserTabConfig) => void;
 }
-
-const sendRuntimeMessage = async (action: 'Check_state' | 'Parse' | 'Parse_by_steps') => {
-  try {
-    await browser.runtime.sendMessage({ action });
-  } catch (error) {
-    console.error(`Failed to send ${action} message to background worker:`, error);
-  }
-};
 
 const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   const methods = useForm<ParserTabConfig>({ defaultValues: savedConfig });
@@ -67,17 +58,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
 
         <ConfigurationBlock />
 
-        <div className="form__actions">
-          <Button title="Check state" className="form__button--state" onClick={() => {
-            void sendRuntimeMessage("Check_state");
-          }} />
-          <Button title="Parse" className="form__button--main" onClick={() => {
-            void sendRuntimeMessage("Parse");
-          }} />
-          <Button title="Parse by steps" onClick={() => {
-            void sendRuntimeMessage("Parse_by_steps");
-          }} />
-        </div>
+        <ActionButtons />
       </form>
     </FormProvider>
   )

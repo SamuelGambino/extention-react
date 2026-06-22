@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import { getActualConfig, getState, setState } from "./storage";
+import { getActualConfig, getState, setParsingState, setState } from "./storage";
 import { Custom } from "./parsers/Custom";
 import { Api } from "./parsers/Api";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
@@ -31,6 +31,14 @@ type RuntimeMessageResponse = {
   ok: boolean;
 };
 
+const clearLogs = async () => {
+  const state = await getState();
+  await setState({
+    ...state,
+    logs: [],
+  });
+}
+
 const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessageResponse> => {
   const message = rawMessage as RuntimeMessage;
 
@@ -42,13 +50,18 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
   const exporter = new Exporter();
 
   if (message.action === 'Check_state') {
+    await clearLogs();
+    await setParsingState(true);
     const Parser = PARSER_MAP[config.type];
     activeParser = new Parser(config, 'check');
     await activeParser.run();
+    await setParsingState(false);
     return { ok: true };
   }
 
   if (message.action === 'Parse') {
+    await clearLogs();
+    await setParsingState(true);
     const Parser = PARSER_MAP[config.type];
 
     activeParser = new Parser(config, 'parse');
@@ -64,10 +77,13 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
       return { ok: false };
     }
     await exporter.export(result, config);
+    await setParsingState(false);
     return { ok: true };
   }
 
   if (message.action === 'Parse_by_steps') {
+    await clearLogs();
+    await setParsingState(true);
     const Parser = PARSER_MAP[config.type];
     activeParser = new Parser(config, 'steps');
     const result = await activeParser.run();
@@ -83,6 +99,7 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
     }
 
     await exporter.export(result, config);
+    await setParsingState(false);
     return { ok: true };
   }
 
@@ -92,6 +109,7 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
   }
 
   if (message.action === 'Stop') {
+    await setParsingState(false);
     activeParser?.stop();
     activeParser = null;
     return { ok: true };

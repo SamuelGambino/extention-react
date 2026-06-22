@@ -1,0 +1,36 @@
+.actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  background-color: var(--bg);
+  justify-content: space-around;
+  gap: 8px;
+  padding-top: 4px;
+  margin-top: auto;
+  z-index: 2;
+}
+
+.actions::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px, transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 3px);
+  pointer-events: none;
+}
+
+.actions__button-wrapper {
+  display: flex;
+  gap: 4px;
+}
+
+.actions__button--state div {
+  border-color: var(--border-yellow);
+}
+.actions__button--main div {
+  border-color: var(--border-green);
+}
+.actions__button--stop div {
+  border-color: var(--border-red);
+}
