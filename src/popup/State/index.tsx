@@ -42,8 +42,19 @@ const State = () => {
       <section className="state__section">
         <p className="state__item">
           <span className="state__label">Categories</span>
-          <span className="state__value">{stateValue.data.categories}</span>
+          <span className="state__value">{stateValue.data.categories} / {stateValue.data.categoriesTotal}</span>
         </p>
+        <div className="state__bar-wrap">
+          <div className="state__bar">
+            <div
+              className="state__bar-fill"
+              style={{ width: `${(stateValue.data.categories / stateValue.data.categoriesTotal) * 100}%` }}
+            />
+          </div>
+          <span className="state__value">
+            {Math.round((stateValue.data.categories / stateValue.data.categoriesTotal) * 100)}%
+          </span>
+        </div>
 
         <p className="state__item">
           <span className="state__label">Products</span>
