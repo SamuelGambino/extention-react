@@ -1,38 +1,38 @@
 interface Categories {
-  id: number,
+  id: number | string,
   name: string,
   parent: number,
 }
 
 interface Product {
-  product_id: number,
+  product_id: number | string,
   name: string,
   picture: string,
   description: string,
   price: {
-    id: number,
+    id: number | string,
     price: number,
     index: number[],
   }[],
-  category: number,
-  modifiers?: number[];
+  category: number | string,
+  modifiers?: (number | string)[];
 }
 
 interface ModGroups {
-  id: number;
+  id: number | string;
   name: string,
   type: 'one_one',
-  required: false,
-  minimum: 1,
-  maximum: 10,
+  required: boolean,
+  minimum: number,
+  maximum: number,
   modifiers: Mods[],
 };
 
 interface Mods {
-  id: number,
+  id: number | string,
   name: string,
   price: number,
-  group_id: number,
+  group_id: number | string,
 }
 
 interface ExportData {
