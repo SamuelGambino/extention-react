@@ -7,7 +7,7 @@ const useAutoFill = () => {
   const { setValue } = useFormContext<ParserTabConfig>();
 
   const detectPresetFromUrl = (domain: string) => {
-    if (domain === "vk.com") return "vk";
+    if (domain === "vk.com" || domain === "vk.ru") return "vk";
     if (domain === "eda.yandex.ru") return "yandex_eda";
     if (domain === "yandex.ru") return "yandex_map";
     if (domain === "chibbis.ru") return "chibbis";
@@ -31,7 +31,7 @@ const useAutoFill = () => {
     };
     if (preset === "yandex_eda") {
       const placeSlug = urlObject.searchParams.get("placeSlug");
-      setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);      
+      setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);
     };
   };
 

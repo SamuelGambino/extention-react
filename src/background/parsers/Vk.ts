@@ -114,7 +114,7 @@ export class Vk extends BaseParser {
     return response.items.map((item: VkItemsResp) => ({
       product_id: item.id,
       name: item.title,
-      picture: item.thumb_photo || '',
+      picture: item.thumb_photo.replaceAll("&", "&amp;") || '',
       description: item.description || '',
       category: catId,
       price: [{
@@ -163,13 +163,14 @@ export class Vk extends BaseParser {
 
     try {
       if (this.responseData.categories && this.responseData.categories.length) {
-        this.responseData.categories.forEach((album) => {
+        for (const album of this.responseData.categories) {
           this.categories.push({
             id: album.id,
             name: album.title,
             parent: 0
           });
-        });
+          await this.setDataState({ categories: this.categories.length - 1 } as Partial<ParserState['data']>);
+        };
       }
 
       await this.setLog({ status: "success", title: "[VK]:Parse", value: "Обработаны категории" });
@@ -180,11 +181,11 @@ export class Vk extends BaseParser {
 
     const allProducts: Product[] = [];
     try {
-      this.responseData.items.forEach(item => {
+      for (const item of this.responseData.items) {
         allProducts.push({
           product_id: item.id,
           name: item.title,
-          picture: item.thumb_photo || '',
+          picture: item.thumb_photo.replaceAll("&", "&amp;") || '',
           description: item.description || '',
           category: 1000,
           price: [{
@@ -194,7 +195,8 @@ export class Vk extends BaseParser {
           }],
           modifiers: []
         })
-      });
+        await this.setDataState({ products: allProducts.length } as Partial<ParserState['data']>);
+      };
 
       await this.setLog({ status: "success", title: "[VK]:Parse", value: "Обработаны все товары" });
     } catch (e) {

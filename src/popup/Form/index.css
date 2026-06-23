@@ -127,3 +127,7 @@ button.form__button--small {
   font-size: 7px;
   margin-left: auto;
 }
+
+.form__button--main div {
+  border-color: var(--border-green);
+}

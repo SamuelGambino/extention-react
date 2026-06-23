@@ -29,7 +29,7 @@ const ActionButtons = () => {
           <Button title="Next" onClick={() => {
             void sendRuntimeMessage("Next_step");
           }} />
-          <Button title="Stop" className="actions__button--main" onClick={() => {
+          <Button title="Stop" className="actions__button--stop" onClick={() => {
             void sendRuntimeMessage("Stop");
           }} />
         </div>

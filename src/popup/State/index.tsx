@@ -52,7 +52,7 @@ const State = () => {
             />
           </div>
           <span className="state__value">
-            {Math.round((stateValue.data.categories / stateValue.data.categoriesTotal) * 100)}%
+            {Math.round((stateValue.data.categories / stateValue.data.categoriesTotal) * 100) || 0}%
           </span>
         </div>
 
@@ -68,7 +68,7 @@ const State = () => {
             />
           </div>
           <span className="state__value">
-            {Math.round((stateValue.data.products / stateValue.data.productsTotal) * 100)}%
+            {Math.round((stateValue.data.products / stateValue.data.productsTotal) * 100) || 0}%
           </span>
         </div>
       </section>

@@ -33,8 +33,10 @@ export class YandexEda extends BaseParser {
       const categories = this.response?.payload?.categories;
       if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
-      meta.categoriesTotal = categories.length;
+      let categoriesTotal = 0;
       for (const category of categories) {
+        if (!category.id) continue;
+        categoriesTotal++;
         if (Array.isArray(category.items)) {
           meta.productsTotal += category.items.length;
           for (const item of category.items) {
@@ -49,6 +51,8 @@ export class YandexEda extends BaseParser {
           }
         }
       }
+      meta.categoriesTotal = categoriesTotal;
+
       await this.setDataState(meta as Partial<ParserState['data']>);
       await this.setLog({ status: "success", title: "[YandexEda]:Check", value: "Получены метаданные" });
     } catch (e) {
@@ -73,15 +77,15 @@ export class YandexEda extends BaseParser {
       if (Array.isArray(category.items)) {
         for (const item of category.items) {
           await this.getProductData(item, category.id);
-          await this.setDataState({} as Partial<ParserState['data']>);
+          await this.setDataState({ products: this.products.length } as Partial<ParserState['data']>);
         }
       }
 
+      await this.setDataState({ categories: this.categories.length } as Partial<ParserState['data']>);
       await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана категория ${category.name}` });
       await this.waitForNextStep();
     }
     await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработка завершена!" });
-    await this.waitForNextStep();
   }
 
   async getProductData(product: YandexEdaRespItem, categoryId: number) {
@@ -132,6 +136,7 @@ export class YandexEda extends BaseParser {
 
     this.products.push(product_data);
     if (this.products.length === 1) {
+      await this.setDataState({ products: 1 } as Partial<ParserState['data']>);
       await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${product_data.name}` });
       await this.waitForNextStep();
     }
