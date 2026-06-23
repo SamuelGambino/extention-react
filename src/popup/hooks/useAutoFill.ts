@@ -33,6 +33,14 @@ const useAutoFill = () => {
       const placeSlug = urlObject.searchParams.get("placeSlug");
       setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);
     };
+    if (preset === "chibbis") {
+      const chibbisResponse = await fetch("https://chibbis.ru/webapi/cities");
+      if (!chibbisResponse.ok) return;
+      const data: { id: string, urlName: string }[] = await chibbisResponse.json();
+      const pathSegments = urlObject.pathname.split('/').filter(Boolean);
+      const cityObj = data.find(city => city.urlName === pathSegments[0]);
+      setValue("data.apiUrl", `https://chibbis.ru/webapi/v2/restaurants/${pathSegments[2]}/menu/summary?cityId=${cityObj?.id}`);
+    }
   };
 
   return { autoFill };
