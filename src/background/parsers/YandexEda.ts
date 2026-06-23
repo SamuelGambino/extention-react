@@ -12,7 +12,7 @@ export class YandexEda extends BaseParser {
     const configData = this.config.data as PresetByApi;
 
     try {
-      await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Запрос на api..." });
+      await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Запрос к api..." });
       const resp = await fetch(configData.apiUrl);
       this.response = await resp.json();
       if (!resp.ok) {
