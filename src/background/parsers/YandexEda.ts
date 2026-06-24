@@ -24,9 +24,13 @@ export class YandexEda extends BaseParser {
     await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Обработка ответа..." });
     const meta = {
       categoriesTotal: 0,
+      categories: 0,
       productsTotal: 0,
+      products: 0,
       groupsModifiersTotal: 0,
-      modifiersTotal: 0
+      groupsModifiers: 0,
+      modifiersTotal: 0,
+      modifiers: 0
     };
 
     try {
@@ -99,21 +103,17 @@ export class YandexEda extends BaseParser {
       modifiers: []
     };
 
-    // Обработка изображения
     if (product.picture && product.picture.uri) {
       const uriImage = product.picture.uri.replace('-{w}x{h}', '');
       product_data.picture = `https://eda.yandex${uriImage}`;
     }
 
-    // Обработка веса и цены — используем более надёжный extractor
-    let index = [1, 10]; // дефолт
+    let index = [1, 10];
     if (product.weight) {
-      // убираем все пробельные символы
       const normalized = String(product.weight).replace(/\s/g, '');
       const weightMatch = this.matchIndex(normalized);
 
       if (weightMatch && weightMatch.length > 0 && Array.isArray(weightMatch[0])) {
-        // возвращаем первые два числа, если есть; если второе отсутствует — ставим 1
         const first = Number(weightMatch[0][0]) || 0;
         const second = (typeof weightMatch[0][1] !== 'undefined') ? Number(weightMatch[0][1]) : 1;
         index = [first, second];
@@ -179,16 +179,18 @@ export class YandexEda extends BaseParser {
       await this.waitForNextStep();
     }
 
-    group_modifiers.modifiers.forEach(modifier => {
+    for (const modifier of group_modifiers.modifiers) {
       modifier.group_id = group_id;
       this.modifiers.push({ ...modifier });
-    });
+      await this.setDataState({ modifiers: this.modifiers.length } as Partial<ParserState['data']>);
+    };
 
     if (this.modifiers.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор  ${this.modifiers[0].name}` });
+      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор ${this.modifiers[0].name}` });
       await this.waitForNextStep();
     }
 
+    await this.setDataState({ groupsModifiers: this.modifiers_groups.length } as Partial<ParserState['data']>);
     return group_id;
   }
 
@@ -200,14 +202,13 @@ export class YandexEda extends BaseParser {
     let m;
     while ((m = numRegex.exec(weightString)) !== null) {
       matches.push(parseInt(m[1], 10));
-      // Защита от бесконечных циклов — regex.exec продвигается автоматически
     }
 
     if (matches.length >= 2) {
       return [[matches[0], matches[1]]];
     }
     if (matches.length === 1) {
-      return [[matches[0], 1]]; // второе — 1 по дефолту
+      return [[matches[0], 1]];
     }
     return null;
   }

@@ -1,7 +1,6 @@
-import browser from "webextension-polyfill";
 import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../globalTypes/parsing_state";
-import type { ChibbisModGroupResp, ChibbisModResp, ChibbisProductResp, ChibbisResp } from "../types/ChibbisParserTypes";
+import type { ChibbisModGroupResp, ChibbisProductResp, ChibbisResp } from "../types/ChibbisParserTypes";
 import type { PresetByApi } from "../../globalTypes/parser_сonfig";
 import type { ModGroups, Product } from "../types/ExportTypes";
 
@@ -25,9 +24,13 @@ export class Chibbis extends BaseParser {
     await this.setLog({ status: "warn", title: "[Chibbis]:Check", value: "Обработка ответа..." });
     const meta = {
       categoriesTotal: 0,
+      categories: 0,
       productsTotal: 0,
+      products: 0,
       groupsModifiersTotal: 0,
-      modifiersTotal: 0
+      groupsModifiers: 0,
+      modifiersTotal: 0,
+      modifiers: 0
     };
 
     try {
@@ -121,7 +124,7 @@ export class Chibbis extends BaseParser {
     this.products.push(product_data);
     if (this.products.length === 1) {
       await this.setDataState({ products: 1 } as Partial<ParserState['data']>);
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${product_data.name}` });
+      await this.setLog({ status: "success", title: "[Chibbis]:Parse", value: `Обработан первый товар ${product_data.name}` });
       await this.waitForNextStep();
     }
   }
@@ -147,39 +150,21 @@ export class Chibbis extends BaseParser {
         };
         group_modifiers.modifiers.push(modifier);
         this.modifiers.push(modifier);
+        await this.setDataState({ modifiers: this.modifiers.length } as Partial<ParserState['data']>);
         if (this.modifiers.length === 1) {
-          await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый модификатор  ${mod.name}` });
+          await this.setLog({ status: "success", title: "[Chibbis]:Parse", value: `Обработан первый модификатор ${mod.name}` });
           await this.waitForNextStep();
         }
       };
     }
 
     this.modifiers_groups.push(group_modifiers);
+    await this.setDataState({ groupsModifiers: this.modifiers_groups.length } as Partial<ParserState['data']>);
     if (this.modifiers_groups.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана группа модификаторов  ${group.name}` });
+      await this.setLog({ status: "success", title: "[Chibbis]:Parse", value: `Обработана группа модификаторов ${group.name}` });
       await this.waitForNextStep();
     }
     product_data.modifiers?.push(group.id);
-  }
-
-  matchIndex(weightString: string) {
-    if (!weightString || typeof weightString !== 'string') return null;
-
-    const numRegex = /(\d+)/g;
-    const matches = [];
-    let m;
-    while ((m = numRegex.exec(weightString)) !== null) {
-      matches.push(parseInt(m[1], 10));
-      // Защита от бесконечных циклов — regex.exec продвигается автоматически
-    }
-
-    if (matches.length >= 2) {
-      return [[matches[0], matches[1]]];
-    }
-    if (matches.length === 1) {
-      return [[matches[0], 1]]; // второе — 1 по дефолту
-    }
-    return null;
   }
 
   getWeightData(weight: ChibbisProductResp["weight"]) {
