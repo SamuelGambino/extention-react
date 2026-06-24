@@ -130,6 +130,12 @@ export class Chibbis extends BaseParser {
   }
 
   async getModifiers(product_data: Product, group: ChibbisModGroupResp) {
+    const isDublicate = this.modifiers_groups.find(modGroup => modGroup.id === group.id);
+    if (isDublicate) {
+      product_data.modifiers?.push(group.id);
+      return;
+    };
+
     const group_modifiers: ModGroups = {
       id: group.id,
       name: group.name,
