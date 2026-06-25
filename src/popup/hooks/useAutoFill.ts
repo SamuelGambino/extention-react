@@ -8,8 +8,7 @@ const useAutoFill = () => {
 
   const detectPresetFromUrl = (domain: string) => {
     if (domain === "vk.com" || domain === "vk.ru") return "vk";
-    if (domain === "eda.yandex.ru") return "yandex_eda";
-    if (domain === "yandex.ru") return "yandex_map";
+    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
     return 'custom';
   };
@@ -29,8 +28,14 @@ const useAutoFill = () => {
       const group = url.split('market-')[1].split('?')[0] ? url.split('market-')[1].split('?')[0] : "undefined";
       setValue("data.marketId", group);
     };
-    if (preset === "yandex_eda") {
-      const placeSlug = urlObject.searchParams.get("placeSlug");
+    if (preset === "yandex") {
+      let placeSlug;
+      if (urlObject.hostname === "eda.yandex.ru") placeSlug = urlObject.searchParams.get("placeSlug");
+      if (urlObject.hostname === "yandex.ru" || urlObject.hostname === "yandex.com") {
+        const pathSegments = urlObject.pathname.split('/').filter(Boolean);
+        const orgIndex = pathSegments.indexOf('org');
+        placeSlug = orgIndex !== -1 ? pathSegments[orgIndex + 1] : undefined;
+      }
       setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);
     };
     if (preset === "chibbis") {

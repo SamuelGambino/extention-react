@@ -40,7 +40,7 @@ const ConfigurationBlock = () => {
         </div>
       )}
 
-      {preset === 'yandex_eda' && (
+      {preset === 'yandex' && (
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>API URL</label>
@@ -69,10 +69,6 @@ const ConfigurationBlock = () => {
             )} />
         </div>
       )}
-
-      {preset === 'yandex_map' && <CategorySection />}
-
-      {preset === 'yandex_map' && <ProductSection />}
 
       {hasSections && <CategorySection />}
 

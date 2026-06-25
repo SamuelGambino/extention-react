@@ -1,19 +1,19 @@
-interface YandexEdaResp {
+interface YandexResp {
   payload: {
     categories: {
       id: number,
       name: string,
-      items: YandexEdaRespItem[],
+      items: YandexRespItem[],
     }[],
   }
 }
 
-interface YandexEdaRespItem {
+interface YandexRespItem {
   id: number,
   name: string,
   description: string,
   price: number,
-  optionsGroups: YandexEdaRespGroup[],
+  optionsGroups: YandexRespGroup[],
   picture: {
     uri: string,
   },
@@ -21,10 +21,24 @@ interface YandexEdaRespItem {
   measure: {
     value: number,
     measure_unit: string,
+  },
+  nutrients?: {
+    calories: {
+      value: number
+    },
+    proteins: {
+      value: number
+    },
+    fats: {
+      value: number
+    },
+    carbohydrates: {
+      value: number
+    },
   }
 }
 
-interface YandexEdaRespGroup {
+interface YandexRespGroup {
   id: number,
   name: string,
   options: {
@@ -38,7 +52,7 @@ interface YandexEdaRespGroup {
 }
 
 export type {
-  YandexEdaResp,
-  YandexEdaRespItem,
-  YandexEdaRespGroup
+  YandexResp,
+  YandexRespItem,
+  YandexRespGroup
 }

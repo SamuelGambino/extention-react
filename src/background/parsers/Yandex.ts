@@ -1,27 +1,27 @@
 import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../globalTypes/parsing_state";
 import type { PresetByApi } from "../../globalTypes/parser_сonfig";
-import type { YandexEdaResp, YandexEdaRespGroup, YandexEdaRespItem } from "../types/YandexEdaParserTypes";
+import type { YandexResp, YandexRespGroup, YandexRespItem } from "../types/YandexParserTypes";
 import type { ModGroups, Product } from "../types/ExportTypes";
 
-export class YandexEda extends BaseParser {
-  private response: YandexEdaResp | null = null;
+export class Yandex extends BaseParser {
+  private response: YandexResp | null = null;
 
   async checkAvailability() {
-    await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Получение метаданных..." });
+    await this.setLog({ status: "warn", title: "[Yandex]:Check", value: "Получение метаданных..." });
     const configData = this.config.data as PresetByApi;
 
     try {
-      await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Запрос к api..." });
+      await this.setLog({ status: "warn", title: "[Yandex]:Check", value: "Запрос к api..." });
       const resp = await fetch(configData.apiUrl);
       this.response = await resp.json();
       if (!resp.ok) {
         throw new Error(`HTTP error ${resp.status}: ${resp.statusText}`);
       }
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошибка  при запросе - " + e });
+      await this.setLog({ status: "danger", title: "[Yandex]:Check", value: "Ошибка  при запросе - " + e });
     }
-    await this.setLog({ status: "warn", title: "[YandexEda]:Check", value: "Обработка ответа..." });
+    await this.setLog({ status: "warn", title: "[Yandex]:Check", value: "Обработка ответа..." });
     const meta = {
       categoriesTotal: 0,
       categories: 0,
@@ -58,15 +58,15 @@ export class YandexEda extends BaseParser {
       meta.categoriesTotal = categoriesTotal;
 
       await this.setDataState(meta as Partial<ParserState['data']>);
-      await this.setLog({ status: "success", title: "[YandexEda]:Check", value: "Получены метаданные" });
+      await this.setLog({ status: "success", title: "[Yandex]:Check", value: "Получены метаданные" });
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[YandexEda]:Check", value: "Ошибка при обработке данных - " + e });
+      await this.setLog({ status: "danger", title: "[Yandex]:Check", value: "Ошибка при обработке данных - " + e });
       throw e;
     }
   }
 
   async parseRest() {
-    await this.setLog({ status: "warn", title: "[YandexEda]:Parse", value: "Парсинг данных..." });
+    await this.setLog({ status: "warn", title: "[Yandex]:Parse", value: "Парсинг данных..." });
     const categories = this.response?.payload?.categories;
     if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
@@ -86,13 +86,13 @@ export class YandexEda extends BaseParser {
       }
 
       await this.setDataState({ categories: this.categories.length } as Partial<ParserState['data']>);
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана категория ${category.name}` });
+      await this.setLog({ status: "success", title: "[Yandex]:Parse", value: `Обработана категория ${category.name}` });
       await this.waitForNextStep();
     }
-    await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: "Обработка завершена!" });
+    await this.setLog({ status: "success", title: "[Yandex]:Parse", value: "Обработка завершена!" });
   }
 
-  async getProductData(product: YandexEdaRespItem, categoryId: number) {
+  async getProductData(product: YandexRespItem, categoryId: number) {
     const product_data: Product = {
       product_id: product.id,
       name: product.name,
@@ -125,6 +125,10 @@ export class YandexEda extends BaseParser {
     product_data.price = [{
       id: product.id,
       price: product.price,
+      proteins: product.nutrients?.proteins.value || undefined,
+      fats: product.nutrients?.fats.value || undefined,
+      carbohydrates: product.nutrients?.carbohydrates.value || undefined,
+      calories: product.nutrients?.calories.value || undefined,
       index: index
     }];
 
@@ -137,12 +141,12 @@ export class YandexEda extends BaseParser {
     this.products.push(product_data);
     if (this.products.length === 1) {
       await this.setDataState({ products: 1 } as Partial<ParserState['data']>);
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработан первый товар ${product_data.name}` });
+      await this.setLog({ status: "success", title: "[Yandex]:Parse", value: `Обработан первый товар ${product_data.name}` });
       await this.waitForNextStep();
     }
   }
 
-  async getModifiers(product_data: Product, group: YandexEdaRespGroup) {
+  async getModifiers(product_data: Product, group: YandexRespGroup) {
     const group_modifiers: ModGroups = {
       id: 0,
       name: group.name,
@@ -175,7 +179,7 @@ export class YandexEda extends BaseParser {
     this.modifiers_groups.push({ ...group_modifiers });
 
     if (this.modifiers_groups.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первая группа модификаторов ${group_modifiers.name}` });
+      await this.setLog({ status: "success", title: "[Yandex]:Parse", value: `Обработана первая группа модификаторов ${group_modifiers.name}` });
       await this.waitForNextStep();
     }
 
@@ -186,7 +190,7 @@ export class YandexEda extends BaseParser {
     };
 
     if (this.modifiers.length === 1) {
-      await this.setLog({ status: "success", title: "[YandexEda]:Parse", value: `Обработана первый модификатор ${this.modifiers[0].name}` });
+      await this.setLog({ status: "success", title: "[Yandex]:Parse", value: `Обработана первый модификатор ${this.modifiers[0].name}` });
       await this.waitForNextStep();
     }
 

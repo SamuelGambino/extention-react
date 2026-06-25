@@ -5,8 +5,7 @@ import { Api } from "./parsers/Api";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
 import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
 import { Vk } from "./parsers/Vk";
-import { YandexEda } from "./parsers/YandexEda";
-import { YandexMap } from "./parsers/YandexMap";
+import { Yandex } from "./parsers/Yandex";
 import { Chibbis } from "./parsers/Chibbis";
 import { Exporter } from "./Exporter";
 
@@ -16,8 +15,7 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
   custom: Custom,
   api: Api,
   vk: Vk,
-  yandex_eda: YandexEda,
-  yandex_map: YandexMap,
+  yandex: Yandex,
   chibbis: Chibbis
 };
 

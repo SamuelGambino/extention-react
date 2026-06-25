@@ -63,6 +63,18 @@ export class Exporter {
         xml += `          <parameter id="${price.id}">\n`;
         xml += `            <price>${price.price}</price>\n`;
         xml += `            <description>${price.index[0]}</description>\n`;
+        if (price.proteins) {
+          xml += `            <proteins>${price.proteins}</proteins>\n`;
+        }
+        if (price.fats) {
+          xml += `            <fats>${price.fats}</fats>\n`;
+        }
+        if (price.carbohydrates) {
+          xml += `            <carbohydrates>${price.carbohydrates}</carbohydrates>\n`;
+        }
+        if (price.calories) {
+          xml += `            <calories>${price.calories}</calories>\n`;
+        }
         xml += `            <descriptionIndex>${price.index[1]}</descriptionIndex>\n`;
         xml += `          </parameter>\n`;
       });

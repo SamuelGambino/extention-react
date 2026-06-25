@@ -12,6 +12,10 @@ interface Product {
   price: {
     id: number | string,
     price: number,
+    proteins?: number,
+    fats?: number,
+    carbohydrates?: number,
+    calories?: number,
     index: number[],
   }[],
   category: number | string,

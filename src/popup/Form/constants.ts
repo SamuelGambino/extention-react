@@ -2,8 +2,7 @@ const PresertOptions = [
   { label: 'Custom', value: 'custom' },
   { label: 'Api', value: 'api' },
   { label: 'VK', value: 'vk' },
-  { label: 'Yandex eda', value: 'yandex_eda' },
-  { label: 'Yandex map', value: 'yandex_map' },
+  { label: 'Yandex', value: 'yandex' },
   { label: 'Chibbis', value: 'chibbis' },
 ]
 
