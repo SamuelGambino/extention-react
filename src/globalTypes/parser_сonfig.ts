@@ -11,7 +11,7 @@ interface ParserTabConfig {
   data: PresetDataType;
 };
 
-type PresertOptionsType = 'custom' | 'api' | 'vk' | 'yandex' | 'chibbis';
+type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis';
 
 type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetYandexMap;
 

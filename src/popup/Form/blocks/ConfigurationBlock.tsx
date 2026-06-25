@@ -19,7 +19,7 @@ const ConfigurationBlock = () => {
   const pagination = settings?.pagination ?? false;
   const parameters = settings?.parameters ?? false;
   const modifiers = settings?.modifiers ?? false;
-  const hasSections = preset === 'custom' || preset === 'api';
+  const hasSections = preset === 'custom';
 
   return (
     <fieldset className="form__settings" key={preset}>

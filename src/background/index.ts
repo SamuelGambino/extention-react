@@ -1,7 +1,6 @@
 import browser from "webextension-polyfill";
 import { getActualConfig, getState, setParsingState, setState } from "./storage";
 import { Custom } from "./parsers/Custom";
-import { Api } from "./parsers/Api";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
 import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
 import { Vk } from "./parsers/Vk";
@@ -13,7 +12,6 @@ type PresetType = ParserTabConfig['type'];
 
 const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMode) => BaseParser> = {
   custom: Custom,
-  api: Api,
   vk: Vk,
   yandex: Yandex,
   chibbis: Chibbis

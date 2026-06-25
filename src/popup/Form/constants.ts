@@ -9,8 +9,7 @@ const PresertOptions = [
 const ClicksOptions = [
   { label: 'None', value: 'none' },
   { label: 'Products', value: 'products' },
-  { label: 'Category', value: 'category' },
-  { label: 'All', value: 'all' }
+  { label: 'Category', value: 'category' }
 ]
 
 const GroupTypes = [
