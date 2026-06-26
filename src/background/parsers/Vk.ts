@@ -99,7 +99,7 @@ export class Vk extends BaseParser {
     return data.response;
   }
 
-  async getProductsByCategory(catId: number) {
+  async getProductsByCategory(catId: number | string) {
     const response = await this.callVkApi('market.get', {
       album_id: catId,
       count: 200,

@@ -8,6 +8,7 @@ import { Yandex } from "./parsers/Yandex";
 import { Chibbis } from "./parsers/Chibbis";
 import { WhatsApp } from "./parsers/WhatsApp";
 import { Exporter } from "./Exporter";
+import { Kuper } from "./parsers/Kuper";
 
 type PresetType = ParserTabConfig['type'];
 
@@ -17,6 +18,7 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
   yandex: Yandex,
   chibbis: Chibbis,
   whatsapp: WhatsApp,
+  kuper: Kuper,
 };
 
 let activeParser: BaseParser | null = null;

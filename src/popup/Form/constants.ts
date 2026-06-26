@@ -1,8 +1,8 @@
 const PresertOptions = [
   { label: 'Custom', value: 'custom' },
-  { label: 'Api', value: 'api' },
   { label: 'VK', value: 'vk' },
   { label: 'Yandex', value: 'yandex' },
+  { label: 'Kuper', value: 'kuper' },
   { label: 'Chibbis', value: 'chibbis' },
   { label: 'WhatsApp', value: 'whatsapp' },
 ]

@@ -71,7 +71,7 @@ const ConfigurationBlock = () => {
         </>
       )}
 
-      {(preset === 'yandex' || preset === 'chibbis') && (
+      {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper') && (
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>API URL</label>
