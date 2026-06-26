@@ -71,32 +71,17 @@ const ConfigurationBlock = () => {
         </>
       )}
 
-      {preset === 'yandex' && (
+      {(preset === 'yandex' || preset === 'chibbis') && (
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>API URL</label>
-            <Hint hint='API URL для получения меню из Яндекс Еды' />
+            <Hint hint='API URL для получения меню' />
           </div>
           <Controller
             name="data.apiUrl"
             control={control}
             render={({ field }) => (
-              <InputField placeholder='https://api.yandex.ru/eda/v1/menu' value={field.value} onChange={field.onChange} />
-            )} />
-        </div>
-      )}
-
-      {preset === 'chibbis' && (
-        <div className='form__field'>
-          <div className='form__field-title'>
-            <label className='form__field-label'>API URL</label>
-            <Hint hint='API URL для получения меню из Chibbis' />
-          </div>
-          <Controller
-            name="data.apiUrl"
-            control={control}
-            render={({ field }) => (
-              <InputField placeholder='https://chibbis.ru/webapi/restaurants' value={field.value} onChange={field.onChange} />
+              <InputField placeholder='https://api.url.com/eda/v1/menu' value={field.value} onChange={field.onChange} />
             )} />
         </div>
       )}

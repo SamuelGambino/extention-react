@@ -2,7 +2,7 @@ import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../globalTypes/parsing_state";
 import type { WhatsAppRespCategories, WhatsAppRespProducts, WhatsAppPayloadCatalogs, WhatsAppNomenclature, WhatsAppPayloadProducts } from "../types/WhatsAppParserTypes";
 import type { PresetWhatsApp } from "../../globalTypes/parser_сonfig";
-import type { ModGroups, Product } from "../types/ExportTypes";
+import type { Product } from "../types/ExportTypes";
 
 export class WhatsApp extends BaseParser {
   private fullNomenclature: WhatsAppNomenclature | null = null;
