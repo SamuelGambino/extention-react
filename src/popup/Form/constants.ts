@@ -4,6 +4,7 @@ const PresertOptions = [
   { label: 'VK', value: 'vk' },
   { label: 'Yandex', value: 'yandex' },
   { label: 'Chibbis', value: 'chibbis' },
+  { label: 'WhatsApp', value: 'whatsapp' },
 ]
 
 const ClicksOptions = [

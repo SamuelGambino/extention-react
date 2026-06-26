@@ -14,10 +14,9 @@ export class Yandex extends BaseParser {
     try {
       await this.setLog({ status: "warn", title: "[Yandex]:Check", value: "Запрос к api..." });
       const resp = await fetch(configData.apiUrl);
-      this.response = await resp.json();
       if (!resp.ok) {
         throw new Error(`HTTP error ${resp.status}: ${resp.statusText}`);
-      }
+      } else this.response = await resp.json();
     } catch (e) {
       await this.setLog({ status: "danger", title: "[Yandex]:Check", value: "Ошибка  при запросе - " + e });
     }

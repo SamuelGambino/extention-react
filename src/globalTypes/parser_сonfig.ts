@@ -11,9 +11,9 @@ interface ParserTabConfig {
   data: PresetDataType;
 };
 
-type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis';
+type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis' | 'whatsapp';
 
-type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetYandexMap;
+type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetWhatsApp;
 
 interface PresetCustom {
   settings: {
@@ -94,16 +94,15 @@ interface PresetByApi {
   apiUrl: string;
 }
 
-interface PresetYandexMap {
-  selectors: {
-    category: CategorySection;
-    product: ProductSection;
-  }
+interface PresetWhatsApp {
+  paylodCatalogs: string;
+  paylodProducts: string;
 }
 
 export type {
   ParserTabConfig,
   ParserConfig,
   PresetByApi,
-  PresetVk
+  PresetVk,
+  PresetWhatsApp
 }

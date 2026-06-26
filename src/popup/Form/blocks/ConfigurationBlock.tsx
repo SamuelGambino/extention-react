@@ -40,6 +40,37 @@ const ConfigurationBlock = () => {
         </div>
       )}
 
+      {preset === 'whatsapp' && (
+        <>
+          <div className='form__field'>
+            <div className='form__field-title'>
+              <label className='form__field-label'>Payload catalogs</label>
+              <Hint hint='DevTools - Fetch/XHR - catalog - source payload
+            Нужен payload запроса который в ответе содержит поле data.xwa_product_catalog_get_collections' />
+            </div>
+            <Controller
+              name="data.paylodCatalogs"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+              )} />
+          </div>
+          <div className='form__field'>
+            <div className='form__field-title'>
+              <label className='form__field-label'>Payload products</label>
+              <Hint hintPosition='left' hint='DevTools - Fetch/XHR - открыть любую категорию - catalog - source payload
+            Нужен payload запроса который в ответе содержит поле data.xwa_product_catalog_get_single_collection' />
+            </div>
+            <Controller
+              name="data.paylodProducts"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+              )} />
+          </div>
+        </>
+      )}
+
       {preset === 'yandex' && (
         <div className='form__field'>
           <div className='form__field-title'>

@@ -10,12 +10,8 @@ export class Exporter {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += `<fs_catalog date="${this.getDate()}">\n`;
     xml += `  <shop>\n`;
-    xml += `    <name>https://eda.yandex.ru</name>\n`;
-    xml += `    <company>https://eda.yandex.ru</company>\n`;
-    xml += `    <url>https://eda.yandex.ru</url>\n`;
-    xml += `    <currencies>\n`;
-    xml += `      <currency id="RUR" rate="1" />\n`;
-    xml += `    </currencies>\n`;
+    xml += `    <name>${config.tabName ?? config.type}</name>\n`;
+    xml += `    <url>${config.source}</url>\n`;
 
     // ====== МОДИФИКАТОРНЫЕ ГРУППЫ ======
     xml += `    <modifiersGroups>\n`;

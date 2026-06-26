@@ -6,6 +6,7 @@ import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
 import { Vk } from "./parsers/Vk";
 import { Yandex } from "./parsers/Yandex";
 import { Chibbis } from "./parsers/Chibbis";
+import { WhatsApp } from "./parsers/WhatsApp";
 import { Exporter } from "./Exporter";
 
 type PresetType = ParserTabConfig['type'];
@@ -14,7 +15,8 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
   custom: Custom,
   vk: Vk,
   yandex: Yandex,
-  chibbis: Chibbis
+  chibbis: Chibbis,
+  whatsapp: WhatsApp,
 };
 
 let activeParser: BaseParser | null = null;
