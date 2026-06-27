@@ -25,7 +25,7 @@ interface Product {
 interface ModGroups {
   id: number | string;
   name: string,
-  type: 'one_one',
+  type: 'one_one' | 'one_unlimited' | 'all_one' | 'all_unlimited',
   required: boolean,
   minimum: number,
   maximum: number,

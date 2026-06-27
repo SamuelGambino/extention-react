@@ -17,7 +17,9 @@
         "scripting",
         "activeTab",
         "downloads",
-        "contextMenus"
+        "contextMenus",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
     ],
     "host_permissions": [
         "*://eda.yandex.ru/*",

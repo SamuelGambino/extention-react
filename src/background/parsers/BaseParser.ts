@@ -51,7 +51,13 @@ export abstract class BaseParser {
   public stop() {
     this.stopped = true;
     void this.setParsingState({ isRunning: false, waitingForStep: false });
-    this.resumeResolve?.(); 
+    this.resumeResolve?.();
+    return {
+      categories: this.categories,
+      products: this.products,
+      modifiers: this.modifiers,
+      modifiers_groups: this.modifiers_groups,
+    }
   }
 
   protected async setDataState(patch: Partial<ParserState['data']>) {

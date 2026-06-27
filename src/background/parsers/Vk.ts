@@ -149,7 +149,13 @@ export class Vk extends BaseParser {
     }
     const meta = {
       categoriesTotal: this.responseData.categories.length,
-      productsTotal: this.responseData.items.length
+      productsTotal: this.responseData.items.length,
+      categories: 0,
+      products: 0,
+      groupsModifiersTotal: 0,
+      groupsModifiers: 0,
+      modifiersTotal: 0,
+      modifiers: 0
     };
     await this.setDataState(meta as Partial<ParserState['data']>);
 

@@ -49,7 +49,7 @@ const useAutoFill = () => {
       setValue("data.apiUrl", `https://chibbis.ru/webapi/v2/restaurants/${pathSegments[2]}/menu/summary?cityId=${cityObj?.id}`);
     }
     if (preset === "kuper") {
-      setValue("data.apiUrl", `https://kuper.ru/api/v3/stores/UNDEFINED/departments`);
+      setValue("data.apiUrl", `https://kuper.ru/api/v3/multicards?permalink`);
     }
   };
 
