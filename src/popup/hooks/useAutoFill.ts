@@ -8,7 +8,7 @@ const useAutoFill = () => {
 
   const detectPresetFromUrl = (domain: string) => {
     if (domain === "vk.com" || domain === "vk.ru") return "vk";
-    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com") return "yandex";
+    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
     if (domain === "web.whatsapp.com") return "whatsapp";
     if (domain === "kuper.ru") return "kuper"
@@ -33,7 +33,7 @@ const useAutoFill = () => {
     if (preset === "yandex") {
       const pathSegments = urlObject.pathname.split('/').filter(Boolean);
       let placeSlug;
-      if (urlObject.hostname === "eda.yandex.ru") placeSlug = urlObject.searchParams.get("placeSlug");
+      if (urlObject.hostname === "eda.yandex.ru" || urlObject.hostname === "market-delivery.yandex.ru") placeSlug = urlObject.searchParams.get("placeSlug");
       if (urlObject.hostname === "yandex.ru" || urlObject.hostname === "yandex.com") {
         const orgIndex = pathSegments.indexOf('org');
         placeSlug = orgIndex !== -1 ? pathSegments[orgIndex + 1] : undefined;
