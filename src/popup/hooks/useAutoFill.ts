@@ -11,7 +11,8 @@ const useAutoFill = () => {
     if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
     if (domain === "web.whatsapp.com") return "whatsapp";
-    if (domain === "kuper.ru") return "kuper"
+    if (domain === "kuper.ru") return "kuper";
+    if (domain === "flowwow.com" || domain === "flowwow.ru") return "flowwow";
     return 'custom';
   };
 
@@ -26,6 +27,9 @@ const useAutoFill = () => {
     setValue('type', preset);
     setValue('source', url);
 
+    if (preset === "flowwow") {
+      setValue("data.apiUrl", "");
+    };
     if (preset === "vk") {
       const group = url.split('market-')[1].split('?')[0] ? url.split('market-')[1].split('?')[0] : "undefined";
       setValue("data.marketId", group);

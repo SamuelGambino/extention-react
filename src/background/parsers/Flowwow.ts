@@ -1,13 +1,12 @@
 import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../globalTypes/parsing_state";
-import type { ModGroups, Product } from "../types/ExportTypes";
+import type { Product } from "../types/ExportTypes";
 import type { PresetByApi } from "../../globalTypes/parser_сonfig";
-import type { FlowwowData, SearchProperties, FlowwowCategoryResp, FlowwowProductsResp } from "../types/FlowwowParserTypes";
-import { getState } from "../storage";
+import type { SearchProperties, FlowwowCategoryResp, FlowwowProductsResp, FlowwowProductInfoResp } from "../types/FlowwowParserTypes";
 import browser from "webextension-polyfill";
 
 export class Flowwow extends BaseParser {
-  private response: FlowwowData | null = null;
+  private response: { categories: FlowwowCategoryResp[] } | null = null;
   private reqOptions: SearchProperties | null = null;
 
   setupRequestRules = async () => {
@@ -44,7 +43,7 @@ export class Flowwow extends BaseParser {
       await this.setLog({ status: "warn", title: "[Flowwow]:Check", value: "Запрос на api..." });
       const configData = this.config.data as PresetByApi;
       const urlObject = new URL(configData.apiUrl);
-
+      
       const rawParams = Object.fromEntries(urlObject.searchParams.entries());
       this.reqOptions = JSON.parse(rawParams.property) as SearchProperties;
 
@@ -56,39 +55,43 @@ export class Flowwow extends BaseParser {
       if (!responseCategories.ok) throw new Error('Запрос к api не удался');
       const responseCategoriesJson = await responseCategories.json() as { data: FlowwowCategoryResp[] };
       if (!responseCategoriesJson.data.length) throw new Error('В ответе нет категорий');
-
+      
       for (const cat of responseCategoriesJson.data) {
         let actualPage = 1;
         let hasMore = true;
         this.reqOptions.range_type_ids = [cat.id];
+        cat.products ??= [];
 
-        const params = new URLSearchParams({
-          property: JSON.stringify(this.reqOptions),
-          lang: "ru",
-          currency: this.reqOptions.currency || "RUB",
-          limit: "60",
-          filters: "{}",
-          page: String(actualPage),
-        });
-
-        const url = `https://clientweb.flowwow.com/apiuser/products/search/?${params}`;
         do {
-          const responseProducts = await fetch(url, {
-            credentials: 'include'
+          const params = new URLSearchParams({
+            property: JSON.stringify(this.reqOptions),
+            lang: "ru",
+            currency: this.reqOptions.currency || "RUB",
+            limit: "60",
+            filters: "{}",
+            page: String(actualPage),
           });
+
+          const responseProducts = await fetch(
+            `https://clientweb.flowwow.com/apiuser/products/search/?${params}`,
+            {
+              credentials: "include",
+            }
+          );
 
           if (!responseProducts.ok) throw new Error('Запрос к api не удался');
           const responseProductsJson = await responseProducts.json() as { data: FlowwowProductsResp };
-          if (!responseProductsJson.data.items.length) throw new Error('В ответе нет товаров');
+          if (!responseProductsJson.data.items.length && responseProductsJson.data.total !== 0) throw new Error('В ответе нет товаров');
+          if (responseProductsJson.data.total === 0) break;
 
-          this.response?.products?.push(...responseProductsJson.data.items.map(prod => ({ id: prod.id })));
+          cat.products?.push(...responseProductsJson.data.items);
 
+          hasMore = responseProductsJson.data.total !== cat.products.length;
           actualPage++;
-          hasMore = (responseProductsJson.data.total - responseProductsJson.data.items.length) > 0;
         } while (hasMore);
       }
 
-      this.response = { categories: responseCategoriesJson.data, ...this.response };
+      this.response = { categories: responseCategoriesJson.data.filter(cat => cat.products && cat.products?.length > 0), ...this.response };
     } catch (e) {
       await this.setLog({ status: "danger", title: "[Flowwow]:Check", value: "Ошибка при запросе - " + e });
       this.stop();
@@ -104,7 +107,7 @@ export class Flowwow extends BaseParser {
       modifiersTotal: 0,
       modifiers: 0
     };
-    this.response?.categories.forEach(cat => meta.productsTotal += cat.products.length);
+    this.response?.categories.forEach(cat => meta.productsTotal += cat.products?.length || 0);
     await this.setDataState(meta as Partial<ParserState['data']>);
 
     await this.setLog({ status: "success", title: "[Flowwow]:Check", value: "Получены метаданные" });
@@ -112,21 +115,21 @@ export class Flowwow extends BaseParser {
 
   async parseRest() {
     try {
-      if (!this.response?.departments.length) throw new Error('В ответе нет departments');
-      for (const category of this.response?.departments) {
-        if (category.name === "Популярное") continue;
+      if (!this.response?.categories.length) throw new Error('В ответе нет категорий');
+      for (const category of this.response?.categories) {
         this.categories.push({
           id: category.id,
           name: category.name,
           parent: 0,
         });
+        if (!category.products || !category?.products.length) throw new Error('В категории нет товаров');
         for (const product of category.products) {
-          await this.getProductData(product.slug, category.id);
+          await this.getProductData(product, category.id);
         }
         await this.setDataState({ categories: this.categories.length } as Partial<ParserState['data']>);
         await this.setLog({ status: "success", title: "[Flowwow]:Parse", value: `Обработана категория ${category.name}` });
         await this.waitForNextStep();
-        this.sleep(2000 + Math.floor(Math.random() * 1000));
+        this.sleep(1000 + Math.floor(Math.random() * 500));
       }
     } catch (e) {
       await this.setLog({ status: "danger", title: "[Flowwow]:Parse", value: "Ошибка при запросе - " + e });
@@ -134,56 +137,38 @@ export class Flowwow extends BaseParser {
     }
   }
 
-  async getProductData(slug: string, catId: string) {
-    this.sleep(1500 + Math.floor(Math.random() * 1000));
-    const reqParams = new URLSearchParams(this.reqOptions ?? { slug }).toString();
-    const response = await fetch(`https://kuper.ru/api/v3/multicards?permalink=${slug}&${reqParams}`, {
+  async getProductData(prod: { id: number, price: number }, catId: number) {
+    this.sleep(1000 + Math.floor(Math.random() * 500));
+    const reqParams = new URLSearchParams({
+      id: prod.id.toString(),
+      city_id: this.reqOptions?.city.toString() ?? "",
+      lang: "ru",
+      currency: this.reqOptions?.currency ?? "",
+      locale: "ru"
+    }).toString();
+    const url = `https://clientweb.flowwow.com/apiuser/products/info/?${reqParams}`;
+
+    const response = await fetch(url, {
       credentials: 'include'
     });
 
     if (!response.ok) throw new Error('Ошибка при получении данных товара');
-    const productData = await response.json() as KuperProductResp;
+    const productData = await response.json() as FlowwowProductInfoResp;
 
     const product: Product = {
-      product_id: productData.data.product.id,
-      name: productData.data.product.name,
-      picture: productData.data.product.images[0].original_url,
-      description: productData.data.product.description,
+      product_id: prod.id,
+      name: productData.data.name,
+      picture: productData.data.photo,
+      description: this.getDescription(productData),
       price: [{
-        id: productData.data.product.offer.id,
-        price: productData.data.product.offer.unit_price,
-        proteins: undefined,
-        fats: undefined,
-        carbohydrates: undefined,
-        calories: undefined,
-        index: [productData.data.product.volume, this.getDescIndex(productData.data.product.volume_type)],
+        id: prod.id,
+        price: prod.price,
+        index: [productData.data.size.height, 5],
       }],
       category: catId,
       modifiers: [],
     }
 
-    if (productData.data.product_properties) {
-      for (const property of productData.data.product_properties) {
-        if (property.name === "protein") product.price[0].proteins = Number(property.value.split(" ")[0]);
-        if (property.name === "fat") product.price[0].fats = Number(property.value.split(" ")[0]);
-        if (property.name === "carbohydrate") product.price[0].carbohydrates = Number(property.value.split(" ")[0]);
-        if (property.name === "energy_value") product.price[0].calories = Number(property.value.split(" ")[0]);
-      }
-    }
-
-    if (productData.data.product.offer.options.length) {
-      const actualState = await getState();
-      const actualGroups = actualState.data.groupsModifiersTotal ?? 0;
-      const actualMods = actualState.data.modifiersTotal ?? 0;
-
-      await this.setDataState({ groupsModifiersTotal: actualGroups + productData.data.product.offer.options.length } as Partial<ParserState['data']>);
-      for (const option of productData.data.product.offer.options) {
-        await this.setDataState({ modifiersTotal: actualMods + option.items.length } as Partial<ParserState['data']>);
-        this.getModifiersGroup(option);
-        product.modifiers?.push(option.id);
-        await this.setDataState({ groupsModifiers: this.modifiers_groups.length } as Partial<ParserState['data']>);
-      }
-    }
     this.products.push(product);
     if (this.products.length === 1) {
       await this.setLog({ status: "success", title: "[Flowwow]:Parse", value: `Обработан первый товар ${product.name}` });
@@ -192,61 +177,18 @@ export class Flowwow extends BaseParser {
     await this.setDataState({ products: this.products.length } as Partial<ParserState['data']>);
   }
 
-  async getModifiersGroup(options: KuperOptionsResp) {
-    const group_modifiers: ModGroups = {
-      id: options.id,
-      name: options.title,
-      type: 'one_one',
-      required: false,
-      minimum: options.min_items,
-      maximum: options.max_items,
-      modifiers: [],
-    };
-
-    if (options.min_items >= 1) group_modifiers.required = true;
-    if (options.max_items === options.items.length) group_modifiers.type = 'all_one';
-    if (options.max_items > options.items.length) group_modifiers.type = 'all_unlimited';
-    if (options.max_items === 1) group_modifiers.type = 'one_one';
-    if (options.max_items < options.items.length && options.max_items !== 1) group_modifiers.type = 'all_one';
-
-
-    if (Array.isArray(options.items)) {
-      for (const option of options.items) {
-        const modifier = {
-          id: options.id + option.sku,
-          name: option.name,
-          price: option.price,
-          group_id: options.id,
-        };
-        group_modifiers.modifiers.push({ ...modifier });
-        this.modifiers.push({ ...modifier });
-        if (this.modifiers.length === 1) {
-          await this.setLog({ status: "success", title: "[Flowwow]:Parse", value: `Обработан первый модификатор ${modifier.name}` });
-          await this.waitForNextStep();
-        }
-        await this.setDataState({ modifiers: this.modifiers.length } as Partial<ParserState['data']>);
-      };
-    }
-
-    this.modifiers_groups.push({ ...group_modifiers });
-
-    if (this.modifiers_groups.length === 1) {
-      await this.setLog({ status: "success", title: "[Flowwow]:Parse", value: `Обработана первая группа модификаторов ${group_modifiers.name}` });
-      await this.waitForNextStep();
-    }
-  }
-
-  getDescIndex(tag: string | undefined | null): number {
-    if (!tag || tag === '') {
-      return 10;
-    } else {
-      if (tag === 'g') {
-        return 1;
-      } else if (tag === 'kg') {
-        return 2;
+  getDescription(productData: FlowwowProductInfoResp): string {
+    if (productData.data.description.show !== "") {
+      return productData.data.description.show + productData.data.description.hide;
+    } else if (productData.data.rangeProperties.length) {
+      let desc = "";
+      for (const prop of productData.data.rangeProperties) {
+        if (prop.type === "description") continue;
+        let text = "";
+        prop.items.forEach(item => text += `${item}, `);
+        desc += `${prop.title}: ${text}\n`
       }
-    }
-
-    return 10;
+      return desc.trim();
+    } else return "";
   }
 }

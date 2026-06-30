@@ -1,14 +1,11 @@
-interface FlowwowData {
-  categories: FlowwowCategoryResp[],
-  products?: {
-    id: number,
-  }[]
-};
-
 // https://clientweb.flowwow.com/apiuser/shop/categories/?shopId=92913&lang=ru
 interface FlowwowCategoryResp {
   id: number,
-  name: string
+  name: string,
+  products?: {
+    id: number,
+    price: number
+  }[]
 }
 
 // https://clientweb.flowwow.com/apiuser/products/search/?property=%7B%22owner_shop_ids%22%3A%5B92913%5D%2C%22range_type_ids%22%3A%5B16%5D%2C%22currency%22%3A%22RUB%22%2C%22city%22%3A141%2C%22all_shop_work_time%22%3A1%7D&lang=ru&currency=RUB&limit=20&filters=%7B%7D&page=1
@@ -28,17 +25,19 @@ interface FlowwowCategoryResp {
 interface SearchProperties {
   owner_shop_ids: number[];
   range_type_ids: number[];
-  currency?: string;
-  city?: number;
-  all_shop_work_time?: number;
+  currency: string;
+  city: number;
+  all_shop_work_time: number;
 }
 
 interface FlowwowProductsResp {
   items: {
     id: number,
+    price: number
   }[],
   total: number,
 }
+// https://clientweb.flowwow.com/apiuser/products/search/?property=%7B%22owner_shop_ids%22%3A%5B92913%5D%2C%22range_type_ids%22%3A%5B395%5D%2C%22currency%22%3A%22RUB%22%2C%22city%22%3A141%2C%22all_shop_work_time%22%3A1%7D&lang=ru&currency=RUB&limit=20&filters=%7B%7D&page=1
 
 // https://clientweb.flowwow.com/apiuser/products/info/?id=72931267&city_id=141&lang=ru&currency=RUB&locale=ru
 interface FlowwowProductInfoResp {
@@ -64,7 +63,6 @@ interface FlowwowProductInfoResp {
 };
 
 export type {
-  FlowwowData,
   FlowwowCategoryResp,
   SearchProperties,
   FlowwowProductsResp,

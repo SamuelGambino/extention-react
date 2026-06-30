@@ -9,6 +9,16 @@ import browser from "webextension-polyfill";
 export class Kuper extends BaseParser {
   private response: KuperResp | null = null;
   private reqOptions: { [k: string]: string; } | null = null;
+  private meta = {
+      categoriesTotal: 0,
+      categories: 0,
+      productsTotal: 0,
+      products: 0,
+      groupsModifiersTotal: 0,
+      groupsModifiers: 0,
+      modifiersTotal: 0,
+      modifiers: 0
+    };
 
   setupRequestRules = async () => {
     try {
@@ -60,19 +70,10 @@ export class Kuper extends BaseParser {
       await this.setLog({ status: "danger", title: "[Kuper]:Check", value: "Ошибка при запросе - " + e });
       this.stop();
     }
-    const categoriesCount = this.response?.departments.filter(cat => cat.name !== "Популярное").length;
-    const meta = {
-      categoriesTotal: categoriesCount,
-      categories: 0,
-      productsTotal: 0,
-      products: 0,
-      groupsModifiersTotal: 0,
-      groupsModifiers: 0,
-      modifiersTotal: 0,
-      modifiers: 0
-    };
-    this.response?.departments.forEach(cat => meta.productsTotal += cat.products.length);
-    await this.setDataState(meta as Partial<ParserState['data']>);
+    this.meta.categoriesTotal = this.response?.departments.filter(cat => cat.name !== "Популярное").length ?? 0;
+
+    this.response?.departments.forEach(cat => this.meta.productsTotal += cat.products.length);
+    await this.setDataState(this.meta as Partial<ParserState['data']>);
 
     await this.setLog({ status: "success", title: "[Kuper]:Check", value: "Получены метаданные" });
   }
@@ -93,7 +94,7 @@ export class Kuper extends BaseParser {
         await this.setDataState({ categories: this.categories.length } as Partial<ParserState['data']>);
         await this.setLog({ status: "success", title: "[Kuper]:Parse", value: `Обработана категория ${category.name}` });
         await this.waitForNextStep();
-        this.sleep(2000 + Math.floor(Math.random() * 1000));
+        await this.sleep(2000 + Math.floor(Math.random() * 1000));
       }
     } catch (e) {
       await this.setLog({ status: "danger", title: "[Kuper]:Parse", value: "Ошибка при запросе - " + e });
@@ -102,7 +103,7 @@ export class Kuper extends BaseParser {
   }
 
   async getProductData(slug: string, catId: string) {
-    this.sleep(1500 + Math.floor(Math.random() * 1000));
+    await this.sleep(1500 + Math.floor(Math.random() * 1000));
     const reqParams = new URLSearchParams(this.reqOptions ?? { slug }).toString();
     const response = await fetch(`https://kuper.ru/api/v3/multicards?permalink=${slug}&${reqParams}`, {
       credentials: 'include'
@@ -139,13 +140,12 @@ export class Kuper extends BaseParser {
     }
 
     if (productData.data.product.offer.options.length) {
-      const actualState = await getState();
-      const actualGroups = actualState.data.groupsModifiersTotal ?? 0;
-      const actualMods = actualState.data.modifiersTotal ?? 0;
+      this.meta.groupsModifiersTotal += productData.data.product.offer.options.length;
+      await this.setDataState({ groupsModifiersTotal: this.meta.groupsModifiersTotal  } as Partial<ParserState['data']>);
 
-      await this.setDataState({ groupsModifiersTotal: actualGroups + productData.data.product.offer.options.length } as Partial<ParserState['data']>);
       for (const option of productData.data.product.offer.options) {
-        await this.setDataState({ modifiersTotal: actualMods + option.items.length } as Partial<ParserState['data']>);
+        this.meta.modifiersTotal += option.items.length;
+        await this.setDataState({ modifiersTotal: this.meta.modifiersTotal } as Partial<ParserState['data']>);
         this.getModifiersGroup(option);
         product.modifiers?.push(option.id);
         await this.setDataState({ groupsModifiers: this.modifiers_groups.length } as Partial<ParserState['data']>);
