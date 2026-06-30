@@ -9,6 +9,7 @@ import { Chibbis } from "./parsers/Chibbis";
 import { WhatsApp } from "./parsers/WhatsApp";
 import { Exporter } from "./Exporter";
 import { Kuper } from "./parsers/Kuper";
+import { Flowwow } from "./parsers/Flowwow";
 
 type PresetType = ParserTabConfig['type'];
 
@@ -19,6 +20,7 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
   chibbis: Chibbis,
   whatsapp: WhatsApp,
   kuper: Kuper,
+  flowwow: Flowwow,
 };
 
 let activeParser: BaseParser | null = null;

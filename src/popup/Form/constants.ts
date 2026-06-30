@@ -5,12 +5,14 @@ const PresertOptions = [
   { label: 'Kuper', value: 'kuper' },
   { label: 'Chibbis', value: 'chibbis' },
   { label: 'WhatsApp', value: 'whatsapp' },
+  { label: 'Flowwow', value: 'flowwow' },
 ]
 
 const ClicksOptions = [
   { label: 'None', value: 'none' },
   { label: 'Products', value: 'products' },
-  { label: 'Category', value: 'category' }
+  { label: 'Category', value: 'category' },
+  { label: 'All', value: 'all' }
 ]
 
 const GroupTypes = [

@@ -47,7 +47,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   }, []);
 
   const preset = useWatch({ control, name: 'type' });
-  const hasSettings = preset === 'custom' || preset === 'api';
+  const hasSettings = preset === 'custom';
 
   return (
     <FormProvider {...methods}>
