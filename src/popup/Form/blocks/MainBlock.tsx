@@ -1,13 +1,16 @@
 import { Controller, useFormContext } from "react-hook-form";
+import { useAutoFill } from "../../hooks/useAutoFill"
 import Button from "../../Button";
 import Hint from "../../Hint";
 import InputField from "../../InputField";
 import SelectField from "../../SelectField";
 import FieldOptions from "../constants";
 import "../index.css"
+import ScrambleText from "../../ScrambleText";
 
 const MainBlock = () => {
   const { control } = useFormContext();
+  const { autoFill } = useAutoFill();
 
   return (
     <fieldset className="form__settings">
@@ -24,14 +27,14 @@ const MainBlock = () => {
           render={({ field }) => (
             <SelectField isAccent={true} value={field.value} options={FieldOptions.PresertOptions}
               onChange={(val) => field.onChange(val)} />
-            )} />
+          )} />
       </div>
 
       <div className='form__field'>
         <div className='form__field-title'>
           <label className='form__field-label'>Source</label>
           <Hint hint='Введите url источника' hintPosition='left' />
-          <Button title="auto-fill" className="form__button--small form__button--main" onClick={() => { }} />
+          <Button title="auto-fill" className="form__button--small form__button--main" onClick={autoFill} />
         </div>
         <Controller
           name="source"
@@ -39,6 +42,14 @@ const MainBlock = () => {
           render={({ field }) => (
             <InputField value={field.value} isAccent={true} placeholder='https://example.com' onChange={field.onChange} />
           )} />
+      </div>
+
+      <div className="form__hint">
+        <ScrambleText
+            className="form__hint-text"
+            text={FieldOptions.PresertOptions.find(option => option.value === useFormContext().getValues("type"))?.description ?? ""}
+            play={true}
+          />
       </div>
     </fieldset>
   )

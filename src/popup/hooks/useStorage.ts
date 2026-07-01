@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import type { ParserConfig } from "../types/parser_сonfig";
-import type { ParserState } from "../types/parsing_state";
+import type { ParserConfig } from "../../globalTypes/parser_сonfig";
+import type { ParserState } from "../../globalTypes/parsing_state";
 
 const DEFAULT_CONFIG: ParserConfig = {
   tabs: [
@@ -32,12 +32,15 @@ const DEFAULT_CONFIG: ParserConfig = {
 }
 
 const DEFAULT_STATE: ParserState = {
-  availability: {
-    isReady: false,
-  },
   parsing: {
+    isReady: false,
+    isRunning: false,
+  },
+  data: {
     categories: 0,
+    categoriesTotal: 0,
     products: 0,
+    productsTotal: 0,    
   }
 }
 
@@ -76,7 +79,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return { value, setStorageValue, isLoaded };
+  return [ value, setStorageValue, isLoaded ] as const;
 }
 
 const useParserConfig = () => {

@@ -45,7 +45,7 @@
   font-size: xx-small;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: #3a4a6e;
+  color: var(--text-placeholder);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
   max-width: 100px;
@@ -55,11 +55,11 @@
 }
 
 .tabs__btn:hover {
-  color: #6a82b0;
+  color: var(--text-hover);
 }
 
 .tabs__btn--active {
-  color: #7aaee0;
+  color: var(--text-second);
   background: rgba(74, 133, 200, 0.06);
 }
 
@@ -70,7 +70,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #4a85c8;
+  background: var(--text-second);
   box-shadow: 0 0 6px rgba(74, 133, 200, 0.5);
 }
 
@@ -80,15 +80,14 @@
   border: none;
   border-radius: 2px;
   outline: none;
-  font-family: 'Courier New', monospace;
   font-size: 10px;
-  color: #2e3a5e;
+  color: var(--text-placeholder);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
 }
 
 .tabs__btn-close:hover {
-  color: #c05050;
+  color: var(--text-red);
   background: rgba(180, 60, 60, 0.08);
 }
 

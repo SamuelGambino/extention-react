@@ -8,7 +8,7 @@ import CategorySection from "../sections/CategorySection";
 import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
-import type { ParserTabConfig } from "../../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
 
 const ConfigurationBlock = () => {
   const { control } = useFormContext<ParserTabConfig>();
@@ -19,7 +19,7 @@ const ConfigurationBlock = () => {
   const pagination = settings?.pagination ?? false;
   const parameters = settings?.parameters ?? false;
   const modifiers = settings?.modifiers ?? false;
-  const hasSections = preset === 'custom' || preset === 'api';
+  const hasSections = preset === 'custom';
 
   return (
     <fieldset className="form__settings" key={preset}>
@@ -40,39 +40,49 @@ const ConfigurationBlock = () => {
         </div>
       )}
 
-      {preset === 'yandex_eda' && (
+      {preset === 'whatsapp' && (
+        <>
+          <div className='form__field'>
+            <div className='form__field-title'>
+              <label className='form__field-label'>Payload catalogs</label>
+              <Hint hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_collections' />
+            </div>
+            <Controller
+              name="data.paylodCatalogs"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+              )} />
+          </div>
+          <div className='form__field'>
+            <div className='form__field-title'>
+              <label className='form__field-label'>Payload products</label>
+              <Hint hintPosition='left' hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_single_collection' />
+            </div>
+            <Controller
+              name="data.paylodProducts"
+              control={control}
+              render={({ field }) => (
+                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+              )} />
+          </div>
+        </>
+      )}
+
+      {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper' || preset === "flowwow") && (
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>API URL</label>
-            <Hint hint='API URL для получения меню из Яндекс Еды' />
+            <Hint hint='API URL для получения меню' />
           </div>
           <Controller
             name="data.apiUrl"
             control={control}
             render={({ field }) => (
-              <InputField placeholder='https://api.yandex.ru/eda/v1/menu' value={field.value} onChange={field.onChange} />
+              <InputField placeholder='https://api.url.com/eda/v1/menu' value={field.value} onChange={field.onChange} />
             )} />
         </div>
       )}
-
-      {preset === 'chibbis' && (
-        <div className='form__field'>
-          <div className='form__field-title'>
-            <label className='form__field-label'>API URL</label>
-            <Hint hint='API URL для получения меню из Chibbis' />
-          </div>
-          <Controller
-            name="data.apiUrl"
-            control={control}
-            render={({ field }) => (
-              <InputField placeholder='https://chibbis.ru/webapi/restaurants' value={field.value} onChange={field.onChange} />
-            )} />
-        </div>
-      )}
-
-      {preset === 'yandex_map' && <CategorySection />}
-
-      {preset === 'yandex_map' && <ProductSection />}
 
       {hasSections && <CategorySection />}
 

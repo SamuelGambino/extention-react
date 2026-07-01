@@ -2,10 +2,10 @@ import "./index.css";
 import MainBlock from "./blocks/MainBlock";
 import SettingsBlock from "./blocks/SettingsBlock";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
-import Button from "../Button";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
-import type { ParserTabConfig } from "../../types/parser_сonfig";
+import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
+import ActionButtons from "../ActionButtons";
 
 interface FormProps {
   className?: string;
@@ -34,7 +34,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         const serialized = JSON.stringify(values);
-        if(serialized === lastSavedConfigRef.current) return;
+        if (serialized === lastSavedConfigRef.current) return;
         lastSavedConfigRef.current = serialized;
         saveConfig(values as ParserTabConfig);
       }, 500);
@@ -47,7 +47,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   }, []);
 
   const preset = useWatch({ control, name: 'type' });
-  const hasSettings = preset === 'custom' || preset === 'api';
+  const hasSettings = preset === 'custom';
 
   return (
     <FormProvider {...methods}>
@@ -58,11 +58,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
 
         <ConfigurationBlock />
 
-        <div className="form__actions">
-          <Button title="Check state" className="form__button--state" onClick={() => { }} />
-          <Button title="Parse" className="form__button--main" onClick={() => { }} />
-          <Button title="Parse by steps" onClick={() => { }} />
-        </div>
+        <ActionButtons />
       </form>
     </FormProvider>
   )

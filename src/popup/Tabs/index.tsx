@@ -1,5 +1,5 @@
 import "./index.css";
-import type { ParserConfig } from "../../types/parser_сonfig";
+import type { ParserConfig } from "../../globalTypes/parser_сonfig";
 import Button from "../Button";
 import TabItem from "./TabItem";
 
@@ -8,10 +8,9 @@ interface TabsProps {
   onChange: (value: string) => void;
   onClose: (value: string) => void;
   onCreate: () => void;
-  onRename: (tabId: string, newName: string) => void;
 }
 
-const Tabs: React.FC<TabsProps> = ({ data, onChange, onClose, onCreate, onRename }) => {
+const Tabs: React.FC<TabsProps> = ({ data, onChange, onClose, onCreate }) => {
   return (
     <div className="tabs">
       <ul className="tabs__list">
@@ -23,7 +22,6 @@ const Tabs: React.FC<TabsProps> = ({ data, onChange, onClose, onCreate, onRename
             canClose={data.tabs.length > 1}
             onSelect={() => onChange(tab.tabId)}
             onClose={() => onClose(tab.tabId)}
-            onRename={(newName) => onRename(tab.tabId, newName)}
           />
         ))}
       </ul>

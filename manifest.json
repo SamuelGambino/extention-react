@@ -7,13 +7,19 @@
         "default_popup": "index.html",
         "default_title": "Web Parsing Toolkit"
     },
+    "background": {
+        "service_worker": "src/background/index.ts",
+        "type": "module"
+    },
     "permissions": [
         "storage",
         "tabs",
         "scripting",
         "activeTab",
         "downloads",
-        "contextMenus"
+        "contextMenus",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess"
     ],
     "host_permissions": [
         "*://eda.yandex.ru/*",
