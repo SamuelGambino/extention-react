@@ -3,7 +3,6 @@ import type { ParserState } from "../../globalTypes/parsing_state";
 import type { ModGroups, Product } from "../types/ExportTypes";
 import type { PresetByApi } from "../../globalTypes/parser_сonfig";
 import type { KuperOptionsResp, KuperProductResp, KuperResp } from "../types/KuperParserTypes";
-import { getState } from "../storage";
 import browser from "webextension-polyfill";
 
 export class Kuper extends BaseParser {
