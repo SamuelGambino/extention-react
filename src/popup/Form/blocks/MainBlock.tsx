@@ -6,6 +6,7 @@ import InputField from "../../InputField";
 import SelectField from "../../SelectField";
 import FieldOptions from "../constants";
 import "../index.css"
+import ScrambleText from "../../ScrambleText";
 
 const MainBlock = () => {
   const { control } = useFormContext();
@@ -26,7 +27,7 @@ const MainBlock = () => {
           render={({ field }) => (
             <SelectField isAccent={true} value={field.value} options={FieldOptions.PresertOptions}
               onChange={(val) => field.onChange(val)} />
-            )} />
+          )} />
       </div>
 
       <div className='form__field'>
@@ -41,6 +42,14 @@ const MainBlock = () => {
           render={({ field }) => (
             <InputField value={field.value} isAccent={true} placeholder='https://example.com' onChange={field.onChange} />
           )} />
+      </div>
+
+      <div className="form__hint">
+        <ScrambleText
+            className="form__hint-text"
+            text={FieldOptions.PresertOptions.find(option => option.value === useFormContext().getValues("type"))?.description ?? ""}
+            play={true}
+          />
       </div>
     </fieldset>
   )

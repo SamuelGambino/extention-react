@@ -1,11 +1,11 @@
 const PresertOptions = [
-  { label: 'Custom', value: 'custom' },
-  { label: 'VK', value: 'vk' },
-  { label: 'Yandex', value: 'yandex' },
-  { label: 'Kuper', value: 'kuper' },
-  { label: 'Chibbis', value: 'chibbis' },
-  { label: 'WhatsApp', value: 'whatsapp' },
-  { label: 'Flowwow', value: 'flowwow' },
+  { label: 'Custom', value: 'custom', description: 'Я позже опишу эту логику. Пока что модуль не доступен' },
+  { label: 'VK', value: 'vk', description: 'Достаточно использования автозаполнения\nТребуется id магазина ВК' },
+  { label: 'Yandex', value: 'yandex', description: 'Работает автозаполнение, проверяйте итоговую ссылку\nРаботает с Yandex Eda, Delivery Club и частично с Yandex Map' },
+  { label: 'Kuper', value: 'kuper', description: 'Автозаполнение не доступно для Kuper\nДля использования необходимо зайти в devTools - Network, затем открыть любой товар на странице, чтобы появился запрос multicards?permalink... И скопировать полный url запроса' },
+  { label: 'Chibbis', value: 'chibbis', description: 'Достаточно использования автозаполнения' },
+  { label: 'WhatsApp', value: 'whatsapp', description: 'Автозаполнение не доступно для WhatsApp\nDevTools - Fetch/XHR - catalog - Payload - view source\nНужен payload одного из запросов "catalog" который в ответе содержит необходимые поля (указаны в подсказках)' },
+  { label: 'Flowwow', value: 'flowwow', description: 'Автозаполнение не доступно для Flowwow\nДля использования необходимо зайти в devTools - Network и найти любой запрос search/?property=%..., затем скопировать полный url запроса' },
 ]
 
 const ClicksOptions = [

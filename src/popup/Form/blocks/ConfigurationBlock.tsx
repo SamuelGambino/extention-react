@@ -45,8 +45,7 @@ const ConfigurationBlock = () => {
           <div className='form__field'>
             <div className='form__field-title'>
               <label className='form__field-label'>Payload catalogs</label>
-              <Hint hint='DevTools - Fetch/XHR - catalog - source payload
-            Нужен payload запроса который в ответе содержит поле data.xwa_product_catalog_get_collections' />
+              <Hint hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_collections' />
             </div>
             <Controller
               name="data.paylodCatalogs"
@@ -58,8 +57,7 @@ const ConfigurationBlock = () => {
           <div className='form__field'>
             <div className='form__field-title'>
               <label className='form__field-label'>Payload products</label>
-              <Hint hintPosition='left' hint='DevTools - Fetch/XHR - открыть любую категорию - catalog - source payload
-            Нужен payload запроса который в ответе содержит поле data.xwa_product_catalog_get_single_collection' />
+              <Hint hintPosition='left' hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_single_collection' />
             </div>
             <Controller
               name="data.paylodProducts"
