@@ -273,4 +273,4 @@ Pull Requests приветствуются
 
 # License
 
-MIT
+[MIT](./LICENSE)
