@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h1 align="center"><img src="./public/icons/icon.png" width="32" heigth="32" /> ProductParser</h1>
+<h1 align="center"><img src="../public/icons/icon.png" width="32" heigth="32" /> ProductParser</h1>
 
 ### Universal browser extension for extracting product catalogs from online marketplaces
 
@@ -19,7 +19,7 @@
 
 <p align="center">
 
-<img src="./docs/images/demo.gif" width="900"/>
+<img src="../docs/images/demo.gif" width="900"/>
 
 </p>
 
