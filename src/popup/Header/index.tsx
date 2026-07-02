@@ -1,4 +1,5 @@
 import './index.css'
+import manifest from '../../../manifest.json'
 
 const Header = () => {
   return (
@@ -8,7 +9,7 @@ const Header = () => {
       </svg>
 
       <h1 className='header__logo'>ProductParser</h1>
-      <span className='header__badge'>v2.0.0</span>
+      <span className='header__badge'>v{manifest.version}</span>
 
       <svg className='header__icon' width="103" height="46" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M51.5 45.5C79.6665 45.5 102.5 35.4264 102.5 23C102.5 10.5736 79.6665 0.5 51.5 0.5C23.3335 0.5 0.5 10.5736 0.5 23C0.5 35.4264 23.3335 45.5 51.5 45.5Z" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />

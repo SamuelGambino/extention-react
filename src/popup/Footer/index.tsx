@@ -1,10 +1,11 @@
 import ScrambleText from '../ScrambleText';
 import './index.css'
+import manifest from '../../../manifest.json'
 
 const Footer = () => {
   return (
     <footer className='footer'>
-      <p className='footer__text'>ProductParser v2.0.0</p>
+      <p className='footer__text'>ProductParser v{manifest.version}</p>
       <a
         className='footer__text footer__text--link'
         href="https://t.me/Samuel_Gambino"
