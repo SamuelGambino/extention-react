@@ -9,6 +9,12 @@ const State = () => {
     return configValue.tabs.find((tab) => tab.tabId === configValue.actualTab);
   }
 
+  const getDomain = (url: string | undefined): string | undefined => {
+    if(!url) return url;
+    const urlObject = new URL(url);
+    return urlObject.hostname;
+  }
+
   if (!isLoadedConfig && !isLoadedState) return null;
 
   return (
@@ -28,7 +34,7 @@ const State = () => {
         </p>
         <p className="state__item">
           <span className="state__label">Source</span>
-          <span className="state__value">{stateValue.parsing.isRunning ? stateValue.parsing.source : getActualConfig()?.source}</span>
+          <span className="state__value">{stateValue.parsing.isRunning ? getDomain(stateValue.parsing.source) : getDomain(getActualConfig()?.source)}</span>
         </p>
         {/* <p className="state__item">
           <span className="state__label">Availability</span>

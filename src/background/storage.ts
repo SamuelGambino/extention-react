@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import type { ParserConfig } from "../globalTypes/parser_сonfig";
+import type { ParserConfig, ParserTabConfig } from "../globalTypes/parser_сonfig";
 import type { ParserState } from "../globalTypes/parsing_state";
 
 export const getConfig = async (): Promise<ParserConfig> => {
@@ -36,4 +36,9 @@ export const setToken = async (source: string, data: { expiresAt: number, token:
 export const setParsingState = async (isRunning: boolean) => {
   const data = await getState();
   await browser.storage.local.set({ parser_state: {...data, parsing: { ...data.parsing, isRunning }}});
+};
+
+export const setSource = async (source: string, type: ParserTabConfig["type"]) => {
+  const data = await getState();
+  await browser.storage.local.set({ parser_state: {...data, parsing: { ...data.parsing, source, type }}});
 };

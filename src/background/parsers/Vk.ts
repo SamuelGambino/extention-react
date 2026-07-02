@@ -21,9 +21,12 @@ export class Vk extends BaseParser {
     const storageData = await getToken(STORAGE_KEY);
     if (storageData) {
       const now = Date.now();
+      const timeLeftMs = storageData.expiresAt - now;
 
-      if (now < storageData.expiresAt) {
-        await this.setLog({ status: "success", title: "[VK]:Auth", value: "Токен валиден еще " + new Date(storageData.expiresAt - now) });
+      if (timeLeftMs > 0) {
+        const minutes = Math.floor(timeLeftMs / 1000 / 60);
+        const seconds = Math.floor((timeLeftMs / 1000) % 60);
+        await this.setLog({ status: "success", title: "[VK]:Auth", value: `Токен валиден еще ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}` });
         this.token = storageData.token;
         return;
       }

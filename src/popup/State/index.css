@@ -129,9 +129,8 @@
 }
 
 .state__value {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.1em;
-  text-transform: uppercase;
   color: var(--text-h);
   text-align: right;
   white-space: nowrap;

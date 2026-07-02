@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import { getActualConfig, getState, setParsingState, setState } from "./storage";
+import { getActualConfig, getState, setParsingState, setSource, setState } from "./storage";
 import { Custom } from "./parsers/Custom";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
 import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
@@ -49,6 +49,7 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
   }
 
   const config = await getActualConfig();
+  await setSource(config.source, config.type);
   const exporter = new Exporter();
 
   if (message.action === 'Check_state') {
