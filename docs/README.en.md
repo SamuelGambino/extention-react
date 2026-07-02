@@ -277,4 +277,4 @@ Fork or give a star - that would be nice too :)
 
 # License
 
-MIT
+[MIT](./LICENSE)
