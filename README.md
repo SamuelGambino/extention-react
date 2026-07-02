@@ -1,15 +1,17 @@
+Русский | [English](./docs/README.en.md)
+
 <div align="center">
 
-# ProductParser
+<h1 align="center"><img src="./public/icons/icon.png" width="32" heigth="32" /> ProductParser</h1>
 
-### Universal browser extension for extracting product catalogs from online marketplaces
+### Универсальное расширение для браузера, позволяющее извлекать каталоги товаров из маркетплейсов
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-orange)
 ![Vite](https://img.shields.io/badge/Vite-8-purple?logo=vite)
 
-> Modular • Reactive • Extensible
+> Модульное • Реактивное • Расширяемое
 
 </div>
 
@@ -23,66 +25,63 @@
 
 ---
 
-## Overview
+## Описание
 
-ProductParser is an open-source browser extension designed to extract product catalogs from multiple online services into a unified export format.
+ProductParser - это расширение для браузера с открытым исходным кодом, предназначенное для извлечения каталогов товаров из различных онлайн-сервисов в единый формат экспорта (XML).
 
-Unlike traditional one-off parsers, ProductParser is built around a modular architecture where every marketplace implements the same parsing interface while sharing a common parsing pipeline.
+В отличие от традиционных одноразовых парсеров, ProductParser построен на модульной архитектуре, где каждый маркетплейс использует один и тот же интерфейс парсинга, разделяя при этом общий процесс обработки.
 
-The goal of the project is to make adding support for new marketplaces simple without changing the core application.
-
----
-
-## Why ProductParser?
-
-Most marketplace parsers are tightly coupled to a single website.
-
-ProductParser separates the parsing engine from marketplace-specific logic.
-
-This makes it possible to:
-
-- support multiple services
-- reuse the same export pipeline
-- debug parsers independently
-- implement new integrations with minimal changes
+Цель проекта - упростить добавление поддержки новых маркетплейсов без изменения основного приложения.
 
 ---
 
-# Features
+## Почему ProductParser?
 
-- Modular parser architecture
-- Real-time parser state
-- Step-by-step parsing mode
-- Automatic configuration (where supported)
-- Manual configuration for complex APIs
-- Unified export format
-- Live logging
-- Manifest V3
-- React UI
+ProductParser упрощает периодическое извлечение данных о товарах и позволяет одним щелчком мыши обновлять каталог.
+
+Это дает возможность:
+
+- поддерживать несколько сервисов
+- повторно использовать один и тот же конвейер экспорта
+- внедрять новые интеграции с минимальными изменениями
 
 ---
 
-# Supported Services
+# Функции
 
-| Service | Status | Auto-fill |
+- Модульная архитектура парсера
+- Состояние парсера в реальном времени
+- Пошаговый режим парсинга
+- Автоматическая настройка (где поддерживается)
+- Ручная настройка для сложных API
+- Единый формат экспорта в XML
+- Логирование в реальном времени
+- Манифест V3
+- Пользовательский интерфейс React
+
+---
+
+# Поддерживаемые сервисы
+
+| Сервис | Статус | Автозаполнение |
 |----------|--------|-----------|
 | VK | ✅ | ✅ |
 | Yandex Food | ✅ | ✅ |
 | Delivery Club | ✅ | ✅ |
-| Yandex Maps *(partial)* | ✅ | ✅ |
+| Yandex Maps *(частично)* | ✅ | ✅ |
 | Chibbis | ✅ | ✅ |
 | Kuper | ✅ | ❌ |
 | Flowwow | ✅ | ❌ |
 | WhatsApp Catalog | ✅ | ❌ |
-| Custom | 🚧 | Planned |
+| Custom | 🚧 | Запланировано |
 
 ---
 
-# Interface
+# Интерфейс
 
-The interface intentionally avoids the appearance of a typical browser extension.
+Интерфейс намеренно избегает внешнего вида типичного расширения для браузера.
 
-It is inspired by retro-futuristic operating systems and developer tools where every parser action, state transition and log message is visible in real time.
+Он вдохновлён ретрофутуристическими операционными системами и инструментами разработчика, где каждое действие парсера, переход состояния и сообщение журнала отображаются в реальном времени.
 
 <p align="center">
 
@@ -92,7 +91,7 @@ It is inspired by retro-futuristic operating systems and developer tools where e
 
 ---
 
-# Architecture
+# Архитектура
 
 ```mermaid
 flowchart LR
@@ -124,149 +123,151 @@ Parser --> Storage
 Background --> Exporter
 ```
 
-### Design Principles
+### Принципы проектирования
 
-- Popup contains no parsing logic.
-- Background owns the parsing pipeline.
-- Every marketplace is isolated in its own parser.
-- Shared state is synchronized through `chrome.storage.local`.
-- UI reacts to state instead of controlling it.
+- Всплывающее окно не содержит логики парсинга.
+- Конвейер парсинга контролируется фоном.
+- Каждый маркетплейс изолирован в собственном парсере.
+- Общее состояние синхронизируется через `chrome.storage.local`.
+- Пользовательский интерфейс реагирует на состояние, а не управляет им.
 
 ---
 
-# Installation
+# Установка
 
-## For Users
+## Для пользователей
 
-Download the latest build from **Releases**.
+Загрузите последнюю сборку из **Releases**.
 ```
 Releases
     ↓
-Extract archive
+Распакуйте архив
     ↓
 chrome://extensions
     ↓
 Developer Mode
     ↓
-Load unpacked
+Загрузите распакованный архив
 ```
 
-Done.
+Готово
 
 ---
 
-## For Developers
+## Для разработчиков
 
-Clone repository
+Клонируйте репозиторий
 ```bash
 git clone https://github.com/SamuelGambino/extention-react.git
 ```
 
-Install dependencies
+Установите зависимости
 ```bash
-npm install
+npm i
 ```
 
-Development
+Разработка
 ```bash
 npm run dev
 ```
 
-Production build
+Сборка
 ```bash
 npm run build
 ```
 
-Then load the generated extension from the `dist` directory.
+Затем загружайте собранное расширение из директории `dist`
 
 ---
 
-# Project Structure
+# Структура проекта
 ```
 background/
 ```
+Основная логика парсинга, контроллер парсера и экспортер
 
-Core parsing logic, parser controller and exporter.
 ```
 popup/
 ```
+React приложение
 
-React application.
 ```
 content/
 ```
+Пока не используется
 
-Interaction with active browser tabs.
 ```
 globalTypes/
 ```
-
-Shared application types.
+Общие типы
 
 ---
 
-# Creating a Parser
+# Создание парсера
 
-Every marketplace parser extends the same base class.
+Каждый парсер для маркетплейса наследует один и тот же базовый класс
 
 ```ts
 class NewMarketplaceParser extends BaseParser {}
 ```
 
-Register the parser and implement the required methods.
+Создайте модуль парсера и реализуйте необходимые методы
 
-No changes to the parsing pipeline are required.
+Кроме разработки модуля портебуется добавить его значение для вызова модуля в background/index.ts
+Добавить тип в globalTypes/parser_config.ts
+Добавить значение в выпадающий список в popup/Form/constants.ts
+И соответственно определить необходимые поля для заполнения конфигурации в popup/Form/blocks/ConfigurationBlock.tsx
+
+При желании и возможности можно добавить автозаполнение конфигурации в popup/hooks/useAutoFill.ts
 
 ---
 
-# Parsing Pipeline
+# Процесс парсинга
 
 ```
-User
+Пользователь
 ↓
-Configuration
+Конфигурация
 ↓
-Marketplace validation
+Запрос(ы) к api маркетплейса
 ↓
-Metadata
+Метаданные
 ↓
-Products
+Парсинг продуктов/категорий
 ↓
-Categories
-↓
-Export
-↓
-Completed
+Экспорт
 ```
 
-The parser may optionally pause after every stage.
+Парсер может по желанию приостанавливать работу после каждого этапа
 
-This mode is primarily intended for debugging, parser development and API inspection.
+Этот режим в первую очередь предназначен для отладки, разработки парсеров и анализа API
 
 ---
 
 # Roadmap
 
-- [x] Modular parser system
+- [x] Модульная архитектура парсера
+- [x] Экспортер
 - [x] VK
 - [x] Yandex
 - [x] Chibbis
 - [x] Kuper
 - [x] Flowwow
 - [x] WhatsApp
-- [x] Unified exporter
-- [ ] Firefox support
-- [ ] Custom parser constructor
-- [ ] Localization
-- [ ] Automated tests
+- [ ] Кросбраузерность
+- [ ] Универсальный модуль парсера
+- [ ] Локализация
+- [ ] Автотесты
 
 ---
 
 # Contributing
 
-Pull Requests are welcome.
+Pull Requests приветствуются
 
-If you would like to implement support for a new marketplace, please open an Issue before starting work.
+Если вы хотите добавить поддержку нового маркетплейса, пожалуйста, создайте заявку (Issues) перед началом работы
+
+Форкните или дайте звезду - тоже будет приятно :)
 
 ---
 

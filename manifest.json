@@ -11,6 +11,11 @@
         "service_worker": "src/background/index.ts",
         "type": "module"
     },
+    "icons": {
+        "16": "public/icons/icon.png",
+        "32": "public/icons/icon.png",
+        "48": "public/icons/icon.png"
+    },
     "permissions": [
         "storage",
         "tabs",
