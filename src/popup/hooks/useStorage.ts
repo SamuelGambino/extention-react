@@ -2,6 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
 import type { ParserConfig } from "../../globalTypes/parser_сonfig";
 import type { ParserState } from "../../globalTypes/parsing_state";
+import type { UpdateData } from "../../globalTypes/update_data";
+
+const DEFAULT_VERSION: UpdateData = {
+  checkedAt: 0,
+  latestVersion: "",
+  releaseUrl: "",
+  hasUpdate: false
+}
 
 const DEFAULT_CONFIG: ParserConfig = {
   tabs: [
@@ -90,7 +98,12 @@ const useParsingState = () => {
   return useStorage<ParserState>("parser_state", DEFAULT_STATE);
 }
 
+const useVersion = () => {
+  return useStorage<UpdateData>("update_data", DEFAULT_VERSION);
+}
+
 export {
   useParserConfig,
-  useParsingState
+  useParsingState,
+  useVersion
 }

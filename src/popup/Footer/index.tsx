@@ -1,11 +1,19 @@
 import ScrambleText from '../ScrambleText';
 import './index.css'
 import manifest from '../../../manifest.json'
+import { useVersion } from '../hooks/useStorage';
 
 const Footer = () => {
+  const [version] = useVersion();
+
   return (
     <footer className='footer'>
       <p className='footer__text'>ProductParser v{manifest.version}</p>
+
+      {version.hasUpdate && (
+        <span>Доступна новая версия - {version.latestVersion}! <a href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Скачать</a></span>
+      )}
+
       <a
         className='footer__text footer__text--link'
         href="https://t.me/Samuel_Gambino"

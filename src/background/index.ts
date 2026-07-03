@@ -10,6 +10,7 @@ import { WhatsApp } from "./parsers/WhatsApp";
 import { Exporter } from "./Exporter";
 import { Kuper } from "./parsers/Kuper";
 import { Flowwow } from "./parsers/Flowwow";
+import { checkUpdate } from "./UpdateChecker";
 
 type PresetType = ParserTabConfig['type'];
 
@@ -43,6 +44,7 @@ const clearLogs = async () => {
 
 const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessageResponse> => {
   const message = rawMessage as RuntimeMessage;
+  await checkUpdate();
 
   if (!message.action) {
     return { ok: false };
