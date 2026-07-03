@@ -85,7 +85,7 @@ It is inspired by retro-futuristic operating systems and developer tools where e
 
 <p align="center">
 
-<img src="./docs/images/interface.png" width="900"/>
+<img src="./images/interface.png" width="900"/>
 
 </p>
 
