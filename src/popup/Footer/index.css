@@ -3,7 +3,6 @@
   align-items: center;
   flex-shrink: 0;
   width: 100%;
-  justify-content: space-between;
   border-top: 1px solid var(--second);
   color: var(--second);
   margin: 0 -20px;
@@ -26,4 +25,14 @@
 
 .footer__icon {
   margin-left: 5px;
+}
+
+.footer__text--right {
+  margin-left: auto;
+}
+
+.footer__text--link-accent {
+  color: var(--text-second);
+  text-decoration: underline;
+  margin-left: 20px;
 }
