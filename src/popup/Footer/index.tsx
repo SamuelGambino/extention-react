@@ -10,10 +10,10 @@ const Footer = () => {
     <footer className='footer'>
       <p className='footer__text'>ProductParser v{manifest.version}</p>
 
-      {/* {version.hasUpdate && (
-        <span>Доступна новая версия - {version.latestVersion}! <a href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Скачать</a></span>
-      )} */}
-      <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>
+      {version.hasUpdate && (
+        <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>
+      )}
+      
 
       <a
         className='footer__text footer__text--link footer__text--right'
