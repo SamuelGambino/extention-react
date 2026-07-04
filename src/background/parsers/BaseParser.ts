@@ -25,10 +25,6 @@ export abstract class BaseParser {
   abstract checkAvailability(): Promise<void>; // 1 - elements count
   abstract parseRest(): Promise<void>; // 2+
 
-  protected async exportData() {
-    // логика экспорта одна для всех
-  };
-
   // Pause in step mode
   protected async waitForNextStep() {
     if (this.mode !== 'steps') return;
@@ -52,12 +48,6 @@ export abstract class BaseParser {
     this.stopped = true;
     void this.setParsingState({ isRunning: false, waitingForStep: false });
     this.resumeResolve?.();
-    return {
-      categories: this.categories,
-      products: this.products,
-      modifiers: this.modifiers,
-      modifiers_groups: this.modifiers_groups,
-    }
   }
 
   protected async setDataState(patch: Partial<ParserState['data']>) {

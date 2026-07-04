@@ -1,36 +1,36 @@
 {
-    "manifest_version": 3,
-    "name": "Product Parser",
-    "description": "Расширение для извлечения информации о товарах с любых сайтов.",
-    "version": "2.1.0",
-    "action": {
-        "default_popup": "index.html",
-        "default_title": "Web Parsing Toolkit"
-    },
-    "background": {
-        "service_worker": "src/background/index.ts",
-        "type": "module"
-    },
-    "icons": {
-        "16": "public/icons/icon.png",
-        "32": "public/icons/icon.png",
-        "48": "public/icons/icon.png"
-    },
-    "permissions": [
-        "storage",
-        "tabs",
-        "scripting",
-        "activeTab",
-        "downloads",
-        "contextMenus",
-        "declarativeNetRequest",
-        "declarativeNetRequestWithHostAccess"
-    ],
-    "host_permissions": [
-        "*://eda.yandex.ru/*",
-        "*://yandex.ru/maps/*",
-        "*://2gis.ru/*",
-        "<all_urls>"
-    ],
-    "web_accessible_resources": []
+  "manifest_version": 3,
+  "name": "Product Parser",
+  "description": "Расширение для извлечения информации о товарах с любых сайтов.",
+  "version": "2.2.0",
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Web Parsing Toolkit"
+  },
+  "background": {
+    "service_worker": "src/background/index.ts",
+    "type": "module"
+  },
+  "icons": {
+    "16": "public/icons/icon.png",
+    "32": "public/icons/icon.png",
+    "48": "public/icons/icon.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab",
+    "downloads",
+    "contextMenus",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
+  ],
+  "host_permissions": [
+    "*://eda.yandex.ru/*",
+    "*://yandex.ru/maps/*",
+    "*://2gis.ru/*",
+    "<all_urls>"
+  ],
+  "web_accessible_resources": []
 }

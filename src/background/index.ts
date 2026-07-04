@@ -40,7 +40,18 @@ const clearLogs = async () => {
     ...state,
     logs: [],
   });
-}
+};
+
+const handleParseFailure = async (): Promise<RuntimeMessageResponse> => {
+  const state = await getState();
+  const logs = state.logs ?? [];
+  await setState({
+    ...state,
+    parsing: { ...state.parsing, isRunning: false },
+    logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
+  });
+  return { ok: false };
+};
 
 const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessageResponse> => {
   const message = rawMessage as RuntimeMessage;
@@ -71,16 +82,7 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
 
     activeParser = new Parser(config, 'parse');
     const result = await activeParser.run();
-    if (!result) {
-      const state = await getState();
-      const logs = state.logs ?? [];
-      await setState({
-        ...state,
-        parsing: { ...state.parsing, ...{ isRunning: false } },
-        logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
-      });
-      return { ok: false };
-    }
+    if (!result) return handleParseFailure();
     await exporter.export(result, config);
     await setParsingState(false);
     return { ok: true };
@@ -92,16 +94,7 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
     const Parser = PARSER_MAP[config.type];
     activeParser = new Parser(config, 'steps');
     const result = await activeParser.run();
-    if (!result) {
-      const state = await getState();
-      const logs = state.logs ?? [];
-      await setState({
-        ...state,
-        parsing: { ...state.parsing, ...{ isRunning: false } },
-        logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
-      });
-      return { ok: false };
-    }
+    if (!result) return handleParseFailure();
 
     await exporter.export(result, config);
     await setParsingState(false);
@@ -126,3 +119,5 @@ const handleRuntimeMessage = async (rawMessage: unknown): Promise<RuntimeMessage
 browser.runtime.onMessage.addListener((rawMessage: unknown) => {
   return handleRuntimeMessage(rawMessage);
 });
+
+void checkUpdate();

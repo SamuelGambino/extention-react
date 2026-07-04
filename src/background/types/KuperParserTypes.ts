@@ -46,7 +46,6 @@ interface KuperOptionsResp {
 
 export type {
   KuperResp,
-  ApiCategory,
   KuperProductResp,
   KuperOptionsResp
 }

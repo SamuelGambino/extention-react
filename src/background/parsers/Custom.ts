@@ -27,9 +27,4 @@ export class Custom extends BaseParser {
     // await this.setParsingState({ step: 'parsing_category', currentCategory: 1 });
     await this.waitForNextStep();
   }
-
-  async exportData() {
-    await this.setLog({ status: "warn", title: "[Custom]:Export", value: "Экспорт данных..." });
-    // логика экспорта
-  }
 }

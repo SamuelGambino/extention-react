@@ -16,7 +16,6 @@ export class Exporter {
     // ====== МОДИФИКАТОРНЫЕ ГРУППЫ ======
     xml += `    <modifiersGroups>\n`;
     for (const group of modifiers_groups) {
-      // modifiers_groups.forEach(group => {
       xml += `      <modifiersGroup id="${group.id}">\n`;
       xml += `        <name>${this.escapeXml(group.name)}</name>\n`;
       xml += `        <type>${group.type}</type>\n`;
@@ -29,7 +28,6 @@ export class Exporter {
     // ====== МОДИФИКАТОРЫ ======
     xml += `    <modifiers>\n`;
     for (const modifier of modifiers) {
-      // modifiers.forEach(modifier => {
       xml += `      <modifier id="${modifier.id}">\n`;
       xml += `        <name>${this.escapeXml(modifier.name)}</name>\n`;
       xml += `        <price>${modifier.price}</price>\n`;
@@ -97,7 +95,7 @@ export class Exporter {
     const state = await getState();
     await setState({
       ...state,
-      parsing: { ...state.parsing, ...{ isRunning: false } }
+      parsing: { ...state.parsing, isRunning: false }
     });
     this.download(xml, `${config.type}_${config.tabName ?? ""}`)
   }

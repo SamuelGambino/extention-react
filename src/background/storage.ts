@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 import type { ParserConfig, ParserTabConfig } from "../globalTypes/parser_сonfig";
 import type { ParserState } from "../globalTypes/parsing_state";
 
-export const getConfig = async (): Promise<ParserConfig> => {
+const getConfig = async (): Promise<ParserConfig> => {
   const data = await browser.storage.local.get("parser_config");
   return data["parser_config"] as ParserConfig;
 };

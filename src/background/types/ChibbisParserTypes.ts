@@ -45,8 +45,6 @@ interface ChibbisModResp {
 
 export type {
   ChibbisResp,
-  ChibbisCategoryResp,
   ChibbisProductResp,
   ChibbisModGroupResp,
-  ChibbisModResp
 }

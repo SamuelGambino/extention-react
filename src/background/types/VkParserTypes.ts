@@ -19,7 +19,6 @@ interface fullResponse {
 }
 
 export type {
-  VkCatsResp,
   VkItemsResp,
   fullResponse
 }

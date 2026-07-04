@@ -28,7 +28,7 @@ const BARS_CONFIG: { id: number; size: BarSize }[] = [
 
 const BOOST = 3.5;
 
-export const Telemetry: React.FC = () => {
+const Telemetry: React.FC = () => {
   const [activeIds, setActiveIds] = useState<number[]>([]);
 
   useEffect(() => {

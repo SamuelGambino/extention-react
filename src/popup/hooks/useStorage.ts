@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
+import manifest from "../../../manifest.json";
 import type { ParserConfig } from "../../globalTypes/parser_сonfig";
 import type { ParserState } from "../../globalTypes/parsing_state";
 import type { UpdateData } from "../../globalTypes/update_data";
@@ -8,7 +9,8 @@ const DEFAULT_VERSION: UpdateData = {
   checkedAt: 0,
   latestVersion: "",
   releaseUrl: "",
-  hasUpdate: false
+  hasUpdate: false,
+  extensionVersion: "",
 }
 
 const DEFAULT_CONFIG: ParserConfig = {
@@ -99,7 +101,43 @@ const useParsingState = () => {
 }
 
 const useVersion = () => {
-  return useStorage<UpdateData>("update_data", DEFAULT_VERSION);
+  const [value, setValue] = useState<UpdateData>(DEFAULT_VERSION);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const initializeVersion = async () => {
+      const data = await browser.storage.local.get("update_data");
+      const stored = data.update_data as UpdateData | undefined;
+
+      if (stored && stored.extensionVersion === manifest.version) {
+        setValue(stored);
+      } else {
+        setValue(DEFAULT_VERSION);
+      }
+      setIsLoaded(true);
+    };
+    initializeVersion();
+  }, []);
+
+  useEffect(() => {
+    const handleChanges = (changes: browser.Storage.StorageAreaOnChangedChangesType, areaName: string) => {
+      if (areaName !== "local" || !changes.update_data) return;
+
+      const newValue = changes.update_data.newValue as UpdateData | undefined;
+      if (newValue && newValue.extensionVersion === manifest.version) {
+        setValue(newValue);
+      }
+    };
+    browser.storage.onChanged.addListener(handleChanges);
+    return () => browser.storage.onChanged.removeListener(handleChanges);
+  }, []);
+
+  const setStorageValue = useCallback(async (newValue: UpdateData) => {
+    setValue(newValue);
+    await browser.storage.local.set({ update_data: newValue });
+  }, []);
+
+  return [value, setStorageValue, isLoaded] as const;
 }
 
 export {

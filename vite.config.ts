@@ -12,7 +12,7 @@ const syncVersionWithManifest = () => {
     name: 'sync-version-with-manifest',
     buildStart() {
       const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
-      const manifestPath = resolve(__dirname, 'public/manifest.json'); // или где лежит ваш исходный manifest.json
+      const manifestPath = resolve(__dirname, 'manifest.json'); // или где лежит ваш исходный manifest.json
       const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
       
       manifest.version = pkg.version;

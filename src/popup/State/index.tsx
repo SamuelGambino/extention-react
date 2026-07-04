@@ -36,13 +36,6 @@ const State = () => {
           <span className="state__label">Source</span>
           <span className="state__value">{stateValue.parsing.isRunning ? getDomain(stateValue.parsing.source) : getDomain(getActualConfig()?.source)}</span>
         </p>
-        {/* <p className="state__item">
-          <span className="state__label">Availability</span>
-          <span className={`state__badge state__badge--${stateValue.parsing.isReady ? 'success' : 'accent'}`}>
-            <span className="state__badge-dot" />
-            {stateValue.parsing.isReady ? "Ready" : "Wait"}
-          </span>
-        </p> */}
       </section>
 
       <section className="state__section">
