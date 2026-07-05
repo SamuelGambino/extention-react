@@ -8,7 +8,10 @@
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![Manifest V3](https://img.shields.io/badge/Chrome-Manifest_V3-orange)
+![Chrome](https://img.shields.io/badge/Chrome-Supported-success?logo=googlechrome)
+![Firefox](https://img.shields.io/badge/Firefox-Supported-orange?logo=firefoxbrowser)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
+![Release Please](https://img.shields.io/badge/Releases-Automated-success)
 ![Vite](https://img.shields.io/badge/Vite-8-purple?logo=vite)
 
 > Modular • Reactive • Extensible
@@ -29,9 +32,25 @@
 
 ProductParser is an open-source browser extension designed to extract product catalogs from multiple online services into a unified export format (XML).
 
+ProductParser is automatically built for Google Chrome and Mozilla Firefox. Each new version is accompanied by ready-to-use installation files for both browsers, and the Firefox version is automatically signed via the Mozilla Add-ons API during the CI/CD process.
+
 Unlike traditional one-off parsers, ProductParser is built around a modular architecture where every marketplace implements the same parsing interface while sharing a common parsing pipeline.
 
 The goal of the project is to make adding support for new marketplaces simple without changing the core application.
+
+---
+
+## Project Features
+
+- Unified parser architecture;
+- Support for multiple marketplaces;
+- React + TypeScript;
+- Manifest V3;
+- Google Chrome and Mozilla Firefox;
+- Fully automated CI/CD;
+- Automatic release generation;
+- Automatic signing of Firefox builds;
+- Ready-to-install release artifacts.
 
 ---
 
@@ -123,6 +142,44 @@ Parser --> Storage
 Background --> Exporter
 ```
 
+```mermaid
+flowchart LR
+
+Release["GitHub Release"]
+
+Please["Release Please"]
+
+Actions["GitHub Actions"]
+
+Chrome["Chrome Build"]
+
+Firefox["Firefox Build"]
+
+Mozilla["Mozilla Signing API"]
+
+Signed["Signed .xpi"]
+
+ChromeZip["Chrome ZIP"]
+
+FirefoxXpi["Firefox XPI"]
+
+Release --> Please
+
+Please --> Actions
+
+Actions --> Chrome
+
+Actions --> Firefox
+
+Firefox --> Mozilla
+
+Mozilla --> Signed
+
+Signed --> ChromeZip
+
+Signed --> FirefoxXpi
+```
+
 ### Design Principles
 
 - Popup contains no parsing logic.
@@ -138,16 +195,27 @@ Background --> Exporter
 ## For Users
 
 Download the latest build from **Releases**.
+
+### Chrome
 ```
 Releases
     ↓
-Extract archive
+Download zip archive
     ↓
 chrome://extensions
     ↓
 Developer Mode
     ↓
 Load unpacked
+```
+
+### Firefox
+```
+Releases
+    ↓
+Download .xpi file
+    ↓
+The browser will immediately offer to install the extension
 ```
 
 Done
@@ -171,9 +239,16 @@ Development
 npm run dev
 ```
 
-Production build
+Chrome or firefox build
 ```bash
 npm run build
+```
+
+Individual builds
+```bash
+npm run build:chrome
+
+npm run build:firefox
 ```
 
 Then load the generated extension from the `dist` directory
@@ -248,6 +323,62 @@ This mode is primarily intended for debugging, parser development and API inspec
 
 ---
 
+# CI/CD
+
+Each new release automatically goes through the full publishing cycle:
+
+- Version update via Release Please;
+- Version synchronization in all manifest files;
+- Chrome build;
+- Firefox build;
+- Automatic Firefox signing via the Mozilla AMO API;
+- Publishing completed artifacts to GitHub Releases.
+
+As a result, each release contains:
+
+- Chrome (.zip)
+- Firefox (.xpi)
+
+```mermaid
+flowchart LR
+
+Release["GitHub Release"]
+
+Please["Release Please"]
+
+Actions["GitHub Actions"]
+
+Chrome["Chrome Build"]
+
+Firefox["Firefox Build"]
+
+Mozilla["Mozilla Signing API"]
+
+Signed["Signed .xpi"]
+
+ChromeZip["Chrome ZIP"]
+
+FirefoxXpi["Firefox XPI"]
+
+Release --> Please
+
+Please --> Actions
+
+Actions --> Chrome
+
+Actions --> Firefox
+
+Firefox --> Mozilla
+
+Mozilla --> Signed
+
+Signed --> ChromeZip
+
+Signed --> FirefoxXpi
+```
+
+---
+
 # Roadmap
 
 - [x] Modular parser system
@@ -258,7 +389,9 @@ This mode is primarily intended for debugging, parser development and API inspec
 - [x] Kuper
 - [x] Flowwow
 - [x] WhatsApp
-- [ ] Firefox support
+- [x] Cross-browser support (Chrome / Firefox)
+- [x] Automatic Firefox signing
+- [x] Automatic GitHub releases
 - [ ] Custom parser constructor
 - [ ] Localization
 - [ ] Automated tests
