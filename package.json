@@ -1,10 +1,11 @@
 {
   "name": "ProductParser",
   "private": true,
-  "version": "2.3.0",
+  "version": "2.4.0",
   "type": "module",
   "scripts": {
-    "dev": "vite","build:chrome": "cross-env VITE_BROWSER=chrome vite build",
+    "dev": "vite",
+    "build:chrome": "cross-env VITE_BROWSER=chrome vite build",
     "build:firefox": "cross-env VITE_BROWSER=firefox vite build",
     "build": "npm run build:chrome && npm run build:firefox",
     "lint": "eslint .",
