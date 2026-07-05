@@ -7,7 +7,7 @@
       "default_title": "Web Parsing Toolkit"
     },
     "background": {
-      "scripts": ["src/background/index.js"],
+      "scripts": ["src/background/index.ts"],
       "type": "module"
     },
     "browser_specific_settings": {

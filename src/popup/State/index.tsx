@@ -10,10 +10,14 @@ const State = () => {
   }
 
   const getDomain = (url: string | undefined): string | undefined => {
-    if(!url) return url;
-    const urlObject = new URL(url);
-    return urlObject.hostname;
-  }
+    if (!url) return url;
+    try {
+      const urlObject = new URL(url);
+      return urlObject.hostname;
+    } catch (e) {
+      return url;
+    }
+}
 
   if (!isLoadedConfig && !isLoadedState) return null;
 
