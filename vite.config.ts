@@ -2,33 +2,38 @@ import { defineConfig } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 import { crx } from '@crxjs/vite-plugin'
-import manifest from './manifest.json'
-import { readFileSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
-// Плагин для копирования версии
-const syncVersionWithManifest = () => {
-  return {
-    name: 'sync-version-with-manifest',
-    buildStart() {
-      const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
-      const manifestPath = resolve(__dirname, 'manifest.json'); // или где лежит ваш исходный manifest.json
-      const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
-      
-      manifest.version = pkg.version;
-      
-      // Перезаписываем манифест с новой версией перед сборкой
-      writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-    }
-  };
-};
+// 1. Определяем, для какого браузера сборка (по умолчанию chrome)
+const targetBrowser = process.env.VITE_BROWSER || 'chrome'
+
+// 2. Функция для сборки манифеста "на лету"
+const getManifest = () => {
+  const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'))
+  const manifestPath = resolve(__dirname, `manifest.${targetBrowser}.json`)
+  
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'))
+  
+  // Синхронизируем версию из package.json напрямую в объект манифеста
+  manifest.version = pkg.version
+  
+  return manifest
+}
+
+// Получаем готовый манифест для CRXJS
+const finalManifest = getManifest()
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    crx({ manifest }),
-    babel({ presets: [reactCompilerPreset()] }),
-    syncVersionWithManifest()
+    crx({ manifest: finalManifest }), // Передаем динамический манифест
+    babel({ presets: [reactCompilerPreset()] })
   ],
+  build: {
+    // 3. Раскладываем сборки в разные папки dist/chrome и dist/firefox
+    outDir: resolve(__dirname, `dist/${targetBrowser}`),
+    emptyOutDir: true
+  }
 })

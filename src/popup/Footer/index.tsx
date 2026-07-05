@@ -1,14 +1,15 @@
 import ScrambleText from '../ScrambleText';
 import './index.css'
-import manifest from '../../../manifest.json'
+import browser from "webextension-polyfill";
 import { useVersion } from '../hooks/useStorage';
 
 const Footer = () => {
   const [version] = useVersion();
+  const currentVersion = browser.runtime.getManifest().version;
 
   return (
     <footer className='footer'>
-      <p className='footer__text'>ProductParser v{manifest.version}</p>
+      <p className='footer__text'>ProductParser v{currentVersion}</p>
 
       {version.hasUpdate && (
         <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>

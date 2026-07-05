@@ -41,14 +41,31 @@ jobs:
       - name: Build extension
         run: npm run build
 
-      - name: Create Zip Archive
-        run: |
-          cd dist
-          zip -r ../ProductParser-${{ needs.release-please.outputs.tag_name }}.zip .
-          cd ..
+      # Автоматическая отправка dist/firefox на подпись в Mozilla AMO
+      - name: Sign Firefox Extension (Self-Hosted)
+        id: sign-firefox
+        uses: whatsandoff/webext-build-and-publish@v1
+        with:
+          action: sign
+          source-folder: dist/firefox
+          addon-id: 'product-parser@samuelgambino.com'
+          api-key: ${{ secrets.MOZILLA_API_KEY }}
+          api-secret: ${{ secrets.MOZILLA_API_SECRET }}
 
-      - name: Upload Asset to GitHub Release
+      # Упаковка Chrome
+      - name: Create Chrome Zip Archive
+        run: |
+          cd dist/chrome
+          zip -r ../../ProductParser-Chrome-${{ needs.release-please.outputs.tag_name }}.zip .
+          cd ../..
+
+      # Загрузка готовых файлов в GitHub Release
+      - name: Upload Assets to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ needs.release-please.outputs.tag_name }} ProductParser-${{ needs.release-please.outputs.tag_name }}.zip --clobber
+          # Загружаем ZIP для Chrome
+          gh release upload ${{ needs.release-please.outputs.tag_name }} ProductParser-Chrome-${{ needs.release-please.outputs.tag_name }}.zip --clobber
+          
+          # Загружаем подписанный .xpi для Firefox (экшен сам сохраняет путь к нему в свои outputs)
+          gh release upload ${{ needs.release-please.outputs.tag_name }} ${{ steps.sign-firefox.outputs.extensions-xpi-path }} --clobber

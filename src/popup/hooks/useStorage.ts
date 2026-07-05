@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import browser from "webextension-polyfill";
-import manifest from "../../../manifest.json";
 import type { ParserConfig } from "../../globalTypes/parser_сonfig";
 import type { ParserState } from "../../globalTypes/parsing_state";
 import type { UpdateData } from "../../globalTypes/update_data";
@@ -104,12 +103,14 @@ const useVersion = () => {
   const [value, setValue] = useState<UpdateData>(DEFAULT_VERSION);
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const currentVersion = browser.runtime.getManifest().version;
+
   useEffect(() => {
     const initializeVersion = async () => {
       const data = await browser.storage.local.get("update_data");
       const stored = data.update_data as UpdateData | undefined;
 
-      if (stored && stored.extensionVersion === manifest.version) {
+      if (stored && stored.extensionVersion === currentVersion) {
         setValue(stored);
       } else {
         setValue(DEFAULT_VERSION);
@@ -124,7 +125,7 @@ const useVersion = () => {
       if (areaName !== "local" || !changes.update_data) return;
 
       const newValue = changes.update_data.newValue as UpdateData | undefined;
-      if (newValue && newValue.extensionVersion === manifest.version) {
+      if (newValue && newValue.extensionVersion === currentVersion) {
         setValue(newValue);
       }
     };
