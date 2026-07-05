@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/SamuelGambino/extention-react/compare/v2.4.1...v2.4.2) (2026-07-05)
+
+
+### Bug Fixes
+
+* Change Firefox's signature action from mozilla/sign-addon to web-ext ([198553a](https://github.com/SamuelGambino/extention-react/commit/198553a72f8cd9556638495f571f5379a5463893))
+
 ## [2.4.1](https://github.com/SamuelGambino/extention-react/compare/v2.4.0...v2.4.1) (2026-07-05)
 
 
