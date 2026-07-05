@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/SamuelGambino/extention-react/compare/v2.3.0...v2.4.0) (2026-07-05)
+
+
+### Features
+
+* Implement automatic assembly of the extension for two target browsers ([c246362](https://github.com/SamuelGambino/extention-react/commit/c246362374eaf5abc43c49b2aeac6a2aab4a8529))
+
 ## [2.3.0](https://github.com/SamuelGambino/extention-react/compare/v2.2.0...v2.3.0) (2026-07-04)
 
 
