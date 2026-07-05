@@ -38,30 +38,35 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Сборка проекта (создает dist/chrome и dist/firefox)
       - name: Build extension
         run: npm run build
 
-      # Автоматическая отправка dist/firefox на подпись в Mozilla AMO
-      - name: Sign Firefox Extension (Self-Hosted)
-        id: sign-firefox
-        uses: mozilla/sign-addon@v2
-        with:
-          api-key: ${{ secrets.MOZILLA_API_KEY }}
-          api-secret: ${{ secrets.MOZILLA_API_SECRET }}
-          files: 'dist/firefox' 
-          addon-id: 'product-parser-tool@internal'
+      # Подпись Firefox-версии через web-ext
+      - name: Sign Firefox Extension via web-ext
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.MOZILLA_API_KEY }}
+          AMO_JWT_SECRET: ${{ secrets.MOZILLA_API_SECRET }}
+        run: |
+          # Устанавливаем web-ext локально внутри экшена
+          npx web-ext sign \
+            --source-dir dist/firefox \
+            --artifacts-dir dist/firefox-signed \
+            --channel unlisted \
+            --api-key=$AMO_JWT_ISSUER \
+            --api-secret=$AMO_JWT_SECRET
 
-      # Упаковка Chrome
+      # Упаковка Chrome в ZIP
       - name: Create Chrome Zip Archive
         run: |
           cd dist/chrome
           zip -r ../../ProductParser-Chrome-${{ needs.release-please.outputs.tag_name }}.zip .
           cd ../..
 
-      # Загрузка готовых файлов в GitHub Release
+      # Загрузка готовых файлов (ZIP для Chrome и сгенерированный .xpi для Firefox) в GitHub Release
       - name: Upload Assets to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload ${{ needs.release-please.outputs.tag_name }} ProductParser-Chrome-${{ needs.release-please.outputs.tag_name }}.zip --clobber
-          gh release upload ${{ needs.release-please.outputs.tag_name }} ${{ steps.sign-firefox.outputs.downloaded-files }}/* --clobber
+          gh release upload ${{ needs.release-please.outputs.tag_name }} dist/firefox-signed/*.xpi --clobber
