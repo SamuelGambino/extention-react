@@ -44,13 +44,12 @@ jobs:
       # Автоматическая отправка dist/firefox на подпись в Mozilla AMO
       - name: Sign Firefox Extension (Self-Hosted)
         id: sign-firefox
-        uses: whatsandoff/webext-build-and-publish@v1
+        uses: mozilla/sign-addon@v2
         with:
-          action: sign
-          source-folder: dist/firefox
-          addon-id: 'product-parser@samuelgambino.com'
           api-key: ${{ secrets.MOZILLA_API_KEY }}
           api-secret: ${{ secrets.MOZILLA_API_SECRET }}
+          files: 'dist/firefox' 
+          addon-id: 'product-parser-tool@internal'
 
       # Упаковка Chrome
       - name: Create Chrome Zip Archive
@@ -64,8 +63,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Загружаем ZIP для Chrome
           gh release upload ${{ needs.release-please.outputs.tag_name }} ProductParser-Chrome-${{ needs.release-please.outputs.tag_name }}.zip --clobber
-          
-          # Загружаем подписанный .xpi для Firefox (экшен сам сохраняет путь к нему в свои outputs)
-          gh release upload ${{ needs.release-please.outputs.tag_name }} ${{ steps.sign-firefox.outputs.extensions-xpi-path }} --clobber
+          gh release upload ${{ needs.release-please.outputs.tag_name }} ${{ steps.sign-firefox.outputs.downloaded-files }}/* --clobber
