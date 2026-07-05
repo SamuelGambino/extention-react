@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.3](https://github.com/SamuelGambino/extention-react/compare/v2.4.2...v2.4.3) (2026-07-05)
+
+
+### Bug Fixes
+
+* Add a try-catch construct to URL processing in State comp ([c6572f6](https://github.com/SamuelGambino/extention-react/commit/c6572f6d1fbdd4c063dbdc14fd6a7cf5885f1cf1))
+
 ## [2.4.2](https://github.com/SamuelGambino/extention-react/compare/v2.4.1...v2.4.2) (2026-07-05)
 
 
