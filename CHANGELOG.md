@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.1](https://github.com/SamuelGambino/extention-react/compare/v2.4.0...v2.4.1) (2026-07-05)
+
+
+### Bug Fixes
+
+* change firefox signing action to official mozilla tool ([2306b25](https://github.com/SamuelGambino/extention-react/commit/2306b251c8dd9c3e20caf4657baf2b80ea306e93))
+
 ## [2.4.0](https://github.com/SamuelGambino/extention-react/compare/v2.3.0...v2.4.0) (2026-07-05)
 
 
