@@ -9,7 +9,7 @@ const Footer = () => {
 
   return (
     <footer className='footer'>
-      <p className='footer__text'>ProductParser v{currentVersion}</p>
+      <a className='footer__text' href="https://github.com/SamuelGambino/extention-react" target="_blank" rel="noopener noreferrer">ProductParser v{currentVersion}</a>
 
       {version.hasUpdate && (
         <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>
