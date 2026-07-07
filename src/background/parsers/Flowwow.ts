@@ -137,7 +137,7 @@ export class Flowwow extends BaseParser {
     }
   }
 
-  async getProductData(prod: { id: number, price: number }, catId: number) {
+  async getProductData(prod: { id: number, price: number, oldPrice?: number }, catId: number) {
     this.sleep(1000 + Math.floor(Math.random() * 500));
     const reqParams = new URLSearchParams({
       id: prod.id.toString(),
@@ -163,6 +163,7 @@ export class Flowwow extends BaseParser {
       price: [{
         id: prod.id,
         price: prod.price,
+        old_price: prod.oldPrice,
         index: [productData.data.size.height, 5],
       }],
       category: catId,

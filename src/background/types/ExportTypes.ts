@@ -12,6 +12,7 @@ interface Product {
   price: {
     id: number | string,
     price: number,
+    old_price?: number,
     proteins?: number,
     fats?: number,
     carbohydrates?: number,

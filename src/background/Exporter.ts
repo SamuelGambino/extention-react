@@ -56,6 +56,7 @@ export class Exporter {
       prod.price.forEach((price) => {
         xml += `          <parameter id="${price.id}">\n`;
         xml += `            <price>${price.price}</price>\n`;
+        xml += `            <old_price>${price.old_price}</old_price>\n`;
         xml += `            <description>${price.index[0]}</description>\n`;
         if (price.proteins) {
           xml += `            <proteins>${price.proteins}</proteins>\n`;
