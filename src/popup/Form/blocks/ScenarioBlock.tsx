@@ -5,13 +5,13 @@ import "../index.css"
 import SwitchField from "../../SwitchField";
 import { Controller, useFormContext } from "react-hook-form";
 
-const SettingsBlock = () => {
+const ScenarioBlock = () => {
   const { control } = useFormContext();
 
   return (
     <fieldset className="form__settings">
-      <legend className="form__settings-title">Settings</legend>
-      <div className='form__field'>
+      <legend className="form__settings-title">Scenario builder</legend>
+      <div className='form__field' style={{opacity:0}}>
         <div className='form__field-title'>
           <label className='form__field-label'>Clicks</label>
           <Hint hint='Выберите по какому элементу требуются клики' />
@@ -24,7 +24,7 @@ const SettingsBlock = () => {
           )} />
       </div>
 
-      <div className='form__field'>
+      <div className='form__field' style={{opacity:0}}>
         <div className='form__field-title'>
           <label className='form__field-label'>Pagination</label>
           <Hint hint='Требуется ли переключение страниц' hintPosition='left' />
@@ -37,7 +37,7 @@ const SettingsBlock = () => {
           )} />
       </div>
 
-      <div className='form__field'>
+      <div className='form__field' style={{opacity:0}}>
         <div className='form__field-title'>
           <label className='form__field-label'>Parameters</label>
           <Hint hint='Есть ли у товара несколько вариаций' />
@@ -50,7 +50,7 @@ const SettingsBlock = () => {
           )} />
       </div>
 
-      <div className='form__field'>
+      <div className='form__field' style={{opacity:0}}>
         <div className='form__field-title'>
           <label className='form__field-label'>Modifiers</label>
           <Hint hint='Есть ли в номенклатуре модификаторы' hintPosition='left' />
@@ -66,4 +66,4 @@ const SettingsBlock = () => {
   )
 }
 
-export default SettingsBlock;
+export default ScenarioBlock;

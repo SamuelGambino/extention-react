@@ -16,75 +16,100 @@ type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis' | 'whatsapp' | 
 type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetWhatsApp;
 
 interface PresetCustom {
-  settings: {
-    clicks: ClicksOptionsType;
-    pagination: boolean;
-    parameters: boolean;
-    modifiers: boolean;
-  };
-  selectors: {
-    category: CategorySection;
-    product: ProductSection;
-    clicks?: ClicksSection;
-    pagination?: PaginationSection;
-    parameters?: ParametersSection;
-    modifiers?: ModifiersSection;
+  steps: Step[];
+  requestDelay?: number;
+  waitAfterClick?: number;
+}
+
+interface baseStep {
+  type: StepType;
+  params: Record<string, any>;
+  children?: Step[];
+}
+
+type Step = StepNavigate | StepCollect | StepLoop | StepAction | StepWait | StepCondition | StepFind | CollectCategoryOrGroup | CollectProduct | CollectModifier;
+
+interface StepNavigate extends baseStep {
+  type: "navigate",
+  params: {
+    mode: "url" | "back" | "reload",
+    url?: string
   }
 }
 
-type ClicksOptionsType = 'none' | 'products' | 'category' | 'all';
-
-interface CategorySection {
-  container: string;
-  name?: string;
-};
-
-interface ProductSection {
-  container: string;
-  picture?: string;
-  name: string;
-  description?: string;
-  weight?: string;
-  price: string;
-};
-
-interface ClicksSection {
-  product?: {
-    open: string;
-    exit?: string;
-  };
-  category?: {
-    open: string;
-    exit?: string;
-  };
-};
-
-interface PaginationSection {
-  container: string;
-  click: string;
-};
-
-interface ParametersSection {
-  container: string;
-  description?: string;
-  click?: string;
-  price: string;
+interface StepCollect extends baseStep {
+  type: "collect",
+  entity?: "category" | "product" | "modifier" | "modifier_group",
 }
 
-interface ModifiersSection {
-  group: {
-    container: string;
-    name: string;
-    type: GroupTypesType;
-  };
-  mod: {
-    container: string;
-    name: string;
-    price: string;
-  };
+interface CollectCategoryOrGroup extends StepCollect {
+  entity?: "category" | "modifier_group",
+  params: {
+    name: string,
+  }
 }
 
-type GroupTypesType = 'one_one' | 'one_unlimited' | 'all_one' | 'all_unlimited';
+interface CollectProduct extends StepCollect {
+  entity?: "product",
+  params: {
+    name: string,
+    picture: string,
+    description?: string,
+    price: string,
+    old_price?: string,
+    proteins?: string,
+    fats?: string,
+    carbohydrates?: string,
+    calories?: string,
+    weight?: string,
+  }
+}
+
+interface CollectModifier extends StepCollect {
+  entity?: "modifier",
+  params: {
+    name: string,
+    price: number,
+  }
+}
+
+interface StepLoop extends baseStep {
+  type: "loop",
+  params: {
+    source: string
+  }
+  children: Step[];
+}
+
+interface StepAction extends baseStep {
+  type: "action",
+  params: {
+    command: "click";
+  }
+}
+
+interface StepWait extends baseStep {
+  type: "wait",
+  params: {
+    duration: number;
+  }
+}
+
+interface StepCondition extends baseStep {
+  type: "condition",
+  params: {
+    selector: string;
+  }
+}
+
+interface StepFind extends baseStep {
+  type: "find",
+  params: {
+    selector: string;
+  }
+}
+
+type StepType = "navigate" | "collect" | "extract" | "action" | "wait" | "condition" | "loop" | "find";
 
 interface PresetVk {
   marketId: string;

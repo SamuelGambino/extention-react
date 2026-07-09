@@ -1,6 +1,6 @@
 import "./index.css";
 import MainBlock from "./blocks/MainBlock";
-import SettingsBlock from "./blocks/SettingsBlock";
+import ScenarioBlock from "./blocks/ScenarioBlock";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
@@ -54,9 +54,9 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
       <form className={`form ${className ? ` ${className}` : ''}`}>
         <MainBlock />
 
-        {hasSettings && <SettingsBlock />}
-
         <ConfigurationBlock />
+
+        {hasSettings && <ScenarioBlock />}
 
         <ActionButtons />
       </form>

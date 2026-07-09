@@ -19,22 +19,15 @@ const DEFAULT_CONFIG: ParserConfig = {
       type: 'custom',
       source: '',
       data: {
-        settings: {
-          clicks: 'none',
-          pagination: false,
-          parameters: false,
-          modifiers: false,
-        },
-        selectors: {
-          category: {
-            container: "",
-          },
-          product: {
-            container: "",
-            name: "",
-            price: "",
-          },
-        },
+        steps: [
+          {
+            type: "navigate",
+            params: {
+              mode: "url",
+              url: ""
+            }
+          }
+        ]
       },
     }
   ]
@@ -49,7 +42,7 @@ const DEFAULT_STATE: ParserState = {
     categories: 0,
     categoriesTotal: 0,
     products: 0,
-    productsTotal: 0,    
+    productsTotal: 0,
   }
 }
 
@@ -88,7 +81,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return [ value, setStorageValue, isLoaded ] as const;
+  return [value, setStorageValue, isLoaded] as const;
 }
 
 const useParserConfig = () => {

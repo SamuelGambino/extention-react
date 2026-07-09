@@ -14,7 +14,6 @@ const Footer = () => {
       {version.hasUpdate && (
         <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>
       )}
-      
 
       <a
         className='footer__text footer__text--link footer__text--right'
