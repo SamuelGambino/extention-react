@@ -1,0 +1,258 @@
+/* ── Step ──────────────────────────────────────────────────────────────────── */
+
+.step {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  animation: stepFadeIn 0.15s ease;
+}
+
+@keyframes stepFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── indent guides ── */
+.step__indent {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.step__indent-line {
+  width: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* vertical guide */
+.step__indent-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 9px;
+  width: 1px;
+  background: #1e2e50;
+}
+
+/* horizontal tick on the last guide at this depth */
+.step__indent-line--last::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 10px;
+  height: 1px;
+  background: #1e2e50;
+}
+
+/* ── card ── */
+.step__card {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #0d1021;
+  border: 1px solid #1e2847;
+  border-left: 2px solid var(--step-color, #4a5a84);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+  min-width: 0;
+}
+
+.step__card:hover {
+  border-color: #2a3a60;
+  border-left-color: var(--step-color, #4a5a84);
+}
+
+.step__card--open {
+  border-color: #2e3f6a;
+  border-left-color: var(--step-color, #4a5a84);
+}
+
+/* loop / condition — slightly tinted bg */
+.step__card--loop,
+.step__card--condition {
+  background: #0a1020;
+}
+
+/* scanline */
+.step__scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.01) 2px,
+    rgba(255, 255, 255, 0.01) 3px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── header row ── */
+.step__header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  min-width: 0;
+}
+
+/* drag handle */
+.step__drag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #2e3a5e;
+  cursor: grab;
+  font-size: 12px;
+  flex-shrink: 0;
+  padding: 0;
+  transition: color 0.15s;
+  touch-action: none;
+}
+
+.step__drag:hover { color: #4a5a84; }
+.step__drag:active { cursor: grabbing; }
+
+/* step number */
+.step__num {
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 9px;
+  color: #2e3a5e;
+  letter-spacing: 0.08em;
+  min-width: 14px;
+  flex-shrink: 0;
+}
+
+/* type badge */
+.step__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 1px;
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  border: 1px solid color-mix(in srgb, var(--step-color) 40%, transparent);
+  background: color-mix(in srgb, var(--step-color) 8%, transparent);
+  color: var(--step-color, #4a5a84);
+}
+
+.step__badge-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* summary — fills available space, click to expand */
+.step__summary {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 11px;
+  color: #5a6a90;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  cursor: pointer;
+  min-width: 0;
+}
+
+/* selector syntax colours */
+.step__sel-class { color: #7a6aaa; }
+.step__sel-var   { color: #c07acc; }
+.step__sel-attr  { color: #c8963a; }
+.step__sel-muted { color: #3a4a6e; }
+
+.step__loop-count {
+  margin-left: auto;
+  font-size: 9px;
+  color: #2e4a70;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-right: 4px;
+}
+
+/* action buttons */
+.step__actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.step__card:hover .step__actions,
+.step__card--open .step__actions {
+  opacity: 1;
+}
+
+.step__action-btn {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #1e2847;
+  border-radius: 1px;
+  color: #3a4a6e;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--default, 'Courier New', monospace);
+  padding: 0;
+  transition: border-color 0.12s, color 0.12s;
+  line-height: 1;
+}
+
+.step__action-btn:hover {
+  border-color: #4a5a84;
+  color: #7a9acc;
+}
+
+.step__action-btn--del:hover {
+  border-color: #6a2828;
+  color: #c05050;
+}
+
+/* ── editor panel ── */
+.step__editor {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid #1a2240;
+  padding: 10px 12px;
+}
+
+.step__editor-placeholder {
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 10px;
+  color: #2e3a5e;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── children container ── */
+.step__children {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}

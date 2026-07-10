@@ -1,6 +1,6 @@
 import "./index.css";
 import MainBlock from "./blocks/MainBlock";
-import ScenarioBlock from "./blocks/ScenarioBlock";
+import Scenario from "../Scenario";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
@@ -47,16 +47,15 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   }, []);
 
   const preset = useWatch({ control, name: 'type' });
-  const hasSettings = preset === 'custom';
 
   return (
     <FormProvider {...methods}>
       <form className={`form ${className ? ` ${className}` : ''}`}>
         <MainBlock />
 
-        <ConfigurationBlock />
+        {preset !== 'custom' && <ConfigurationBlock />}
 
-        {hasSettings && <ScenarioBlock />}
+        {preset === 'custom' && <Scenario />}
 
         <ActionButtons />
       </form>

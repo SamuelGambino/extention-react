@@ -1,0 +1,265 @@
+.scenario {
+  position: relative;
+  border-width: 1px;
+  border-style: solid;
+  border-right: none;
+  border-bottom: none;
+  border-color: var(--second);
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scenario::before {
+  content: '';
+  position: absolute;
+  left: -2.5px;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 90px;
+  background: var(--second);
+}
+
+.scenario::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -12px;
+  width: 4px;
+  height: 4px;
+  border-radius: 90px;
+  background: var(--second);
+}
+
+.scenario__title {
+  position: relative;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.scenario__title::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 43%;
+  width: 4px;
+  height: 4px;
+  border-radius: 90px;
+  background: var(--second);
+}
+
+.scenario__title::after {
+  content: '';
+  position: absolute;
+  right: -22px;
+  top: -1px;
+  background-image: url(../../assets/slight-icon.svg);
+  width: 22px;
+  height: 22px;
+}
+
+/* ── steps list ── */
+.scenario__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scenario__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border: 1px dashed #1a2540;
+  border-radius: 2px;
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #2e3a5e;
+}
+
+/* ── add step row ── */
+.scenario__add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* type selector */
+.scenario__sel {
+  position: relative;
+  flex: 1;
+  height: 30px;
+  background: #0d1021;
+  border: 1px solid #1e2847;
+  border-radius: 2px;
+  transition: border-color 0.15s;
+}
+
+.scenario__sel:focus-within,
+.scenario__sel--open {
+  border-color: #3d5a9a;
+}
+
+.scenario__sel-corner {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid #2a3560;
+  border-left: 1px solid #2a3560;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.15s;
+}
+
+.scenario__sel--open .scenario__sel-corner {
+  border-color: rgba(74, 133, 200, 0.6);
+}
+
+.scenario__sel-btn {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px 0 10px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.scenario__sel-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.scenario__sel-val {
+  flex: 1;
+  text-align: left;
+}
+
+.scenario__sel-arrow {
+  color: #2e3a5e;
+  transition: transform 0.2s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.scenario__sel--open .scenario__sel-arrow {
+  transform: rotate(180deg);
+  color: #4a6aa8;
+}
+
+/* dropdown opens upward so it's above the step list */
+.scenario__dropdown {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: -1px;
+  right: -1px;
+  background: #0d1021;
+  border: 1px solid #3d5a9a;
+  border-radius: 2px;
+  z-index: 200;
+  list-style: none;
+  overflow: hidden;
+}
+
+.scenario__opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #151c35;
+  transition: background 0.1s;
+}
+
+.scenario__opt:last-child {
+  border-bottom: none;
+}
+
+.scenario__opt:hover,
+.scenario__opt--active {
+  background: #111830;
+}
+
+.scenario__opt-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.scenario__opt-label {
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  min-width: 72px;
+}
+
+.scenario__opt-desc {
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 9px;
+  color: #2e3a5e;
+  letter-spacing: 0.06em;
+}
+
+/* add button */
+.scenario__add-btn {
+  position: relative;
+  height: 30px;
+  padding: 0 14px;
+  background: #0e1630;
+  border: 1px solid #2e4a80;
+  border-radius: 2px;
+  font-family: var(--default, 'Courier New', monospace);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7aaee0;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.scenario__add-btn:hover {
+  background: #101d3a;
+  border-color: #4a6aa8;
+  color: #a0c8f0;
+}
+
+.scenario__btn-tl {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid rgba(74, 133, 200, 0.4);
+  border-left: 1px solid rgba(74, 133, 200, 0.4);
+  pointer-events: none;
+}
+
+.scenario__btn-br {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  border-bottom: 1px solid rgba(74, 133, 200, 0.4);
+  border-right: 1px solid rgba(74, 133, 200, 0.4);
+  pointer-events: none;
+}
