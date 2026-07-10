@@ -16,18 +16,18 @@ type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis' | 'whatsapp' | 
 type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetWhatsApp;
 
 interface PresetCustom {
-  steps: Step[];
+  steps: IStep[];
   requestDelay?: number;
   waitAfterClick?: number;
 }
 
 interface baseStep {
+  id: number;
   type: StepType;
-  params: Record<string, any>;
-  children?: Step[];
+  children?: IStep[];
 }
 
-type Step = StepNavigate | StepCollect | StepLoop | StepAction | StepWait | StepCondition | StepFind | CollectCategoryOrGroup | CollectProduct | CollectModifier;
+type IStep = StepNavigate | StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
 
 interface StepNavigate extends baseStep {
   type: "navigate",
@@ -50,10 +50,10 @@ interface CollectCategoryOrGroup extends StepCollect {
 }
 
 interface CollectProduct extends StepCollect {
-  entity?: "product",
+  entity?: "product" | "modifier",
   params: {
     name: string,
-    picture: string,
+    picture?: string,
     description?: string,
     price: string,
     old_price?: string,
@@ -65,20 +65,12 @@ interface CollectProduct extends StepCollect {
   }
 }
 
-interface CollectModifier extends StepCollect {
-  entity?: "modifier",
-  params: {
-    name: string,
-    price: number,
-  }
-}
-
 interface StepLoop extends baseStep {
   type: "loop",
   params: {
     source: string
   }
-  children: Step[];
+  children: IStep[];
 }
 
 interface StepAction extends baseStep {
@@ -98,18 +90,12 @@ interface StepWait extends baseStep {
 interface StepCondition extends baseStep {
   type: "condition",
   params: {
+    exists: boolean;
     selector: string;
   }
 }
 
-interface StepFind extends baseStep {
-  type: "find",
-  params: {
-    selector: string;
-  }
-}
-
-type StepType = "navigate" | "collect" | "extract" | "action" | "wait" | "condition" | "loop" | "find";
+type StepType = "navigate" | "collect" | "action" | "wait" | "condition" | "loop";
 
 interface PresetVk {
   marketId: string;
@@ -129,5 +115,8 @@ export type {
   ParserConfig,
   PresetByApi,
   PresetVk,
-  PresetWhatsApp
+  PresetWhatsApp,
+  StepType,
+  IStep,
+  PresetCustom
 }

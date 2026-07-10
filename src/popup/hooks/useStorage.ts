@@ -21,6 +21,7 @@ const DEFAULT_CONFIG: ParserConfig = {
       data: {
         steps: [
           {
+            id: 1,
             type: "navigate",
             params: {
               mode: "url",
