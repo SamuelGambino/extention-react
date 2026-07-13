@@ -26,11 +26,11 @@ const GroupTypes = [
 
 // extract: { color: "#5acf8a", placeholder: ".name, .price, img", desc: "Извлечь данные из DOM" },
 // store: { color: "#c07acc", placeholder: "$vars.key", desc: "Сохранить в переменную" },
+// navigate: { color: "#4a85c8", placeholder: "$vars.source", desc: "Перейти по URL" },
 const StepMeta: Record<
   StepType,
   { color: string; placeholder: string; desc: string }
 > = {
-  navigate: { color: "#4a85c8", placeholder: "$vars.source", desc: "Перейти по URL" },
   collect: { color: "#4aaa8a", placeholder: ".category-link", desc: "Собрать ссылки по селектору" },
   action: { color: "#9a8acc", placeholder: ".btn-selector", desc: "Клик по элементу" },
   loop: { color: "#7aaee0", placeholder: ".product-card", desc: "Цикл по элементам" },

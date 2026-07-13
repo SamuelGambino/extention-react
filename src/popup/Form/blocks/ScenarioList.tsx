@@ -26,7 +26,7 @@ interface ScenarioListProps {
 
 const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
   const { control } = useFormContext<ParserTabConfig>();
-  const [selectedType, setSelectedType] = useState<StepType>("navigate");
+  const [selectedType, setSelectedType] = useState<StepType>("loop");
   const STEP_TYPES = Object.keys(StepMeta) as string[];
 
   const { fields, move, append, remove } = useFieldArray({
@@ -55,12 +55,11 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
     const meta = StepMeta[selectedType];
     append({
       type: selectedType,
-      ...(selectedType === "navigate" && { url: meta.placeholder }),
-      ...(selectedType === "collect" && { selector: meta.placeholder, urlMode: false }),
-      ...(selectedType === "action" && { selector: meta.placeholder }),
-      ...(selectedType === "loop" && { selector: meta.placeholder, children: [] }),
-      ...(selectedType === "wait" && { ms: 1200 }),
-      ...(selectedType === "condition" && { condition: meta.placeholder, children: [] }),
+      ...(selectedType === "collect" && { entity: "category", params: { name: meta.placeholder } }),
+      ...(selectedType === "action" && { params: { command: meta.placeholder }}),
+      ...(selectedType === "loop" && { params: { source: meta.placeholder }, children: [] }),
+      ...(selectedType === "wait" && { params: { duration: 1200 }}),
+      ...(selectedType === "condition" && { params: { exists: false, selector: meta.placeholder }, children: [] }),
     } as any);
   };
 
@@ -73,10 +72,9 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
       >
         <SortableContext
           // items={fields}
-          items={fields.map(f=>f.id)}
+          items={fields.map(f => f.id)}
           strategy={verticalListSortingStrategy}
         >
-
           {fields.map((field, index) => (
             <Step
               key={field.id}

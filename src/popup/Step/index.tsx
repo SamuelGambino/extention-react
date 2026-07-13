@@ -16,11 +16,7 @@ interface Props {
   onRemove: () => void;
 }
 
-/** Renders a coloured inline summary of the step's key field */
 const StepSummary = ({ step }: { step: IStep }) => {
-  if (step.type === "navigate")
-    return <span className="step__sel-var">{(step as any).url ?? ""}</span>;
-
   if (step.type === "action")
     return <span className="step__sel-class">{(step as any).selector ?? ""}</span>;
 

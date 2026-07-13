@@ -25,15 +25,15 @@ interface baseStep {
   type: StepType;
 }
 
-type IStep = StepNavigate | StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
+type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
 
-interface StepNavigate extends baseStep {
-  type: "navigate",
-  params: {
-    mode: "url" | "back" | "reload",
-    url?: string
-  }
-}
+// interface StepNavigate extends baseStep {
+//   type: "navigate",
+//   params: {
+//     mode: "url" | "back" | "reload",
+//     url?: string
+//   }
+// }
 
 interface StepCollect extends baseStep {
   type: "collect",
@@ -91,9 +91,10 @@ interface StepCondition extends baseStep {
     exists: boolean;
     selector: string;
   }
+  children: IStep[];
 }
 
-type StepType = "navigate" | "collect" | "action" | "wait" | "condition" | "loop";
+type StepType = "collect" | "action" | "wait" | "condition" | "loop";
 
 interface PresetVk {
   marketId: string;
