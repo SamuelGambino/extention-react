@@ -25,7 +25,7 @@ const MainBlock = () => {
           name="type"
           control={control}
           render={({ field }) => (
-            <SelectField isAccent={true} value={field.value} options={FieldOptions.PresertOptions}
+            <SelectField isAccent={true} value={field.value} options={FieldOptions.PresertOptions.map(option => ({ label: option.label, value: option.value}))}
               onChange={(val) => field.onChange(val)} />
           )} />
       </div>

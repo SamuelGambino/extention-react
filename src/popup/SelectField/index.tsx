@@ -4,11 +4,16 @@ import "./index.css";
 interface IInputField {
   isAccent?: boolean;
   value?: string;
-  options: { label: string; value: string }[];
+  className?: string;
+  options: {
+    label: string; value: string;
+    description?: string;
+    color?: string;
+  }[];
   onChange: (value: string) => void;
 }
 
-const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange }) => {
+const SelectField: React.FC<IInputField> = ({ isAccent, value, className, options, onChange }) => {
   const normalizedValue = value ?? '';
   const [selectedState, setSelectedState] = useState({
     propValue: normalizedValue,
@@ -49,7 +54,7 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
   return (
     <div
       ref={wrapRef}
-      className={`select-field ${isOpen ? "select-field--open" : ""} ${isAccent ? "select-field--accent" : ""}`}
+      className={`select-field ${isOpen ? "select-field--open" : ""}${isAccent ? " select-field--accent" : ""}${className ? ` ${className}` : ""}`}
     >
       <div className="select-field__corner select-field__corner--tl" />
       <div className="select-field__corner select-field__corner--br" />
@@ -70,14 +75,20 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, options, onChange
           {options.map(option => (
             <li
               key={option.value}
-              className={`select-field__item ${option.value === selectedState.value ? "select-field__item--selected" : ""}`}
+              className={`select-field__item${option.value === value ? " select-field__item--selected" : ""}`}
+              style={{ color: option.color }}
               onMouseDown={(e) => {
-                e.preventDefault(); // не даём сработать document mousedown
+                e.preventDefault();
                 handlePick(option.value);
               }}
             >
-              <span className="select-field__item-dot" />
-              {option.label}
+              <span className="select-field__item-dot" style={{ backgroundColor: option.color }} />
+
+              <span className="select-field__item-label">{option.label}</span>
+
+              {option.description && (
+                <span className="select-field__item-desc">{option.description}</span>
+              )}
             </li>
           ))}
         </ul>

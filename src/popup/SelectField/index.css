@@ -197,3 +197,8 @@
 .select-field--accent .select-field__item--selected .select-field__item-dot {
   background: var(--border-green);
 }
+
+.select-field__item-desc {
+  margin-left: auto;
+  color: var(--text-placeholder)
+}
