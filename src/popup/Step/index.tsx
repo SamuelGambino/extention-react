@@ -2,15 +2,17 @@ import "./index.css";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { IStep } from "../../globalTypes/parser_сonfig";
-import { STEP_META } from "../Scenario";
+import type { IStep, StepType } from "../../globalTypes/parser_сonfig";
+import { useFormContext, useWatch } from "react-hook-form";
+import ScenarioList from "../Form/blocks/ScenarioList";
 
 interface Props {
   index: number;
-  step: IStep;
-  depth?: number;
-  onRemove?: () => void;
-  isLast?: boolean;
+  path: string;
+  depth: number;
+  isLast: boolean;
+  StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
+  onRemove: () => void;
 }
 
 /** Renders a coloured inline summary of the step's key field */
@@ -49,8 +51,14 @@ const StepSummary = ({ step }: { step: IStep }) => {
   return null;
 };
 
-const Step = ({ index, step, depth = 0, onRemove, isLast = false }: Props) => {
+const Step = ({ index, path, depth, isLast, StepMeta, onRemove }: Props) => {
   const [opened, setOpened] = useState(false);
+  const { control } = useFormContext();
+
+  const step = useWatch({
+    control,
+    name: path
+  });
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: step.id });
@@ -61,114 +69,119 @@ const Step = ({ index, step, depth = 0, onRemove, isLast = false }: Props) => {
     opacity: isDragging ? 0.4 : 1,
   };
 
-  const meta = STEP_META[step.type as keyof typeof STEP_META];
+  const meta = StepMeta[step.type as keyof typeof StepMeta];
   const children = (step as any).children as IStep[] | undefined;
-  const hasChildren = Array.isArray(children) && children.length > 0;
+  const hasChildren = Array.isArray(children);
   const isLoop = step.type === "loop" || step.type === "condition";
 
   return (
     <div ref={setNodeRef} style={style} className="step">
-      {/* indent guides for nested steps */}
-      {depth > 0 && (
-        <div className="step__indent">
-          {Array.from({ length: depth }).map((_, i) => (
-            <div
-              key={i}
-              className={`step__indent-line ${i === depth - 1 && isLast ? "step__indent-line--last" : ""}`}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* card */}
-      <div
-        className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
-        style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
-      >
-        {/* scanline texture */}
-        <div className="step__scanline" />
-
-        <div className="step__header">
-          {/* drag handle */}
-          <button
-            type="button"
-            className="step__drag"
-            {...listeners}
-            {...attributes}
-            aria-label="Drag to reorder"
-          >
-            ⠿
-          </button>
-
-          {/* step number */}
-          <span className="step__num">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-
-          {/* type badge */}
-          <span className="step__badge">
-            <span className="step__badge-dot" />
-            {step.type}
-          </span>
-
-          {/* summary */}
-          <div
-            className="step__summary"
-            onClick={() => setOpened((v) => !v)}
-          >
-            <StepSummary step={step} />
+      <div className="step__indent-container">
+        {depth > 0 && (
+          <div className="step__indent">
+            {Array.from({ length: depth }).map((_, i) => (
+              <div
+                key={i}
+                className={`step__indent-line ${i === depth - 1 && isLast ? "step__indent-line--last" : ""}`}
+              />
+            ))}
           </div>
+        )}
 
-          {/* actions */}
-          <div className="step__actions">
-            {isLoop && (
+        {/* card */}
+        <div
+          className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
+          style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
+        >
+          {/* scanline texture */}
+          <div className="step__scanline" />
+
+          <div className="step__header">
+            {/* drag handle */}
+            <button
+              type="button"
+              className="step__drag"
+              {...listeners}
+              {...attributes}
+              aria-label="Drag to reorder"
+            >
+              ⠿
+            </button>
+
+            {/* step number */}
+            <span className="step__num">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+
+            {/* type badge */}
+            <span className="step__badge">
+              <span className="step__badge-dot" />
+              {step.type}
+            </span>
+
+            {/* summary */}
+            <div
+              className="step__summary"
+              onClick={() => setOpened((v) => !v)}
+            >
+              <StepSummary step={step} />
+            </div>
+
+            {/* actions */}
+            <div className="step__actions">
+              {isLoop && (
+                <button
+                  type="button"
+                  className="step__action-btn"
+                  onClick={() => setOpened((v) => !v)}
+                  aria-label={opened ? "Collapse" : "Expand"}
+                >
+                  {opened ? "-" : "+"}
+                </button>
+              )}
               <button
                 type="button"
                 className="step__action-btn"
+                aria-label="Edit"
+                title="Edit"
                 onClick={() => setOpened((v) => !v)}
-                aria-label={opened ? "Collapse" : "Expand"}
-                title={opened ? "Collapse" : "Expand"}
               >
-                {opened ? "−" : "+"}
+                ✎
               </button>
-            )}
-            <button
-              type="button"
-              className="step__action-btn"
-              aria-label="Edit"
-              title="Edit"
-              onClick={() => setOpened((v) => !v)}
-            >
-              ✎
-            </button>
-            <button
-              type="button"
-              className="step__action-btn step__action-btn--del"
-              aria-label="Remove"
-              title="Remove"
-              onClick={onRemove}
-            >
-              ✕
-            </button>
+              <button
+                type="button"
+                className="step__action-btn step__action-btn--del"
+                aria-label="Remove"
+                title="Remove"
+                onClick={onRemove}
+              >
+                ✕
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* editor panel (expanded) */}
-        {opened && (
-          <div className="step__editor">
-            {/* StepEditor goes here — pass index + step */}
-            <span className="step__editor-placeholder">
-              {/* <StepEditor index={index} step={step} /> */}
-              editor · {step.type}
-            </span>
-          </div>
-        )}
+          {/* editor panel (expanded) */}
+          {opened && (
+            <div className="step__editor">
+              {/* StepEditor goes here — pass index + step */}
+              <span className="step__editor-placeholder">
+                {/* <StepEditor index={index} step={step} /> */}
+                editor · {step.type}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* recursive children for loop / condition */}
       {hasChildren && (
         <div className="step__children">
-          {children!.map((child, i) => (
+          <ScenarioList
+            path={`${path}.children`}
+            depth={depth ? depth + 1 : 1}
+            StepMeta={StepMeta}
+          />
+          {/* {children!.map((child, i) => (
             <Step
               key={child.id}
               index={i}
@@ -176,7 +189,7 @@ const Step = ({ index, step, depth = 0, onRemove, isLast = false }: Props) => {
               depth={depth + 1}
               isLast={i === children!.length - 1}
             />
-          ))}
+          ))} */}
         </div>
       )}
     </div>

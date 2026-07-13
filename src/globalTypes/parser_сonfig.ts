@@ -24,7 +24,6 @@ interface PresetCustom {
 interface baseStep {
   id: number;
   type: StepType;
-  children?: IStep[];
 }
 
 type IStep = StepNavigate | StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;

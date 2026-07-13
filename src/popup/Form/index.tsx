@@ -1,11 +1,12 @@
 import "./index.css";
 import MainBlock from "./blocks/MainBlock";
-import Scenario from "../Scenario";
+import ScenarioList from "./blocks/ScenarioList";
 import ConfigurationBlock from "./blocks/ConfigurationBlock";
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useEffect, useRef } from "react";
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import ActionButtons from "../ActionButtons";
+import Constants from "./constants";
 
 interface FormProps {
   className?: string;
@@ -55,7 +56,11 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
 
         {preset !== 'custom' && <ConfigurationBlock />}
 
-        {preset === 'custom' && <Scenario />}
+        {preset === 'custom' && (
+          <fieldset className="form__settings">
+            <legend className="form__settings-title">Scenario Builder</legend>
+            <ScenarioList path={"data.steps"} StepMeta={Constants.StepMeta} />
+          </fieldset>)}
 
         <ActionButtons />
       </form>

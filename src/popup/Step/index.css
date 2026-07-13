@@ -2,6 +2,7 @@
 
 .step {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   gap: 0;
   animation: stepFadeIn 0.15s ease;
@@ -44,6 +45,10 @@
   width: 10px;
   height: 1px;
   background: #1e2e50;
+}
+
+.step__indent-container {
+  display: flex;
 }
 
 /* ── card ── */

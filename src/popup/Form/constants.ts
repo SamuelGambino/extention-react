@@ -1,3 +1,5 @@
+import type { StepType } from "../../globalTypes/parser_сonfig";
+
 const PresertOptions = [
   { label: 'Custom', value: 'custom', description: 'Я позже опишу эту логику. Пока что модуль не доступен' },
   { label: 'VK', value: 'vk', description: 'Достаточно использования автозаполнения\nТребуется id магазина ВК' },
@@ -22,4 +24,18 @@ const GroupTypes = [
   { label: 'all_unlimited', value: 'all_unlimited' },
 ]
 
-export default {PresertOptions, ClicksOptions, GroupTypes};
+// extract: { color: "#5acf8a", placeholder: ".name, .price, img", desc: "Извлечь данные из DOM" },
+// store: { color: "#c07acc", placeholder: "$vars.key", desc: "Сохранить в переменную" },
+const StepMeta: Record<
+  StepType,
+  { color: string; placeholder: string; desc: string }
+> = {
+  navigate: { color: "#4a85c8", placeholder: "$vars.source", desc: "Перейти по URL" },
+  collect: { color: "#4aaa8a", placeholder: ".category-link", desc: "Собрать ссылки по селектору" },
+  action: { color: "#9a8acc", placeholder: ".btn-selector", desc: "Клик по элементу" },
+  loop: { color: "#7aaee0", placeholder: ".product-card", desc: "Цикл по элементам" },
+  wait: { color: "#c8963a", placeholder: "1200", desc: "Пауза (мс)" },
+  condition: { color: "#cc7a5a", placeholder: "$$current.length > 0", desc: "Условное ветвление" },
+};
+
+export default { PresertOptions, ClicksOptions, GroupTypes, StepMeta };
