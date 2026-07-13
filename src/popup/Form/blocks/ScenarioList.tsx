@@ -42,8 +42,12 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
     const { active, over } = event;
     if (!over) return;
     if (active.id === over.id) return;
-    const oldIndex = fields.findIndex(f => f.id === active.id);
-    const newIndex = fields.findIndex(f => f.id === over.id);
+    const oldIndex = fields.findIndex(
+      ({ id }) => id === active.id
+    );
+    const newIndex = fields.findIndex(
+      ({ id }) => id === over.id
+    );
     move(oldIndex, newIndex);
   };
 
@@ -51,12 +55,12 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
     const meta = StepMeta[selectedType];
     append({
       type: selectedType,
-      ...(selectedType === "navigate" && { id: crypto.randomUUID(), url: meta.placeholder }),
-      ...(selectedType === "collect" && { id: crypto.randomUUID(), selector: meta.placeholder, urlMode: false }),
-      ...(selectedType === "action" && { id: crypto.randomUUID(), selector: meta.placeholder }),
-      ...(selectedType === "loop" && { id: crypto.randomUUID(), selector: meta.placeholder, children: [] }),
-      ...(selectedType === "wait" && { id: crypto.randomUUID(), ms: 1200 }),
-      ...(selectedType === "condition" && { id: crypto.randomUUID(), condition: meta.placeholder, children: [] }),
+      ...(selectedType === "navigate" && { url: meta.placeholder }),
+      ...(selectedType === "collect" && { selector: meta.placeholder, urlMode: false }),
+      ...(selectedType === "action" && { selector: meta.placeholder }),
+      ...(selectedType === "loop" && { selector: meta.placeholder, children: [] }),
+      ...(selectedType === "wait" && { ms: 1200 }),
+      ...(selectedType === "condition" && { condition: meta.placeholder, children: [] }),
     } as any);
   };
 
@@ -68,13 +72,15 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
         onDragEnd={onDragEnd}
       >
         <SortableContext
-          items={fields}
+          // items={fields}
+          items={fields.map(f=>f.id)}
           strategy={verticalListSortingStrategy}
         >
 
           {fields.map((field, index) => (
             <Step
               key={field.id}
+              sortableId={field.id}
               path={`${path}.${index}`}
               index={index}
               onRemove={() => remove(index)}
@@ -86,7 +92,7 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
         </SortableContext>
       </DndContext>
 
-      <div className="form__list-add">
+      <div className="form__list-add" style={{ marginLeft: `${depth ? depth * 20 : 0}px` }}>
         <SelectField className="form__list-select" options={STEP_TYPES.map((type) => ({ value: type, label: type, description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
           setSelectedType(value as StepType);
         }} />

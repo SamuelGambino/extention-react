@@ -22,7 +22,6 @@ interface PresetCustom {
 }
 
 interface baseStep {
-  id: number;
   type: StepType;
 }
 
