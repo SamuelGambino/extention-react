@@ -75,6 +75,7 @@ interface StepAction extends baseStep {
   type: "action",
   params: {
     command: "click";
+    selector: string;
   }
 }
 
@@ -117,5 +118,7 @@ export type {
   PresetWhatsApp,
   StepType,
   IStep,
-  PresetCustom
+  PresetCustom,
+  StepLoop,
+  StepCondition
 }

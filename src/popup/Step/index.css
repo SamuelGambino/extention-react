@@ -221,3 +221,21 @@
   gap: 4px;
   margin-top: 4px;
 }
+
+.step__field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step__field-input {
+  background: transparent;
+  border: none;
+  height: -webkit-fill-available;
+  border-bottom: 1px solid var(--border);
+}
+
+.step__field-input:focus-within {
+  border-color: var(--border-hover);
+  background: var(--second-bg);
+}

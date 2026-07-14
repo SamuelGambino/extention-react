@@ -2,9 +2,10 @@ import "./index.css";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { IStep } from "../../globalTypes/parser_сonfig";
+import type { IStep, StepCondition, StepLoop } from "../../globalTypes/parser_сonfig";
 import { useFormContext, useWatch } from "react-hook-form";
 import ScenarioList from "../Form/blocks/ScenarioList";
+import StepEditor from "./StepEditor";
 
 interface Props {
   index: number;
@@ -29,9 +30,23 @@ const StepSummary = ({ step }: { step: IStep }) => {
     );
   }
 
-  if (step.type === "loop" || step.type === "condition") {
-    const selector = (step as any).selector ?? (step as any).condition ?? "";
-    const children = (step as any).children ?? [];
+  if (step.type === "condition") {
+    const isExists = (step as StepCondition).params.exists ?? false;
+    const selector = (step as StepCondition).params.selector ?? "";
+    const children = (step as StepCondition).children ?? [];
+    return (
+      <>
+        <span className="step__sel-class">{`${isExists ? "If exists" : "If not exist"} ${selector}`}</span>
+        {children.length > 0 && (
+          <span className="step__loop-count">{children.length} steps inside</span>
+        )}
+      </>
+    );
+  }
+
+  if (step.type === "loop") {
+    const selector = (step as StepLoop).params.source ?? "";
+    const children = (step as StepLoop).children ?? [];
     return (
       <>
         <span className="step__sel-class">{selector}</span>
@@ -142,6 +157,7 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
           {opened && (
             <div className="step__editor">
               <span className="step__editor-placeholder">
+                <StepEditor type={step.type} path={path} />
                 editor · {step.type}
               </span>
             </div>

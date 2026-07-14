@@ -90,7 +90,7 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
         </SortableContext>
       </DndContext>
 
-      <div className="form__list-add" style={{ marginLeft: `${depth ? depth * 20 : 0}px` }}>
+      <div className="form__list-add" style={{ marginLeft: `${depth ? depth * 20 : 0}px`, marginTop: `${depth ? (depth === 0 ? 10 : 0) : 10}px` }}>
         <SelectField className="form__list-select" value={selectedType} options={STEP_TYPES.map((type) => ({ value: type, label: type, description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
           setSelectedType(value as StepType);
         }} />

@@ -8,7 +8,7 @@ const useAutoFill = () => {
 
   const detectPresetFromUrl = (domain: string) => {
     if (domain === "vk.com" || domain === "vk.ru") return "vk";
-    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru") return "yandex";
+    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru" || domain === "eda.yandex.kg") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
     if (domain === "web.whatsapp.com") return "whatsapp";
     if (domain === "kuper.ru") return "kuper";
