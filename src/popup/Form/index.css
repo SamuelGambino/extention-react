@@ -163,13 +163,12 @@ button.form__button--small {
   position: relative;
 }
 
-/* type selector */
+
 .form__list-select {
   width: -webkit-fill-available;
   height: -webkit-fill-available;
 }
 
-/* add button */
 .form__list-btn {
   text-wrap-mode: nowrap;
   min-width: fit-content;

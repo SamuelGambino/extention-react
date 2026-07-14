@@ -54,7 +54,7 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, className, option
   return (
     <div
       ref={wrapRef}
-      className={`select-field ${isOpen ? "select-field--open" : ""}${isAccent ? " select-field--accent" : ""}${className ? ` ${className}` : ""}`}
+      className={`${className ? `${className} ` : ""}select-field ${isOpen ? "select-field--open" : ""}${isAccent ? " select-field--accent" : ""}`}
     >
       <div className="select-field__corner select-field__corner--tl" />
       <div className="select-field__corner select-field__corner--br" />

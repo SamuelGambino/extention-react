@@ -1,13 +1,15 @@
-.select-field {
-  position: relative;
-  height: 36px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  transition: border-color 0.15s;
-  letter-spacing: 0.24em;
-  font-size: 10px;
-  text-transform: uppercase;
+@layer base {
+  .select-field {
+    position: relative;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: border-color 0.15s;
+    letter-spacing: 0.24em;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
 }
 
 /* Угловые засечки */
