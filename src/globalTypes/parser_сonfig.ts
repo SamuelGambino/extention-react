@@ -25,7 +25,7 @@ interface baseStep {
   type: StepType;
 }
 
-type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
+type IStep = StepCollect | StepLoop | StepClick | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
 
 // interface StepNavigate extends baseStep {
 //   type: "navigate",
@@ -35,19 +35,21 @@ type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition | Co
 //   }
 // }
 
-interface StepCollect extends baseStep {
+type StepCollect = CollectCategoryOrGroup | CollectProduct;
+
+interface BaseCollect extends baseStep {
   type: "collect",
   entity?: "category" | "product" | "modifier" | "modifier_group",
 }
 
-interface CollectCategoryOrGroup extends StepCollect {
+interface CollectCategoryOrGroup extends BaseCollect {
   entity?: "category" | "modifier_group",
   params: {
     name: string,
   }
 }
 
-interface CollectProduct extends StepCollect {
+interface CollectProduct extends BaseCollect {
   entity?: "product" | "modifier",
   params: {
     name: string,
@@ -71,10 +73,9 @@ interface StepLoop extends baseStep {
   children: IStep[];
 }
 
-interface StepAction extends baseStep {
-  type: "action",
+interface StepClick extends baseStep {
+  type: "click",
   params: {
-    command: "click";
     selector: string;
   }
 }
@@ -95,7 +96,7 @@ interface StepCondition extends baseStep {
   children: IStep[];
 }
 
-type StepType = "collect" | "action" | "wait" | "condition" | "loop";
+type StepType = "collect" | "click" | "wait" | "condition" | "loop";
 
 interface PresetVk {
   marketId: string;
@@ -120,5 +121,8 @@ export type {
   IStep,
   PresetCustom,
   StepLoop,
-  StepCondition
+  StepCondition,
+  StepClick,
+  StepWait,
+  StepCollect
 }

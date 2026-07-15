@@ -202,17 +202,17 @@
 }
 
 .step__editor {
+  display: flex;
+  flex-direction: column;
   position: relative;
   z-index: 1;
   border-top: 1px solid var(--border-second);
   padding: 10px 12px;
-}
-
-.step__editor-placeholder {
   font-size: 10px;
   color: var(--text-placeholder);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  gap: 8px;
 }
 
 .step__children {
@@ -220,6 +220,12 @@
   flex-direction: column;
   gap: 4px;
   margin-top: 4px;
+}
+
+.step__field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px
 }
 
 .step__field {
@@ -233,6 +239,7 @@
   border: none;
   height: -webkit-fill-available;
   border-bottom: 1px solid var(--border);
+  color: var(--text-second);
 }
 
 .step__field-input:focus-within {

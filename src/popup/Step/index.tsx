@@ -2,7 +2,7 @@ import "./index.css";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { IStep, StepCondition, StepLoop } from "../../globalTypes/parser_сonfig";
+import type { IStep, StepClick, StepCollect, StepCondition, StepLoop, StepWait } from "../../globalTypes/parser_сonfig";
 import { useFormContext, useWatch } from "react-hook-form";
 import ScenarioList from "../Form/blocks/ScenarioList";
 import StepEditor from "./StepEditor";
@@ -18,47 +18,44 @@ interface Props {
 }
 
 const StepSummary = ({ step }: { step: IStep }) => {
-  if (step.type === "action")
-    return <span className="step__sel-class">{(step as any).selector ?? ""}</span>;
+  if (step.type === "click")
+    return <span className="step__sel-class">{(step as StepClick).params.selector ?? ""}</span>;
 
   if (step.type === "collect") {
-    const fields = (step as any).fields as Array<{ selector: string }> | undefined;
+    const stepCollect = (step as StepCollect);
     return (
       <span className="step__sel-class">
-        {fields?.map((f) => f.selector).join(", ") ?? ""}
+        {/* {stepCollect.params?.map((f) => f.selector).join(", ") ?? ""} */}
       </span>
     );
   }
 
   if (step.type === "condition") {
-    const isExists = (step as StepCondition).params.exists ?? false;
-    const selector = (step as StepCondition).params.selector ?? "";
-    const children = (step as StepCondition).children ?? [];
+    const stepCond = (step as StepCondition);
     return (
       <>
-        <span className="step__sel-class">{`${isExists ? "If exists" : "If not exist"} ${selector}`}</span>
-        {children.length > 0 && (
-          <span className="step__loop-count">{children.length} steps inside</span>
+        <span className="step__sel-class">{`${stepCond.params.exists ? "If exists:" : "If not exist:"} ${stepCond.params.selector ?? ""}`}</span>
+        {stepCond.children.length > 0 && (
+          <span className="step__loop-count">{stepCond.children.length} steps inside</span>
         )}
       </>
     );
   }
 
   if (step.type === "loop") {
-    const selector = (step as StepLoop).params.source ?? "";
-    const children = (step as StepLoop).children ?? [];
+    const stepLoop = (step as StepLoop);
     return (
       <>
-        <span className="step__sel-class">{selector}</span>
-        {children.length > 0 && (
-          <span className="step__loop-count">{children.length} steps inside</span>
+        <span className="step__sel-class">{stepLoop.params.source}</span>
+        {stepLoop.children.length > 0 && (
+          <span className="step__loop-count">{stepLoop.children.length} steps inside</span>
         )}
       </>
     );
   }
 
   if (step.type === "wait")
-    return <span className="step__sel-attr">{(step as any).ms ?? ""}ms</span>;
+    return <span className="step__sel-attr">{(step as StepWait).params.duration ?? ""}ms</span>;
 
   return null;
 };
@@ -156,10 +153,8 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
 
           {opened && (
             <div className="step__editor">
-              <span className="step__editor-placeholder">
                 <StepEditor type={step.type} path={path} />
-                editor · {step.type}
-              </span>
+              <span>editor · {step.type}</span>
             </div>
           )}
         </div>
