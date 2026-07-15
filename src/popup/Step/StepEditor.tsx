@@ -1,6 +1,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import "./index.css";
 import SwitchField from "../SwitchField";
+import RadioField from "../RadioField";
 interface StepEditorProps {
     type: string;
     path: string;
@@ -78,12 +79,16 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
             return (
                 <div className="step__field-container">
                     <div className="step__field">
-                        <p>Selector:</p>
                         <Controller
                             name={`${path}.params.selector`}
                             control={control}
                             render={({ field }) => (
-                                <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                <RadioField data={[
+                                    { label: "Category", value: "category" },
+                                    { label: "Product", value: "product" },
+                                    { label: "Modifier Group", value: "modifier_group" },
+                                    { label: "Modifier", value: "modifier" }
+                                ]} value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
                     <div className="step__field">
