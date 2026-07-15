@@ -25,7 +25,7 @@ const StepSummary = ({ step }: { step: IStep }) => {
     const stepCollect = (step as StepCollect);
     return (
       <span className="step__sel-class">
-        {/* {stepCollect.params?.map((f) => f.selector).join(", ") ?? ""} */}
+        {stepCollect.entity}
       </span>
     );
   }
