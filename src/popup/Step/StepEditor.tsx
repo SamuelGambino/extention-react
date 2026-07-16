@@ -28,16 +28,31 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                 </div>
             )
 
-        case "click":
+        case "action":
             return (
-                <div className="step__field">
-                    <p>Selector:</p>
-                    <Controller
-                        name={`${path}.params.selector`}
-                        control={control}
-                        render={({ field }) => (
-                            <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
-                        )} />
+                <div className="step__field-container">
+                    <div className="step__field step__field--main">
+                        <Controller
+                            name={`${path}.action`}
+                            control={control}
+                            render={({ field }) => (
+                                <RadioField data={[
+                                    { label: "Click", value: "click" },
+                                    { label: "Hover", value: "hover" }
+                                ]} value={field.value} onChange={field.onChange} />
+                            )} />
+                    </div>
+                    {step.action && (
+                        <div className="step__field">
+                            <p>Selector:</p>
+                            <Controller
+                                name={`${path}.params.selector`}
+                                control={control}
+                                render={({ field }) => (
+                                    <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
                 </div>
             )
 

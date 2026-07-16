@@ -32,7 +32,7 @@ const StepMeta: Record<
   { color: string; placeholder: string; desc: string }
 > = {
   collect: { color: "#4aaa8a", placeholder: ".category-link", desc: "Собрать данные" },
-  click: { color: "#9a8acc", placeholder: ".btn-selector", desc: "Клик по элементу" },
+  action: { color: "#9a8acc", placeholder: ".btn-selector", desc: "Действие по элементу" },
   loop: { color: "#7aaee0", placeholder: ".product-card", desc: "Цикл по элементам" },
   wait: { color: "#c8963a", placeholder: "1200", desc: "Пауза (мс)" },
   condition: { color: "#cc7a5a", placeholder: ".modifiers", desc: "Условное ветвление" },

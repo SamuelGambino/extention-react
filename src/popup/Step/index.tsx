@@ -2,7 +2,7 @@ import "./index.css";
 import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import type { IStep, StepClick, StepCollect, StepCondition, StepLoop, StepWait } from "../../globalTypes/parser_сonfig";
+import type { IStep, StepAction, StepCollect, StepCondition, StepLoop, StepWait } from "../../globalTypes/parser_сonfig";
 import { useFormContext, useWatch } from "react-hook-form";
 import ScenarioList from "../Form/blocks/ScenarioList";
 import StepEditor from "./StepEditor";
@@ -18,8 +18,8 @@ interface Props {
 }
 
 const StepSummary = ({ step }: { step: IStep }) => {
-  if (step.type === "click")
-    return <span className="step__sel-class">{(step as StepClick).params.selector ?? ""}</span>;
+  if (step.type === "action")
+    return <span className="step__sel-class">{`${(step as StepAction).action ?? ""} ${(step as StepAction).params.selector ?? ""}`}</span>;
 
   if (step.type === "collect") {
     const stepCollect = (step as StepCollect);
