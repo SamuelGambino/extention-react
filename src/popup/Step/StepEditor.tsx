@@ -33,7 +33,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                 <div className="step__field-container">
                     <div className="step__field step__field--main">
                         <Controller
-                            name={`${path}.action`}
+                            name={`${path}.params.action`}
                             control={control}
                             render={({ field }) => (
                                 <RadioField data={[
@@ -42,7 +42,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 ]} value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
-                    {step.action && (
+                    {step.params.action && (
                         <div className="step__field">
                             <p>Selector:</p>
                             <Controller
@@ -98,7 +98,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                 <div className="step__field-container">
                     <div className="step__field step__field--main">
                         <Controller
-                            name={`${path}.entity`}
+                            name={`${path}.params.entity`}
                             control={control}
                             render={({ field }) => (
                                 <RadioField data={[
@@ -109,7 +109,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 ]} value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
-                    {step.entity && (
+                    {step.params.entity && (
                         <div className="step__field">
                             <p>Name:</p>
                             <Controller
@@ -120,7 +120,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 )} />
                         </div>
                     )}
-                    {step.entity && (step.entity === "product" || step.entity === "modifier") && (
+                    {step.params.entity && (step.params.entity === "product" || step.params.entity === "modifier") && (
                         <div className="step__field">
                             <p>Price:</p>
                             <Controller
@@ -131,7 +131,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 )} />
                         </div>
                     )}
-                    {step.entity && step.entity === "product" && (
+                    {step.params.entity && step.params.entity === "product" && (
                         <>
                             <div className="step__field">
                                 <p>Picture:</p>

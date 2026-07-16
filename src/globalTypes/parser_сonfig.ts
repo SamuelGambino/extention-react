@@ -39,19 +39,18 @@ type StepCollect = CollectCategoryOrGroup | CollectProduct;
 
 interface BaseCollect extends baseStep {
   type: "collect",
-  entity?: "category" | "product" | "modifier" | "modifier_group",
 }
 
 interface CollectCategoryOrGroup extends BaseCollect {
-  entity?: "category" | "modifier_group",
   params: {
+    entity?: "category" | "modifier_group",
     name: string,
   }
 }
 
 interface CollectProduct extends BaseCollect {
-  entity?: "product" | "modifier",
   params: {
+    entity?: "product" | "modifier",
     name: string,
     picture?: string,
     description?: string,
@@ -77,8 +76,8 @@ type Actions = "click" | "hover"
 
 interface StepAction extends baseStep {
   type: "action",
-  action: Actions,
   params: {
+    action: Actions,
     selector: string;
   }
 }

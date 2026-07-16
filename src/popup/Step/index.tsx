@@ -19,13 +19,13 @@ interface Props {
 
 const StepSummary = ({ step }: { step: IStep }) => {
   if (step.type === "action")
-    return <span className="step__sel-class">{`${(step as StepAction).action ?? ""} ${(step as StepAction).params.selector ?? ""}`}</span>;
+    return <span className="step__sel-class">{`${(step as StepAction).params.action ?? ""} ${(step as StepAction).params.selector ?? ""}`}</span>;
 
   if (step.type === "collect") {
     const stepCollect = (step as StepCollect);
     return (
       <span className="step__sel-class">
-        {stepCollect.entity}
+        {stepCollect.params.entity}
       </span>
     );
   }
