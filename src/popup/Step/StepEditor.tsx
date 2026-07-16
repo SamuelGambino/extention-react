@@ -64,7 +64,6 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                             control={control}
                             render={({ field }) => (
                                 <SwitchField value={field.value} onChange={field.onChange} />
-                                // <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
                     <div className="step__field">
@@ -82,7 +81,7 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
         case "collect":
             return (
                 <div className="step__field-container">
-                    <div className="step__field">
+                    <div className="step__field step__field--main">
                         <Controller
                             name={`${path}.entity`}
                             control={control}

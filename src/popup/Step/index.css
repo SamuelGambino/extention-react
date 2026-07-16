@@ -231,7 +231,12 @@
 .step__field {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 4px;
+}
+
+.step__field--main {
+  justify-content: center
 }
 
 .step__field-input {
