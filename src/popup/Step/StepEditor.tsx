@@ -58,14 +58,41 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
 
         case "wait":
             return (
-                <div className="step__field">
-                    <p>Duration:</p>
-                    <Controller
-                        name={`${path}.params.duration`}
-                        control={control}
-                        render={({ field }) => (
-                            <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
-                        )} />
+                <div className="step__field-container">
+                    <div className="step__field step__field--main">
+                        <Controller
+                            name={`${path}.params.mode`}
+                            control={control}
+                            render={({ field }) => (
+                                <RadioField data={[
+                                    { label: "Timeout", value: "timeout" },
+                                    { label: "For navigation", value: "navigation" },
+                                    { label: "For element", value: "element" }
+                                ]} value={field.value} onChange={field.onChange} />
+                            )} />
+                    </div>
+                    {step.params.mode && step.params.mode === "timeout" && (
+                        <div className="step__field">
+                            <p>Duration:</p>
+                            <Controller
+                                name={`${path}.params.duration`}
+                                control={control}
+                                render={({ field }) => (
+                                    <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
+                    {step.params.mode && step.params.mode === "element" && (
+                        <div className="step__field">
+                            <p>Selector:</p>
+                            <Controller
+                                name={`${path}.params.selector`}
+                                control={control}
+                                render={({ field }) => (
+                                    <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
                 </div>
             )
 

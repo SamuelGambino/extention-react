@@ -82,11 +82,29 @@ interface StepAction extends baseStep {
   }
 }
 
-interface StepWait extends baseStep {
-  type: "wait",
+type StepWait = StepWaitTimeout | StepWaitElement | StepWaitNavigation;
+
+interface StepWaitTimeout {
+  type: "wait";
   params: {
+    mode: "timeout";
     duration: number;
-  }
+  };
+}
+
+interface StepWaitElement {
+  type: "wait";
+  params: {
+    mode: "element"; 
+    selector: string; 
+  };
+}
+
+interface StepWaitNavigation {
+  type: "wait";
+  params: {
+    mode: "navigation";
+  };
 }
 
 interface StepCondition extends baseStep {

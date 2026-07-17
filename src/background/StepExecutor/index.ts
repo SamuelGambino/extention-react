@@ -1,5 +1,6 @@
 import type { IStep } from '../../globalTypes/parser_сonfig';
 import { executeAction, type ActionPayload } from './handlers/action';
+import { waitForTabComplete } from './handlers/wait';
 // import { executeCollect, CollectPayload } from './handlers/collect';
 // import { executeCondition, ConditionPayload } from './handlers/condition';
 
@@ -8,6 +9,9 @@ export class StepExecutor {
     console.log(`[StepExecutor] Запуск шага: ${step.type} во вкладке ${tabId}`);
 
     switch (step.type) {
+      case 'wait':
+        return await waitForTabComplete(tabId);
+
       case 'action':
         return await executeAction(tabId, step.params as ActionPayload);
         
@@ -24,7 +28,7 @@ export class StepExecutor {
         throw new Error('Модуль loop еще не реализован');
 
       default:
-        throw new Error(`[StepExecutor] Неизвестный тип шага: ${step.type}`);
+        throw new Error(`[StepExecutor] Неизвестный тип шага`);
     }
   }
 }

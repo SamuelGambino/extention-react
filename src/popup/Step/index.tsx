@@ -54,8 +54,14 @@ const StepSummary = ({ step }: { step: IStep }) => {
     );
   }
 
-  if (step.type === "wait")
-    return <span className="step__sel-attr">{(step as StepWait).params.duration ?? ""}ms</span>;
+  if (step.type === "wait") {
+    const stepWait = (step as StepWait);
+    let stepParam;
+    if (stepWait.params.mode === "navigation") stepParam = "";
+    if (stepWait.params.mode === "element") stepParam = stepWait.params.selector;
+    if (stepWait.params.mode === "timeout") stepParam = stepWait.params.duration;
+    return (<span className="step__sel-attr">{`${stepWait.params.mode} ${stepParam ?? ""}`}</span>)
+  }
 
   return null;
 };
@@ -153,7 +159,7 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
 
           {opened && (
             <div className="step__editor">
-                <StepEditor type={step.type} path={path} />
+              <StepEditor type={step.type} path={path} />
               <span>editor · {step.type}</span>
             </div>
           )}

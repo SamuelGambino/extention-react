@@ -1,6 +1,6 @@
 import browser from "webextension-polyfill";
 
-export async function waitForTabComplete(tabId: number, timeoutMs: number = 30000): Promise<void> {
+export async function waitForTabComplete(tabId: number, timeoutMs: number = 10000): Promise<void> {
   return new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       browser.tabs.onUpdated.removeListener(listener);

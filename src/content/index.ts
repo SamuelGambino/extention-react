@@ -7,7 +7,8 @@ interface ExtensionMessage {
   data: IStep;
 }
 
-browser.runtime.onMessage.addListener((message: ExtensionMessage) => {
+browser.runtime.onMessage.addListener((rawMessage: any) => {
+  const message = rawMessage as ExtensionMessage;
   console.log('[Content Script] Получено сообщение:', message);
 
   try {
