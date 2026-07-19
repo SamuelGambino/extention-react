@@ -1,16 +1,9 @@
 import browser from "webextension-polyfill";
+import type { StepAction } from "../../../globalTypes/parser_сonfig";
 
-export interface ActionPayload {
-  action: 'click' | 'hover';
-  selector: string;
-}
-
-export async function executeAction(tabId: number, payload: ActionPayload): Promise<any> {
+export async function executeAction(tabId: number, payload: StepAction): Promise<any> {
   try {
-    const response = await browser.tabs.sendMessage(tabId, {
-      module: 'action',
-      data: payload
-    });
+    const response = await browser.tabs.sendMessage(tabId, payload);
 
     return response;
   } catch (error: any) {

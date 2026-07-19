@@ -1,20 +1,36 @@
-import type { IStep } from '../../globalTypes/parser_сonfig';
-import { executeAction, type ActionPayload } from './handlers/action';
+import type { IStep, StepAction } from '../../globalTypes/parser_сonfig';
+import { executeAction } from './handlers/action';
 import { waitForTabComplete } from './handlers/wait';
+import browser from "webextension-polyfill";
 // import { executeCollect, CollectPayload } from './handlers/collect';
 // import { executeCondition, ConditionPayload } from './handlers/condition';
 
 export class StepExecutor {
   static async execute(tabId: number, step: IStep): Promise<any> {
-    console.log(`[StepExecutor] Запуск шага: ${step.type} во вкладке ${tabId}`);
+
+    let isReady = false;
+    for (let i = 0; i < 10; i++) { // 10 попыток с паузой
+      try {
+        await browser.tabs.sendMessage(tabId, { action: "PING" });
+        isReady = true;
+        break; // Если ответил — выходим из цикла
+      } catch {
+        // Если упало с ошибкой "Receiving end does not exist", ждем 50мс и повторяем
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+
+    if (!isReady) {
+      throw new Error("Контент-скрипт не ответил вовремя");
+    }
 
     switch (step.type) {
       case 'wait':
         return await waitForTabComplete(tabId);
 
       case 'action':
-        return await executeAction(tabId, step.params as ActionPayload);
-        
+        return await executeAction(tabId, step as StepAction);
+
       case 'collect':
         // return await executeCollect(tabId, step.payload as CollectPayload);
         throw new Error('Модуль collect еще не реализован');

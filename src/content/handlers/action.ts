@@ -1,4 +1,3 @@
-import browser from "webextension-polyfill";
 import type { StepAction } from "../../globalTypes/parser_сonfig";
 
 const triggerHover = (element: HTMLElement): void => {
@@ -33,11 +32,11 @@ export const handleAction = (payload: StepAction) => {
   switch (action) {
     case 'click':
       triggerClick(element);
-      return { status: 'success', message: `Успешный клик по "${selector}"` };
+      return { status: 'success' };
       
     case 'hover':
       triggerHover(element);
-      return { status: 'success', message: `Успешный ховер на "${selector}"` };
+      return { status: 'success' };
       
     default:
       throw new Error(`Неизвестный тип действия: ${action}`);

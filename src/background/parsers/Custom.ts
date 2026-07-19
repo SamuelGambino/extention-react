@@ -48,9 +48,9 @@ export class Custom extends BaseParser {
 
         switch (step.type) {
           case "wait":
-            if (step.params.mode === "timeout") this.sleep(step.params.duration);
+            if (step.params.mode === "timeout") await this.sleep(step.params.duration);
             // if (step.params.mode === "element") this.sleep(step.params.duration);
-            if (step.params.mode === "navigation") StepExecutor.execute(this.tabId, step);
+            if (step.params.mode === "navigation") await StepExecutor.execute(this.tabId, step);
             return;
 
           case "action":
@@ -63,17 +63,6 @@ export class Custom extends BaseParser {
       await this.setLog({ status: "danger", title: "[Custom]:Check", value: "Ошибка:" + e });
       this.stop();
     }
-
-    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-
-    await this.setLog({ status: "warn", title: "[Custom]:Check", value: "Отправлен запрос в content" });
-    const response = await browser.tabs.sendMessage(tab.id!, {
-      type: 'COUNT_ELEMENTS',
-      config: this.config
-    });
-
-
-    await this.setDataState(response as Partial<ParserState['data']>);
     await this.setLog({ status: "success", title: "[Custom]:Check", value: "Получены метаданные" });
   }
 

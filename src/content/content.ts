@@ -2,25 +2,24 @@ import browser from "webextension-polyfill";
 import type { IStep, StepAction } from "../globalTypes/parser_сonfig";
 import { handleAction } from "./handlers/action";
 
-interface ExtensionMessage {
-  module: 'action' | 'collect' | 'condition';
-  data: IStep;
-}
-
 browser.runtime.onMessage.addListener((rawMessage: any) => {
-  const message = rawMessage as ExtensionMessage;
-  console.log('[Content Script] Получено сообщение:', message);
+  const messagePing = rawMessage as { action: "PING" };
+  if (messagePing.action === "PING") {
+    return Promise.resolve({ status: "READY" });
+  };
+  
+  const message = rawMessage as IStep;
+  if (!message.type) return;
 
   try {
-    switch (message.module) {
+    switch (message.type) {
       case 'action': {
-        const result = handleAction(message.data as StepAction);
-        // Возвращаем успешный ответ обратно в background
+        const result = handleAction(message as StepAction);
         return Promise.resolve(result);
       }
 
       case 'collect':
-        // Здесь будет логика сбора данных
+        // Здесь будет логика сбора данныхы
         return Promise.reject(new Error('Модуль collect еще не реализован в контент-скрипте'));
 
       case 'condition':
@@ -28,7 +27,7 @@ browser.runtime.onMessage.addListener((rawMessage: any) => {
         return Promise.reject(new Error('Модуль condition еще не реализован в контент-скрипте'));
 
       default:
-        return Promise.reject(new Error(`Неизвестный модуль: ${message.module}`));
+        return Promise.reject(new Error(`Неизвестный тип шага: ${message.type}`));
     }
   } catch (error: any) {
     console.error('[Content Script] Ошибка при выполнении задачи:', error);
