@@ -1,6 +1,6 @@
 import type { IStep, StepAction } from '../../globalTypes/parser_сonfig';
 import { executeAction } from './handlers/action';
-import { waitForTabComplete } from './handlers/wait';
+import { waitForTabComplete, waitUntilContentReady } from './handlers/wait';
 import browser from "webextension-polyfill";
 // import { executeCollect, CollectPayload } from './handlers/collect';
 // import { executeCondition, ConditionPayload } from './handlers/condition';
@@ -11,7 +11,7 @@ export class StepExecutor {
     let isReady = false;
     for (let i = 0; i < 10; i++) { // 10 попыток с паузой
       try {
-        await browser.tabs.sendMessage(tabId, { action: "PING" });
+        await browser.tabs.sendMessage(tabId, { action: "PING" }); 
         isReady = true;
         break; // Если ответил — выходим из цикла
       } catch {
@@ -26,7 +26,9 @@ export class StepExecutor {
 
     switch (step.type) {
       case 'wait':
-        return await waitForTabComplete(tabId);
+        await waitForTabComplete(tabId);
+        await waitUntilContentReady(tabId);
+        return;
 
       case 'action':
         return await executeAction(tabId, step as StepAction);

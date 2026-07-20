@@ -51,11 +51,11 @@ export class Custom extends BaseParser {
             if (step.params.mode === "timeout") await this.sleep(step.params.duration);
             // if (step.params.mode === "element") this.sleep(step.params.duration);
             if (step.params.mode === "navigation") await StepExecutor.execute(this.tabId, step);
-            return;
+            break;
 
           case "action":
             const result = await StepExecutor.execute(this.tabId, step);
-            if (result.status === "success") return;
+            if (result.status === "success") break;
             if (result.status !== "success") throw new Error('Ошибка при клике');
         }
       }

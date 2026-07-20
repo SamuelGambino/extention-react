@@ -30,7 +30,7 @@ export const waitForTabComplete = async (tabId: number, timeoutMs: number = 1000
     };
 
     browser.tabs.onUpdated.addListener(listener);
-    
+
     // Принудительно проверяем текущий статус. 
     // Если вкладка УЖЕ в состоянии loading, значит мы успели вовремя.
     browser.tabs.get(tabId)
@@ -44,4 +44,25 @@ export const waitForTabComplete = async (tabId: number, timeoutMs: number = 1000
         reject(error);
       });
   });
+}
+
+export const waitUntilContentReady = async (tabId: number) => {
+  const sleep = async (ms: number) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  while (true) {
+    try {
+      const result = await browser.tabs.sendMessage(tabId, {
+        action: "PING"
+      }) as { status: "READY" };
+
+      if (result.status === "READY") {
+        console.log("Content say READY!");
+        return;
+      }
+    } catch { }
+
+    await sleep(100);
+  }
 }

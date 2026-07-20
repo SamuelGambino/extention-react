@@ -1,3 +1,5 @@
+console.log("CONTENT LOADED", location.href);
+
 import browser from "webextension-polyfill";
 import type { IStep, StepAction } from "../globalTypes/parser_сonfig";
 import { handleAction } from "./handlers/action";
