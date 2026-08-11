@@ -1,4 +1,6 @@
 import type { StepAction } from "../../globalTypes/parser_сonfig";
+import type { ContentStepContext } from "../content";
+import { queryScopedElement } from "./dom";
 
 const triggerHover = (element: HTMLElement): void => {
   const mouseOverEvent = new MouseEvent('mouseover', {
@@ -20,10 +22,10 @@ const triggerClick = (element: HTMLElement): void => {
   element.click();
 }
 
-export const handleAction = (payload: StepAction) => {
+export const handleAction = (payload: StepAction & { context?: ContentStepContext }) => {
   const { action, selector } = payload.params;
   
-  const element = document.querySelector(selector) as HTMLElement;
+  const element = queryScopedElement(selector, payload.context) as HTMLElement;
   
   if (!element) {
     throw new Error(`Элемент по селектору "${selector}" не найден на странице.`);
