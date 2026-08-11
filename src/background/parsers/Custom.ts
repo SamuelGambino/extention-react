@@ -3,9 +3,11 @@ import { BaseParser } from "./BaseParser";
 import type { ParserState } from "../../globalTypes/parsing_state";
 import type { PresetCustom } from "../../globalTypes/parser_сonfig";
 import { StepExecutor } from "../StepExecutor";
+import type { BackgroundToContentPayload } from "../../globalTypes/messages";
 
 export class Custom extends BaseParser {
   // Если в цикле есть действие получения данных категории/товара/группы/модификатора - количество перебираемых элементов циакла = метаданные + уже сохраненные
+  // принадлежность сущностей: каетгория -> товар -> группа модификаторов -> модификатор
   private parseContext: { category: { id: string, name: string }, product: { id: string, name: string }, modifierGroup: { id: string, name: string } } | null = null;
   private tabId: number | undefined;
 
@@ -50,13 +52,13 @@ export class Custom extends BaseParser {
           case "wait":
             if (step.params.mode === "timeout") await this.sleep(step.params.duration);
             // if (step.params.mode === "element") this.sleep(step.params.duration);
-            if (step.params.mode === "navigation") await StepExecutor.execute(this.tabId, step);
+            // if (step.params.mode === "navigation") await StepExecutor.execute(this.tabId, step);
             break;
 
           case "action":
-            const result = await StepExecutor.execute(this.tabId, step);
-            if (result.status === "success") break;
-            if (result.status !== "success") throw new Error('Ошибка при клике');
+            // const result = await StepExecutor.execute(this.tabId, step);
+            // if (result.status === "success") break;
+            // if (result.status !== "success") throw new Error('Ошибка при клике');
         }
       }
     } catch (e) {
@@ -71,5 +73,54 @@ export class Custom extends BaseParser {
     // для каждой категории:
     // await this.setParsingState({ step: 'parsing_category', currentCategory: 1 });
     await this.waitForNextStep();
+  }
+
+  async execute(tabId: number, payload: BackgroundToContentPayload): Promise<any> {
+
+    let isReady = false;
+    for (let i = 0; i < 10; i++) { // 10 попыток с паузой
+      try {
+        await browser.tabs.sendMessage(tabId, { action: "PING" });
+        isReady = true;
+        break; // Если ответил — выходим из цикла
+      } catch {
+        // Если упало с ошибкой "Receiving end does not exist", ждем 50мс и повторяем
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+
+    if (!isReady) {
+      throw new Error("Контент-скрипт не ответил вовремя");
+    }
+
+    switch (payload.data.step) {
+      case 'wait':
+        // await waitForTabComplete(tabId);
+        // await waitUntilContentReady(tabId);
+        return;
+
+      case 'action':
+        // const resp = await sendMessage(tabId, {
+        //   source: {
+        //     selector: data.
+        //   }
+        // });
+        return;
+
+      case 'collect':
+        // return await executeCollect(tabId, step.payload as CollectPayload);
+        throw new Error('Модуль collect еще не реализован');
+
+      case 'condition':
+        // return await executeCondition(tabId, step.payload as ConditionPayload);
+        throw new Error('Модуль condition еще не реализован');
+
+      case 'loop':
+        // Логика циклов может обрабатываться здесь же, рекурсивно вызывая execute
+        throw new Error('Модуль loop еще не реализован');
+
+      default:
+        throw new Error(`[StepExecutor] Неизвестный тип шага`);
+    }
   }
 }

@@ -1,6 +1,6 @@
 interface WhatsAppRespProducts {
   data: {
-    xwa_product_catalog_get_single_collection: {
+    xwa_product_catalog_get_single_collection?: {
       collection: {
         products: {
           id: number,
@@ -8,6 +8,20 @@ interface WhatsAppRespProducts {
           price: number,
           description: string
         }[]
+      }
+    }
+    xwa_product_catalog_get_product_catalog?: {
+      product_catalog: {
+        products: {
+          id: number,
+          name: string,
+          price: number | null,
+          description: string | null
+        }[],
+        paging: {
+          after: string,
+          before: string
+        }
       }
     }
   }
@@ -20,8 +34,8 @@ interface WhatsAppNomenclature {
     products?: {
       id: number,
       name: string,
-      price: number,
-      description: string
+      price: number | null,
+      description: string | null
     }[]
   }[]
 }
@@ -62,9 +76,19 @@ interface WhatsAppPayloadProducts {
   doc_id: string,
   variables: {
     request: {
-      collection: {
+      collection?: {
         biz_jid: string,
         id: string,
+        limit: string,
+        width: string,
+        height: string,
+        variant_thumbnail_height: null,
+        variant_thumbnail_width: null,
+      },
+      product_catalog?: {
+        allow_shop_source: string;
+        jid: string,
+        variant_info_fields: string,
         limit: string,
         width: string,
         height: string,

@@ -57,10 +57,7 @@ export const waitUntilContentReady = async (tabId: number) => {
         action: "PING"
       }) as { status: "READY" };
 
-      if (result.status === "READY") {
-        console.log("Content say READY!");
-        return;
-      }
+      if (result.status === "READY") return;
     } catch { }
 
     await sleep(100);

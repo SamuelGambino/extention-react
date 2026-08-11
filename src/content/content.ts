@@ -3,6 +3,7 @@ console.log("CONTENT LOADED", location.href);
 import browser from "webextension-polyfill";
 import type { IStep, StepAction } from "../globalTypes/parser_сonfig";
 import { handleAction } from "./handlers/action";
+import type { BackgroundToContentPayload } from "../globalTypes/messages";
 
 browser.runtime.onMessage.addListener((rawMessage: any) => {
   const messagePing = rawMessage as { action: "PING" };
@@ -10,7 +11,7 @@ browser.runtime.onMessage.addListener((rawMessage: any) => {
     return Promise.resolve({ status: "READY" });
   };
   
-  const message = rawMessage as IStep;
+  const message = rawMessage as BackgroundToContentPayload;
   if (!message.type) return;
 
   try {
@@ -19,6 +20,10 @@ browser.runtime.onMessage.addListener((rawMessage: any) => {
         const result = handleAction(message as StepAction);
         return Promise.resolve(result);
       }
+
+      case 'get':
+        // Здесь будет логика сбора данныхы
+        return Promise.reject(new Error('Модуль collect еще не реализован в контент-скрипте'));
 
       case 'collect':
         // Здесь будет логика сбора данныхы

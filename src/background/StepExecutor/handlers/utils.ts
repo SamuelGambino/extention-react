@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
-import type { StepAction } from "../../../globalTypes/parser_сonfig";
+import type { BackgroundToContentPayload } from "../../../globalTypes/messages";
 
-export async function executeAction(tabId: number, payload: StepAction): Promise<any> {
+export const sendMessage = async (tabId: number, payload: BackgroundToContentPayload): Promise<any> => {
   try {
     const response = await browser.tabs.sendMessage(tabId, payload);
 
