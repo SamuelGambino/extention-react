@@ -46,7 +46,7 @@ const StepSummary = ({ step }: { step: IStep }) => {
     const stepLoop = (step as StepLoop);
     return (
       <>
-        <span className="step__sel-class">{stepLoop.params.source}</span>
+        <span className="step__sel-class">{stepLoop.params.selector}</span>
         {stepLoop.children.length > 0 && (
           <span className="step__loop-count">{stepLoop.children.length} steps inside</span>
         )}
@@ -159,7 +159,7 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
 
           {opened && (
             <div className="step__editor">
-              <StepEditor type={step.type} path={path} />
+              <StepEditor type={step.type} path={path} depth={depth} />
               <span>editor · {step.type}</span>
             </div>
           )}

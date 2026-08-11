@@ -58,7 +58,7 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
       ...(selectedType === "collect" && { params: { entity: "category", name: meta.placeholder } }),
       ...(selectedType === "action" && { params: { action: "click", selector: meta.placeholder }}),
       ...(selectedType === "loop" && { params: { source: meta.placeholder }, children: [] }),
-      ...(selectedType === "wait" && { params: { duration: 1200 }}),
+      ...(selectedType === "wait" && { params: { mode: "timeout", duration: 1200 }}),
       ...(selectedType === "condition" && { params: { exists: false, selector: meta.placeholder }, children: [] }),
     } as any);
   };

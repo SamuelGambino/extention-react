@@ -27,14 +27,6 @@ interface baseStep {
 
 type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
 
-// interface StepNavigate extends baseStep {
-//   type: "navigate",
-//   params: {
-//     mode: "url" | "back" | "reload",
-//     url?: string
-//   }
-// }
-
 type StepCollect = CollectCategoryOrGroup | CollectProduct;
 
 interface BaseCollect extends baseStep {
@@ -45,6 +37,7 @@ interface CollectCategoryOrGroup extends BaseCollect {
   params: {
     entity?: "category" | "modifier_group",
     name: string,
+    source?: "document" | "element",
   }
 }
 
@@ -52,6 +45,7 @@ interface CollectProduct extends BaseCollect {
   params: {
     entity?: "product" | "modifier",
     name: string,
+    source?: "document" | "element",
     picture?: string,
     description?: string,
     price: string,
@@ -67,7 +61,8 @@ interface CollectProduct extends BaseCollect {
 interface StepLoop extends baseStep {
   type: "loop",
   params: {
-    source: string
+    source?: "document" | "element",
+    selector: string
   }
   children: IStep[];
 }
@@ -78,6 +73,7 @@ interface StepAction extends baseStep {
   type: "action",
   params: {
     action: Actions,
+    source?: "document" | "element",
     selector: string;
   }
 }
@@ -96,6 +92,7 @@ interface StepWaitElement {
   type: "wait";
   params: {
     mode: "element"; 
+    source?: "document" | "element",
     selector: string; 
   };
 }
@@ -110,6 +107,7 @@ interface StepWaitNavigation {
 interface StepCondition extends baseStep {
   type: "condition",
   params: {
+    source?: "document" | "element",
     exists: boolean;
     selector: string;
   }

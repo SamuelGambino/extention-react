@@ -1,8 +1,5 @@
 import "../index.css";
 import InputField from "../../InputField";
-// import ClicksSection from "../sections/ClicksSection";
-import CategorySection from "../sections/CategorySection";
-import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
@@ -11,8 +8,6 @@ const ConfigurationBlock = () => {
   const { control } = useFormContext<ParserTabConfig>();
 
   const preset = useWatch({ control, name: 'type' });
-  // const settings = useWatch({ control, name: 'data.settings' });
-  const hasSections = preset === 'custom';
 
   return (
     <fieldset className="form__settings" key={preset}>
@@ -50,7 +45,7 @@ const ConfigurationBlock = () => {
           <div className='form__field'>
             <div className='form__field-title'>
               <label className='form__field-label'>Payload products</label>
-              <Hint hintPosition='left' hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_single_collection' />
+              <Hint hintPosition='left' hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_single_collection или ' />
             </div>
             <Controller
               name="data.paylodProducts"
@@ -76,12 +71,6 @@ const ConfigurationBlock = () => {
             )} />
         </div>
       )}
-
-      {/* {hasSections && <CategorySection />}
-
-      {hasSections && <ProductSection />} */}
-
-      {/* {hasSections && clicks !== 'none' && <ClicksSection />} */}
     </fieldset>
   )
 }

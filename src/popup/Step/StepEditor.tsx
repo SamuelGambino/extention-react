@@ -5,9 +5,10 @@ import RadioField from "../RadioField";
 interface StepEditorProps {
     type: string;
     path: string;
+    depth?: number;
 }
 
-const StepEditor = ({ type, path }: StepEditorProps) => {
+const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
     const { control } = useFormContext();
     const step = useWatch({
         control,
@@ -17,14 +18,30 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
     switch (type) {
         case "loop":
             return (
-                <div className="step__field">
-                    <p>Source:</p>
-                    <Controller
-                        name={`${path}.params.source`}
-                        control={control}
-                        render={({ field }) => (
-                            <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
-                        )} />
+                <div className="step__field-container">
+                    {depth > 0 && (
+                        <div className="step__field">
+                            <p>Source:</p>
+                            <Controller
+                                name={`${path}.params.source`}
+                                control={control}
+                                render={({ field }) => (
+                                    <RadioField data={[
+                                        { label: "Document", value: "document" },
+                                        { label: "Element", value: "element" }
+                                    ]} value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
+                    <div className="step__field">
+                        <p>Selector:</p>
+                        <Controller
+                            name={`${path}.params.selector`}
+                            control={control}
+                            render={({ field }) => (
+                                <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                            )} />
+                    </div>
                 </div>
             )
 
@@ -42,6 +59,20 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 ]} value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
+                    {depth > 0 && (
+                        <div className="step__field">
+                            <p>Source:</p>
+                            <Controller
+                                name={`${path}.params.source`}
+                                control={control}
+                                render={({ field }) => (
+                                    <RadioField data={[
+                                        { label: "Document", value: "document" },
+                                        { label: "Element", value: "element" }
+                                    ]} value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
                     {step.params.action && (
                         <div className="step__field">
                             <p>Selector:</p>
@@ -83,15 +114,31 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                         </div>
                     )}
                     {step.params.mode && step.params.mode === "element" && (
-                        <div className="step__field">
-                            <p>Selector:</p>
-                            <Controller
-                                name={`${path}.params.selector`}
-                                control={control}
-                                render={({ field }) => (
-                                    <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
-                                )} />
-                        </div>
+                        <>
+                            {depth > 0 && (
+                                <div className="step__field">
+                                    <p>Source:</p>
+                                    <Controller
+                                        name={`${path}.params.source`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <RadioField data={[
+                                                { label: "Document", value: "document" },
+                                                { label: "Element", value: "element" }
+                                            ]} value={field.value} onChange={field.onChange} />
+                                        )} />
+                                </div>
+                            )}
+                            <div className="step__field">
+                                <p>Selector:</p>
+                                <Controller
+                                    name={`${path}.params.selector`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                    )} />
+                            </div>
+                        </>
                     )}
                 </div>
             )
@@ -108,6 +155,20 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                                 <SwitchField value={field.value} onChange={field.onChange} />
                             )} />
                     </div>
+                    {depth > 0 && (
+                        <div className="step__field">
+                            <p>Source:</p>
+                            <Controller
+                                name={`${path}.params.source`}
+                                control={control}
+                                render={({ field }) => (
+                                    <RadioField data={[
+                                        { label: "Document", value: "document" },
+                                        { label: "Element", value: "element" }
+                                    ]} value={field.value} onChange={field.onChange} />
+                                )} />
+                        </div>
+                    )}
                     <div className="step__field">
                         <p>Selector:</p>
                         <Controller
@@ -137,15 +198,31 @@ const StepEditor = ({ type, path }: StepEditorProps) => {
                             )} />
                     </div>
                     {step.params.entity && (
-                        <div className="step__field">
-                            <p>Name:</p>
-                            <Controller
-                                name={`${path}.params.name`}
-                                control={control}
-                                render={({ field }) => (
-                                    <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
-                                )} />
-                        </div>
+                        <>
+                            {depth > 0 && (
+                                <div className="step__field">
+                                    <p>Source:</p>
+                                    <Controller
+                                        name={`${path}.params.source`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <RadioField data={[
+                                                { label: "Document", value: "document" },
+                                                { label: "Element", value: "element" }
+                                            ]} value={field.value} onChange={field.onChange} />
+                                        )} />
+                                </div>
+                            )}
+                            <div className="step__field">
+                                <p>Name:</p>
+                                <Controller
+                                    name={`${path}.params.name`}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input className="step__field-input" type="text" value={field.value} onChange={field.onChange} />
+                                    )} />
+                            </div>
+                        </>
                     )}
                     {step.params.entity && (step.params.entity === "product" || step.params.entity === "modifier") && (
                         <div className="step__field">
