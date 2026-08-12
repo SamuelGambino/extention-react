@@ -1,4 +1,6 @@
 import type { StepAction } from "../../globalTypes/parser_сonfig";
+import type { ElementContext } from "../../globalTypes/messages";
+import { queryElement } from "./dom";
 
 const triggerHover = (element: HTMLElement): void => {
   const mouseOverEvent = new MouseEvent('mouseover', {
@@ -20,10 +22,9 @@ const triggerClick = (element: HTMLElement): void => {
   element.click();
 }
 
-export const handleAction = (payload: StepAction) => {
-  const { action, selector } = payload.params;
-  
-  const element = document.querySelector(selector) as HTMLElement;
+export const handleAction = (payload: StepAction, context?: ElementContext) => {
+  const { action, selector, source } = payload.params;
+  const element = queryElement<HTMLElement>(selector, source, context);
   
   if (!element) {
     throw new Error(`Элемент по селектору "${selector}" не найден на странице.`);
@@ -32,11 +33,11 @@ export const handleAction = (payload: StepAction) => {
   switch (action) {
     case 'click':
       triggerClick(element);
-      return { status: 'success' };
+      return { status: 'success' as const };
       
     case 'hover':
       triggerHover(element);
-      return { status: 'success' };
+      return { status: 'success' as const };
       
     default:
       throw new Error(`Неизвестный тип действия: ${action}`);

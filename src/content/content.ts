@@ -1,11 +1,12 @@
-console.log("CONTENT LOADED", location.href);
-
 import browser from "webextension-polyfill";
-import type { IStep, StepAction } from "../globalTypes/parser_сonfig";
 import { handleAction } from "./handlers/action";
+import { handleCollect } from "./handlers/collect";
+import { handleCondition } from "./handlers/condition";
+import { queryElementsCount } from "./handlers/dom";
+import { handleWait } from "./handlers/wait";
 import type { BackgroundToContentPayload } from "../globalTypes/messages";
 
-browser.runtime.onMessage.addListener((rawMessage: any) => {
+browser.runtime.onMessage.addListener((rawMessage: unknown) => {
   const messagePing = rawMessage as { action: "PING" };
   if (messagePing.action === "PING") {
     return Promise.resolve({ status: "READY" });
@@ -16,29 +17,29 @@ browser.runtime.onMessage.addListener((rawMessage: any) => {
 
   try {
     switch (message.type) {
-      case 'action': {
-        const result = handleAction(message as StepAction);
-        return Promise.resolve(result);
-      }
-
-      case 'get':
-        // Здесь будет логика сбора данныхы
-        return Promise.reject(new Error('Модуль collect еще не реализован в контент-скрипте'));
+      case 'action':
+        return Promise.resolve(handleAction(message.step, message.context));
 
       case 'collect':
-        // Здесь будет логика сбора данныхы
-        return Promise.reject(new Error('Модуль collect еще не реализован в контент-скрипте'));
+        return Promise.resolve(handleCollect(message.step, message.context));
 
       case 'condition':
-        // Здесь будет проверка условий (например, есть ли элемент на странице)
-        return Promise.reject(new Error('Модуль condition еще не реализован в контент-скрипте'));
+        return Promise.resolve(handleCondition(message.step, message.context));
+
+      case 'wait':
+        return handleWait(message.step, message.context);
+
+      case 'loop-items':
+        return Promise.resolve({
+          status: "success",
+          data: queryElementsCount(message.selector, message.source, message.context),
+        });
 
       default:
-        return Promise.reject(new Error(`Неизвестный тип шага: ${message.type}`));
+        return Promise.reject(new Error(`Неизвестный тип шага`));
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[Content Script] Ошибка при выполнении задачи:', error);
-    // Возвращаем ошибку в background, чтобы там сработал блок catch
-    return Promise.resolve({ status: 'error', message: error.message });
+    return Promise.resolve({ status: 'error', message: error instanceof Error ? error.message : String(error) });
   }
 });
