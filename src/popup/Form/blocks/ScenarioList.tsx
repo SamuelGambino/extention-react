@@ -14,7 +14,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import Step from "../../Step";
-import type { ParserTabConfig, StepType } from "../../../globalTypes/parser_сonfig";
+import type { ParserTabConfig, IStep, StepType } from "../../../globalTypes/parser_сonfig";
+import type { FieldArrayPath } from "react-hook-form";
 import SelectField from "../../SelectField";
 import Button from "../../Button";
 
@@ -27,11 +28,11 @@ interface ScenarioListProps {
 const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
   const { control } = useFormContext<ParserTabConfig>();
   const [selectedType, setSelectedType] = useState<StepType>("loop");
-  const STEP_TYPES = Object.keys(StepMeta) as string[];
+  const STEP_TYPES = Object.keys(StepMeta) as StepType[];
 
   const { fields, move, append, remove } = useFieldArray({
     control,
-    name: path as any,
+    name: path as FieldArrayPath<ParserTabConfig>,
   });
 
   const sensors = useSensors(
@@ -51,17 +52,24 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
     move(oldIndex, newIndex);
   };
 
-  const handleAddStep = () => {
+  const createStep = (): IStep => {
     const meta = StepMeta[selectedType];
-    append({
-      type: selectedType,
-      ...(selectedType === "collect" && { params: { entity: "category", name: meta.placeholder } }),
-      ...(selectedType === "action" && { params: { action: "click", selector: meta.placeholder }}),
-      ...(selectedType === "loop" && { params: { source: meta.placeholder }, children: [] }),
-      ...(selectedType === "wait" && { params: { mode: "timeout", duration: 1200 }}),
-      ...(selectedType === "condition" && { params: { exists: false, selector: meta.placeholder }, children: [] }),
-    } as any);
+
+    switch (selectedType) {
+      case "collect":
+        return { type: "collect", params: { entity: "category", name: meta.placeholder } };
+      case "action":
+        return { type: "action", params: { action: "click", selector: meta.placeholder } };
+      case "loop":
+        return { type: "loop", params: { selector: meta.placeholder }, children: [] };
+      case "wait":
+        return { type: "wait", params: { mode: "timeout", duration: 1200 } };
+      case "condition":
+        return { type: "condition", params: { exists: false, selector: meta.placeholder }, children: [] };
+    }
   };
+
+  const handleAddStep = () => append(createStep());
 
   return (
     <div className="form__list">

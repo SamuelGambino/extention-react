@@ -45,7 +45,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
       clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [saveConfig, watch]);
 
   const preset = useWatch({ control, name: 'type' });
 

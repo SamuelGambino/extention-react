@@ -85,8 +85,7 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
   };
 
   const meta = StepMeta[step.type as keyof typeof StepMeta];
-  const children = (step as any).children as IStep[] | undefined;
-  const hasChildren = Array.isArray(children);
+  const hasChildren = "children" in step && Array.isArray(step.children);
 
   return (
     <div ref={setNodeRef} style={style} className="step">

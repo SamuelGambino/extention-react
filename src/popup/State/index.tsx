@@ -14,7 +14,7 @@ const State = () => {
     try {
       const urlObject = new URL(url);
       return urlObject.hostname;
-    } catch (e) {
+    } catch {
       return url;
     }
 }

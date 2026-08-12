@@ -80,7 +80,7 @@ export class Kuper extends BaseParser {
   async parseRest() {
     try {
       if (!this.response?.departments.length) throw new Error('В ответе нет departments');
-      for (const category of this.response?.departments) {
+      for (const category of this.response.departments) {
         if (category.name === "Популярное") continue;
         this.categories.push({
           id: category.id,

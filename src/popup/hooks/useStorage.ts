@@ -23,7 +23,7 @@ const DEFAULT_CONFIG: ParserConfig = {
           {
             type: "action",
             params: {
-              command: "click",
+              action: "click",
               selector: ""
             }
           }
@@ -111,7 +111,7 @@ const useVersion = () => {
       setIsLoaded(true);
     };
     initializeVersion();
-  }, []);
+  }, [currentVersion]);
 
   useEffect(() => {
     const handleChanges = (changes: browser.Storage.StorageAreaOnChangedChangesType, areaName: string) => {
@@ -124,7 +124,7 @@ const useVersion = () => {
     };
     browser.storage.onChanged.addListener(handleChanges);
     return () => browser.storage.onChanged.removeListener(handleChanges);
-  }, []);
+  }, [currentVersion]);
 
   const setStorageValue = useCallback(async (newValue: UpdateData) => {
     setValue(newValue);

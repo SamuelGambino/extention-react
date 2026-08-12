@@ -81,7 +81,7 @@ export class WhatsApp extends BaseParser {
         await this.setLog({ status: "danger", title: "[WhatsApp]:Check", value: "Ошибка  при запросе - " + e });
       }
     } else if (this.inputPayloadProducts?.variables.request.collection) {
-      for (const category of this.fullNomenclature?.collections) {
+      for (const category of this.fullNomenclature.collections) {
         this.sleep(1000);
         try {
           const resp = await fetch("https://graph.whatsapp.com/graphql/catalog", {
