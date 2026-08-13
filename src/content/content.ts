@@ -6,40 +6,40 @@ import { queryElementsCount } from "./handlers/dom";
 import { handleWait } from "./handlers/wait";
 import type { BackgroundToContentPayload } from "../globalTypes/messages";
 
-browser.runtime.onMessage.addListener((rawMessage: unknown) => {
+browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
   const messagePing = rawMessage as { action: "PING" };
   if (messagePing.action === "PING") {
-    return Promise.resolve({ status: "READY" });
-  };
+    return { status: "READY" };
+  }
 
   const message = rawMessage as BackgroundToContentPayload;
-  if (!message.type) return;
+  if (!message.type) return { status: "error" as const, message: "Не указан тип задачи." };
 
   try {
     switch (message.type) {
-      case 'action':
-        return Promise.resolve(handleAction(message.step, message.context));
+      case "action":
+        return await handleAction(message.step, message.context);
 
-      case 'collect':
-        return Promise.resolve(handleCollect(message.step, message.context));
+      case "collect":
+        return handleCollect(message.step, message.context);
 
-      case 'condition':
-        return Promise.resolve(handleCondition(message.step, message.context));
+      case "condition":
+        return handleCondition(message.step, message.context);
 
-      case 'wait':
-        return handleWait(message.step, message.context);
+      case "wait":
+        return await handleWait(message.step, message.context);
 
-      case 'loop-items':
-        return Promise.resolve({
-          status: "success",
+      case "loop-items":
+        return {
+          status: "success" as const,
           data: queryElementsCount(message.selector, message.source, message.context),
-        });
+        };
 
       default:
-        return Promise.reject(new Error(`Неизвестный тип шага`));
+        return { status: "error" as const, message: "Неизвестный тип шага." };
     }
   } catch (error: unknown) {
-    console.error('[Content Script] Ошибка при выполнении задачи:', error);
-    return Promise.resolve({ status: 'error', message: error instanceof Error ? error.message : String(error) });
+    console.error("[Content Script] Ошибка при выполнении задачи:", error);
+    return { status: "error" as const, message: error instanceof Error ? error.message : String(error) };
   }
 });

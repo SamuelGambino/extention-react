@@ -82,8 +82,10 @@ export abstract class BaseParser {
   // Run steps
   async run(): Promise<ExportData | undefined> {
     try {
-      await this.checkAvailability();
-      if (this.mode === 'check') return;
+      if (this.mode === "check") {
+        await this.checkAvailability();
+        return;
+      }
 
       await this.waitForNextStep();
       if (this.stopped) return;
