@@ -28,6 +28,25 @@ export const queryElement = <T extends Element = Element>(selector: string, sour
   return getRoot(source, context).querySelector(selector) as T | null;
 }
 
+export const waitForElement = async <T extends Element = Element>(
+  selector: string,
+  source: Source,
+  context?: ElementContext,
+  timeoutMs = 10_000,
+  pollIntervalMs = 100,
+): Promise<T> => {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const element = queryElement<T>(selector, source, context);
+    if (element) return element;
+
+    await new Promise<void>((resolve) => setTimeout(resolve, pollIntervalMs));
+  }
+
+  throw new Error(`Элемент по селектору "${selector}" не найден за ${timeoutMs}мс.`);
+}
+
 export const queryElementsCount = (selector: string, source: Source, context?: ElementContext): number => {
   return getRoot(source, context).querySelectorAll(selector).length;
 }

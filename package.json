@@ -9,6 +9,7 @@
     "build:firefox": "cross-env VITE_BROWSER=firefox vite build",
     "build": "npm run build:chrome && npm run build:firefox",
     "lint": "eslint .",
+    "test:content": "node --experimental-strip-types scripts/test-wait-for-element.ts",
     "preview": "vite preview"
   },
   "dependencies": {

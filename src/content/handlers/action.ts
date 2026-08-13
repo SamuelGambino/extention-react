@@ -1,6 +1,6 @@
 import type { StepAction } from "../../globalTypes/parser_сonfig";
 import type { ElementContext } from "../../globalTypes/messages";
-import { queryElement } from "./dom";
+import { waitForElement } from "./dom";
 
 const triggerHover = (element: HTMLElement): void => {
   const mouseOverEvent = new MouseEvent('mouseover', {
@@ -22,13 +22,9 @@ const triggerClick = (element: HTMLElement): void => {
   element.click();
 }
 
-export const handleAction = (payload: StepAction, context?: ElementContext) => {
+export const handleAction = async (payload: StepAction, context?: ElementContext) => {
   const { action, selector, source } = payload.params;
-  const element = queryElement<HTMLElement>(selector, source, context);
-
-  if (!element) {
-    throw new Error(`Элемент по селектору "${selector}" не найден на странице.`);
-  }
+  const element = await waitForElement<HTMLElement>(selector, source, context);
 
   switch (action) {
     case 'click':
