@@ -11,7 +11,7 @@ browser.runtime.onMessage.addListener((rawMessage: unknown) => {
   if (messagePing.action === "PING") {
     return Promise.resolve({ status: "READY" });
   };
-  
+
   const message = rawMessage as BackgroundToContentPayload;
   if (!message.type) return;
 

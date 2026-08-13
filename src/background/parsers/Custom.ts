@@ -87,8 +87,11 @@ export class Custom extends BaseParser {
           });
           const iterations = checkOnly ? Math.min(count, 1) : count;
           for (let index = 0; index < iterations; index++) {
-            const nextContext = [...context, { selector: step.params.selector, index }];
-            await this.executeSteps(step.children, nextContext, checkOnly);
+            const iterationContext =
+              step.params.source === "element"
+                ? [...context, { selector: step.params.selector, index }]
+                : [{ selector: step.params.selector, index }];
+            await this.executeSteps(step.children, iterationContext, checkOnly);
             if (data.requestDelay) await this.sleep(data.requestDelay);
           }
           break;
