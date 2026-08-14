@@ -10,6 +10,7 @@
     "build": "npm run build:chrome && npm run build:firefox",
     "lint": "eslint .",
     "test:content": "node --experimental-strip-types scripts/test-wait-for-element.ts",
+    "test:parameter": "node scripts/test-collect-parameter.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

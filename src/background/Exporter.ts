@@ -55,22 +55,31 @@ export class Exporter {
       xml += `        <parameters>\n`;
       prod.price.forEach((price) => {
         xml += `          <parameter id="${price.id}">\n`;
+        if (price.name) {
+          xml += `            <name>${this.escapeXml(price.name)}</name>\n`;
+        }
         xml += `            <price>${price.price}</price>\n`;
-        xml += `            <old_price>${price.old_price}</old_price>\n`;
-        xml += `            <description>${price.index[0]}</description>\n`;
-        if (price.proteins) {
+        if (typeof price.old_price !== "undefined") {
+          xml += `            <old_price>${price.old_price}</old_price>\n`;
+        }
+        if (typeof price.index[0] !== "undefined") {
+          xml += `            <description>${price.index[0]}</description>\n`;
+        }
+        if (typeof price.proteins !== "undefined") {
           xml += `            <proteins>${price.proteins}</proteins>\n`;
         }
-        if (price.fats) {
+        if (typeof price.fats !== "undefined") {
           xml += `            <fats>${price.fats}</fats>\n`;
         }
-        if (price.carbohydrates) {
+        if (typeof price.carbohydrates !== "undefined") {
           xml += `            <carbohydrates>${price.carbohydrates}</carbohydrates>\n`;
         }
-        if (price.calories) {
+        if (typeof price.calories !== "undefined") {
           xml += `            <calories>${price.calories}</calories>\n`;
         }
-        xml += `            <descriptionIndex>${price.index[1]}</descriptionIndex>\n`;
+        if (typeof price.index[1] !== "undefined") {
+          xml += `            <descriptionIndex>${price.index[1]}</descriptionIndex>\n`;
+        }
         xml += `          </parameter>\n`;
       });
       xml += `        </parameters>\n`;

@@ -9,7 +9,7 @@ const toNumber = (value: string): number => {
 }
 
 export const handleCollect = (payload: StepCollect, context?: ElementContext) => {
-  const params = payload.params as Extract<StepCollect["params"], { price: string }> | Extract<StepCollect["params"], { entity?: "category" | "modifier_group" }>;
+  const params = payload.params;
   const source = params.source;
   const base = {
     entity: params.entity,
@@ -20,20 +20,36 @@ export const handleCollect = (payload: StepCollect, context?: ElementContext) =>
     return { status: "success" as const, data: base };
   }
 
-  const productParams = params as Extract<StepCollect["params"], { price: string }>;
+  const parameterParams = params as Extract<StepCollect["params"], { price?: string }>;
+  const parameterData = {
+    price: parameterParams.price ? toNumber(getText(parameterParams.price, source, context)) : undefined,
+    old_price: parameterParams.old_price ? toNumber(getText(parameterParams.old_price, source, context)) : undefined,
+    proteins: parameterParams.proteins ? toNumber(getText(parameterParams.proteins, source, context)) : undefined,
+    fats: parameterParams.fats ? toNumber(getText(parameterParams.fats, source, context)) : undefined,
+    carbohydrates: parameterParams.carbohydrates ? toNumber(getText(parameterParams.carbohydrates, source, context)) : undefined,
+    calories: parameterParams.calories ? toNumber(getText(parameterParams.calories, source, context)) : undefined,
+  };
+
+  if (params.entity === "product_parameter") {
+    return {
+      status: "success" as const,
+      data: {
+        ...base,
+        ...parameterData,
+        index: getText(params.index, source, context),
+      },
+    };
+  }
+
+  const productParams = params as Extract<StepCollect["params"], { entity?: "product" }>;
 
   return {
     status: "success" as const,
     data: {
       ...base,
+      ...parameterData,
       picture: getAttributeOrText(productParams.picture, source, context),
       description: getText(productParams.description, source, context),
-      price: toNumber(getText(productParams.price, source, context)),
-      old_price: productParams.old_price ? toNumber(getText(productParams.old_price, source, context)) : undefined,
-      proteins: productParams.proteins ? toNumber(getText(productParams.proteins, source, context)) : undefined,
-      fats: productParams.fats ? toNumber(getText(productParams.fats, source, context)) : undefined,
-      carbohydrates: productParams.carbohydrates ? toNumber(getText(productParams.carbohydrates, source, context)) : undefined,
-      calories: productParams.calories ? toNumber(getText(productParams.calories, source, context)) : undefined,
       weight: getText(productParams.weight, source, context),
     },
   };

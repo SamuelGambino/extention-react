@@ -4,6 +4,7 @@ import type { ParserState } from "../../globalTypes/parsing_state";
 import type { IStep, PresetCustom, StepCollect } from "../../globalTypes/parser_сonfig";
 import { StepExecutor } from "../StepExecutor";
 import type { ElementContext } from "../../globalTypes/messages";
+import type { ProductParameter } from "../types/ExportTypes";
 
 export class Custom extends BaseParser {
   private parseContext: { category?: { id: string | number, name: string }, product?: { id: string | number, name: string }, modifierGroup?: { id: string | number, name: string } } = {};
@@ -102,31 +103,99 @@ export class Custom extends BaseParser {
     }
   }
 
+  private parseParameterIndex(value?: string): number[] {
+    if (!value) return [];
+
+    return value
+      .match(/-?\d+(?:[.,]\d+)?/g)
+      ?.map((part) => Number(part.replace(",", ".")))
+      .filter(Number.isFinite) ?? [];
+  }
+
   private async collect(step: StepCollect, context: ElementContext) {
     if (!this.tabId) throw new Error("tabId is undefined :(");
-    const item = await StepExecutor.execute<{ name: string; picture?: string; description?: string; price?: number; old_price?: number; proteins?: number; fats?: number; carbohydrates?: number; calories?: number }>(this.tabId, { type: "collect", step, context });
+
+    const item = await StepExecutor.execute<{
+      name: string;
+      picture?: string;
+      description?: string;
+      price?: number;
+      old_price?: number;
+      proteins?: number;
+      fats?: number;
+      carbohydrates?: number;
+      calories?: number;
+      index?: string;
+    }>(this.tabId, { type: "collect", step, context });
     const entity = step.params.entity ?? "product";
     const id = `${entity}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     if (entity === "category") {
       this.categories.push({ id, name: item.name, parent: 0 });
       this.parseContext.category = { id, name: item.name };
-    } else if (entity === "modifier_group") {
+      return;
+    }
+
+    if (entity === "modifier_group") {
       this.modifiers_groups.push({ id, name: item.name, type: "one_unlimited", required: false, minimum: 0, maximum: 0, modifiers: [] });
       this.parseContext.modifierGroup = { id, name: item.name };
-    } else if (entity === "modifier") {
+      return;
+    }
+
+    if (entity === "modifier") {
       const groupId = this.parseContext.modifierGroup?.id ?? "";
       this.modifiers.push({ id, name: item.name, price: item.price ?? 0, group_id: groupId });
-    } else {
-      this.products.push({
-        product_id: id,
-        name: item.name,
-        picture: item.picture ?? "",
-        description: item.description ?? "",
-        price: [{ id, price: item.price ?? 0, old_price: item.old_price, proteins: item.proteins, fats: item.fats, carbohydrates: item.carbohydrates, calories: item.calories, index: [] }],
-        category: this.parseContext.category?.id ?? "",
-      });
-      this.parseContext.product = { id, name: item.name };
+      return;
     }
+
+    if (entity === "product_parameter") {
+      const productId = this.parseContext.product?.id;
+      if (!productId) {
+        throw new Error("Шаг collect product_parameter должен выполняться после collect product.");
+      }
+
+      const product = this.products.find((candidate) => candidate.product_id === productId);
+      if (!product) {
+        throw new Error("Текущий товар для collect product_parameter не найден.");
+      }
+
+      const parameter: ProductParameter = {
+        id,
+        name: item.name || undefined,
+        price: item.price ?? 0,
+        old_price: item.old_price,
+        proteins: item.proteins,
+        fats: item.fats,
+        carbohydrates: item.carbohydrates,
+        calories: item.calories,
+        index: this.parseParameterIndex(item.index),
+      };
+      product.price.push(parameter);
+      return;
+    }
+
+    const productParameters: ProductParameter[] = [];
+    if (step.params.price) {
+      productParameters.push({
+        id,
+        price: item.price ?? 0,
+        old_price: item.old_price,
+        proteins: item.proteins,
+        fats: item.fats,
+        carbohydrates: item.carbohydrates,
+        calories: item.calories,
+        index: [],
+      });
+    }
+
+    this.products.push({
+      product_id: id,
+      name: item.name,
+      picture: item.picture ?? "",
+      description: item.description ?? "",
+      price: productParameters,
+      category: this.parseContext.category?.id ?? "",
+    });
+    this.parseContext.product = { id, name: item.name };
   }
 }

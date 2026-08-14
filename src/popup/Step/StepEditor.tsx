@@ -30,13 +30,17 @@ const ENTITY_OPTIONS = [
   { label: "Product", value: "product" },
   { label: "Modifier Group", value: "modifier_group" },
   { label: "Modifier", value: "modifier" },
+  { label: "Product parameter", value: "product_parameter" },
 ];
 
 const PRODUCT_FIELDS = [
   { label: "Picture", name: "picture" },
   { label: "Description", name: "description" },
-  { label: "Old price", name: "old_price" },
   { label: "Weight", name: "weight" },
+];
+
+const PARAMETER_FIELDS = [
+  { label: "Old price", name: "old_price" },
   { label: "Proteins", name: "proteins" },
   { label: "Fats", name: "fats" },
   { label: "Carbohydrates", name: "carbohydrates" },
@@ -150,7 +154,8 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
 
   if (type === "collect") {
     const entity = params.entity;
-    const hasPrice = entity === "product" || entity === "modifier";
+    const hasPrice = entity === "product" || entity === "modifier" || entity === "product_parameter";
+    const hasParameterFields = entity === "product" || entity === "product_parameter";
 
     return (
       <div className="step__field-container">
@@ -171,6 +176,8 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
         )}
         {hasPrice && renderTextField("Price", "price")}
         {entity === "product" && PRODUCT_FIELDS.map(({ label, name }) => renderTextField(label, name))}
+        {hasParameterFields && PARAMETER_FIELDS.map(({ label, name }) => renderTextField(label, name))}
+        {entity === "product_parameter" && renderTextField("Index", "index")}
       </div>
     );
   }

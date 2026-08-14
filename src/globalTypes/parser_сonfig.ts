@@ -25,9 +25,9 @@ interface baseStep {
   type: StepType;
 }
 
-type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition | CollectCategoryOrGroup | CollectProduct;
+type IStep = StepCollect | StepLoop | StepAction | StepWait | StepCondition;
 
-type StepCollect = CollectCategoryOrGroup | CollectProduct;
+type StepCollect = CollectCategoryOrGroup | CollectProduct | CollectModifier | CollectProductParameter;
 
 interface BaseCollect extends baseStep {
   type: "collect",
@@ -43,18 +43,42 @@ interface CollectCategoryOrGroup extends BaseCollect {
 
 interface CollectProduct extends BaseCollect {
   params: {
-    entity?: "product" | "modifier",
+    entity?: "product",
     name: string,
     source?: "document" | "element",
     picture?: string,
     description?: string,
-    price: string,
+    price?: string,
     old_price?: string,
     proteins?: string,
     fats?: string,
     carbohydrates?: string,
     calories?: string,
     weight?: string,
+  }
+}
+
+interface CollectModifier extends BaseCollect {
+  params: {
+    entity: "modifier",
+    name: string,
+    source?: "document" | "element",
+    price: string,
+  }
+}
+
+interface CollectProductParameter extends BaseCollect {
+  params: {
+    entity: "product_parameter",
+    name?: string,
+    source?: "document" | "element",
+    price: string,
+    old_price?: string,
+    proteins?: string,
+    fats?: string,
+    carbohydrates?: string,
+    calories?: string,
+    index?: string,
   }
 }
 
