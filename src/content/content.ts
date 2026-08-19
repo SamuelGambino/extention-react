@@ -2,7 +2,7 @@ import browser from "webextension-polyfill";
 import { handleAction } from "./handlers/action";
 import { handleCollect } from "./handlers/collect";
 import { handleCondition } from "./handlers/condition";
-import { queryElementsCount } from "./handlers/dom";
+import { createElementContexts, releaseElementContexts } from "./handlers/dom";
 import { handleWait } from "./handlers/wait";
 import type { BackgroundToContentPayload } from "../globalTypes/messages";
 
@@ -32,8 +32,12 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
       case "loop-items":
         return {
           status: "success" as const,
-          data: queryElementsCount(message.selector, message.source, message.context),
+          data: createElementContexts(message.selector, message.source, message.context),
         };
+
+      case "release-context":
+        releaseElementContexts(message.context);
+        return { status: "success" as const };
 
       default:
         return { status: "error" as const, message: "Неизвестный тип шага." };

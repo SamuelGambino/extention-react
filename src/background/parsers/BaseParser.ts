@@ -1,6 +1,6 @@
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import type { Log, ParserState } from "../../globalTypes/parsing_state";
-import { setState, getState } from "../storage";
+import { updateState } from "../storage";
 import type { Categories, ExportData, ModGroups, Mods, Product } from "../types/ExportTypes";
 
 export type ParseMode = 'check' | 'parse' | 'steps';
@@ -51,28 +51,24 @@ export abstract class BaseParser {
   }
 
   protected async setDataState(patch: Partial<ParserState['data']>) {
-    const state = await getState();
-    await setState({
+    await updateState((state) => ({
       ...state,
-      data: { ...state.data, ...patch }
-    });
+      data: { ...state.data, ...patch },
+    }));
   }
 
   protected async setParsingState(patch: Partial<ParserState['parsing']>) {
-    const state = await getState();
-    await setState({
+    await updateState((state) => ({
       ...state,
-      parsing: { ...state.parsing, ...patch }
-    });
+      parsing: { ...state.parsing, ...patch },
+    }));
   }
 
   protected async setLog(log: Log) {
-    const state = await getState();
-    const logs = state.logs ?? [];
-    await setState({
+    await updateState((state) => ({
       ...state,
-      logs: [...logs, log]
-    });
+      logs: [...(state.logs ?? []), log],
+    }));
   }
 
   protected async sleep(ms: number) {

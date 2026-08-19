@@ -28,7 +28,14 @@ const browser = {
 
       if (payload.type === "loop-items") {
         const count = globalThis.__customParserLoopCounts?.shift() ?? 1;
-        return { status: "success", data: count };
+        return {
+          status: "success",
+          data: Array.from({ length: count }, (_, index) => ({
+            selector: payload.selector,
+            index,
+            id: `test-context-${index}`,
+          })),
+        };
       }
 
       if (payload.type === "collect") {

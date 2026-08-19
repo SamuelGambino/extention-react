@@ -1,16 +1,20 @@
 import type { StepAction, StepCollect, StepCondition, StepWait } from "./parser_сonfig";
 
-type ElementContext = {
+type ElementContextFrame = {
   selector: string;
   index: number;
-}[];
+  id?: string;
+};
+
+type ElementContext = ElementContextFrame[];
 
 type ContentPayload =
   | { type: "action"; step: StepAction; context?: ElementContext }
   | { type: "collect"; step: StepCollect; context?: ElementContext }
   | { type: "condition"; step: StepCondition; context?: ElementContext }
   | { type: "wait"; step: StepWait; context?: ElementContext }
-  | { type: "loop-items"; selector: string; source?: "document" | "element"; context?: ElementContext };
+  | { type: "loop-items"; selector: string; source?: "document" | "element"; context?: ElementContext }
+  | { type: "release-context"; context: ElementContext };
 
 interface ContentSuccess<T = unknown> {
   status: "success";
@@ -31,4 +35,5 @@ export type {
   ContentPayload,
   ContentResponse,
   ElementContext,
+  ElementContextFrame,
 }

@@ -139,41 +139,45 @@ export class Custom extends BaseParser {
         }
 
         case "loop": {
-          const count = await StepExecutor.execute<number>(this.tabId, {
+          const contexts = await StepExecutor.execute<ElementContext>(this.tabId, {
             type: "loop-items",
             selector: step.params.selector,
             source: step.params.source,
             context,
           });
-          const iterations = checkOnly ? Math.min(count, 1) : count;
+          const iterations = checkOnly ? contexts.slice(0, 1) : contexts;
           const iterationScopes = step.params.entity
             ? [...scopedEntities, step.params.entity]
             : scopedEntities;
 
           if (!checkOnly && step.params.entity) {
-            await this.updateProgress(step.params.entity, "total", count);
+            await this.updateProgress(step.params.entity, "total", contexts.length);
           }
 
-          for (let index = 0; index < iterations; index++) {
-            const iterationContext =
-              step.params.source === "element"
-                ? [...context, { selector: step.params.selector, index }]
-                : [{ selector: step.params.selector, index }];
+          try {
+            for (const iterationFrame of iterations) {
+              const iterationContext = step.params.source === "element"
+              ? [...context, iterationFrame]
+              : [iterationFrame];
             const contextBeforeIteration = { ...this.parseContext };
 
             if (step.params.entity) this.clearContextEntity(step.params.entity);
 
             try {
               await this.executeSteps(step.children, iterationContext, checkOnly, iterationScopes);
-            } finally {
-              this.parseContext = contextBeforeIteration;
-            }
+              } finally {
+                this.parseContext = contextBeforeIteration;
+                await StepExecutor.releaseContext(this.tabId, [iterationFrame]);
+              }
 
-            if (!checkOnly && step.params.entity) {
-              await this.updateProgress(step.params.entity, "processed", 1);
-            }
+              if (!checkOnly && step.params.entity) {
+                await this.updateProgress(step.params.entity, "processed", 1);
+              }
 
-            if (data.requestDelay) await this.sleep(data.requestDelay);
+              if (data.requestDelay) await this.sleep(data.requestDelay);
+            }
+          } finally {
+            await StepExecutor.releaseContext(this.tabId, contexts);
           }
           break;
         }

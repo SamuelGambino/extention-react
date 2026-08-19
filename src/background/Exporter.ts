@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import type { ExportData } from "./types/ExportTypes";
 import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
-import { getState, setState } from "./storage";
+import { updateState } from "./storage";
 
 export class Exporter {
   async export(data: ExportData, config: ParserTabConfig) {
@@ -102,11 +102,10 @@ export class Exporter {
     xml += `  </shop>\n`;
     xml += `</fs_catalog>`;
 
-    const state = await getState();
-    await setState({
+    await updateState((state) => ({
       ...state,
-      parsing: { ...state.parsing, isRunning: false }
-    });
+      parsing: { ...state.parsing, isRunning: false },
+    }));
     this.download(xml, `${config.type}_${config.tabName ?? ""}`)
   }
 

@@ -12,6 +12,7 @@
     "test:content": "node --experimental-strip-types scripts/test-wait-for-element.ts",
     "test:parameter": "node scripts/test-collect-parameter.mjs",
     "test:loop-context": "node --experimental-strip-types --loader ./scripts/test-mocks/webextension-loader.mjs scripts/test-loop-entity-context.ts",
+    "test:state": "node --experimental-strip-types --loader ./scripts/test-mocks/webextension-loader.mjs scripts/test-state-updates.ts",
     "preview": "vite preview"
   },
   "dependencies": {

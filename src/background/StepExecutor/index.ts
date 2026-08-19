@@ -1,4 +1,4 @@
-import type { BackgroundToContentPayload, ContentResponse } from '../../globalTypes/messages';
+import type { BackgroundToContentPayload, ContentResponse, ElementContext } from '../../globalTypes/messages';
 import browser from "webextension-polyfill";
 
 export class StepExecutor {
@@ -9,6 +9,14 @@ export class StepExecutor {
     if (response?.status === "error") throw new Error(response.message);
 
     return response?.data as T;
+  }
+
+  static async releaseContext(tabId: number, context: ElementContext): Promise<void> {
+    try {
+      await browser.tabs.sendMessage(tabId, { type: "release-context", context });
+    } catch {
+      // Контекст уже не нужен, поэтому ошибка очистки не должна прерывать парсинг.
+    }
   }
 
   static async waitForTabComplete(tabId: number, timeoutMs: number = 10000): Promise<void> {

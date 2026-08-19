@@ -22,7 +22,7 @@ const documentRoot = {
 
 globalThis.document = documentRoot as unknown as Document;
 
-const { waitForElement } = await import("../src/content/handlers/dom.ts");
+const { createElementContexts, getRoot, releaseElementContexts, waitForElement } = await import("../src/content/handlers/dom.ts");
 
 const closeButton = await waitForElement(
   '[aria-label="close-modal"]',
@@ -50,5 +50,37 @@ const title = await waitForElement(
   1,
 );
 assert((title as { textContent: string }).textContent === "Товар", "Контекст вложенного цикла должен оставаться доступным.");
+
+const originalProduct = {
+  id: "original-product",
+  isConnected: true,
+  querySelector: () => null,
+  querySelectorAll: () => [],
+};
+const replacementProduct = {
+  id: "replacement-product",
+  isConnected: true,
+  querySelector: () => null,
+  querySelectorAll: () => [],
+};
+let productCards = [originalProduct];
+globalThis.document = {
+  querySelector: () => null,
+  querySelectorAll: (selector: string) => selector === ".product-card" ? productCards : [],
+} as unknown as Document;
+
+const contexts = createElementContexts(".product-card", "document");
+productCards = [replacementProduct];
+const preservedRoot = getRoot("element", [contexts[0]]);
+assert((preservedRoot as { id: string }).id === "original-product", "Контекст цикла не должен переключаться на элемент с тем же индексом после изменения DOM.");
+
+releaseElementContexts(contexts);
+let releasedContextFailed = false;
+try {
+  getRoot("element", [contexts[0]]);
+} catch {
+  releasedContextFailed = true;
+}
+assert(releasedContextFailed, "Освобожденный контекст не должен повторно находить другой элемент по индексу.");
 
 console.log("waitForElement regression checks passed");
