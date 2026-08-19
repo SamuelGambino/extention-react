@@ -82,9 +82,12 @@ interface CollectProductParameter extends BaseCollect {
   }
 }
 
+type ContextEntity = Exclude<StepCollect["params"]["entity"], undefined>;
+
 interface StepLoop extends baseStep {
   type: "loop",
   params: {
+    entity?: ContextEntity,
     source?: "document" | "element",
     selector: string
   }

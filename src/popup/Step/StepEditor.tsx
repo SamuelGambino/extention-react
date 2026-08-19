@@ -33,6 +33,11 @@ const ENTITY_OPTIONS = [
   { label: "Product parameter", value: "product_parameter" },
 ];
 
+const LOOP_ENTITY_OPTIONS = [
+  { label: "No entity context", value: "" },
+  ...ENTITY_OPTIONS,
+];
+
 const PRODUCT_FIELDS = [
   { label: "Picture", name: "picture" },
   { label: "Description", name: "description" },
@@ -86,6 +91,20 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
   if (type === "loop") {
     return (
       <div className="step__field-container">
+        <div className="step__field">
+          <p>Entity context:</p>
+          <Controller
+            name={`${path}.params.entity`}
+            control={control}
+            render={({ field }) => (
+              <RadioField
+                data={LOOP_ENTITY_OPTIONS}
+                value={field.value ?? ""}
+                onChange={(value) => field.onChange(value || undefined)}
+              />
+            )}
+          />
+        </div>
         {renderSourceField()}
         {renderTextField("Selector", "selector")}
       </div>

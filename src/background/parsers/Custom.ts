@@ -6,8 +6,25 @@ import { StepExecutor } from "../StepExecutor";
 import type { ElementContext } from "../../globalTypes/messages";
 import type { ProductParameter } from "../types/ExportTypes";
 
+type ContextEntity = "category" | "product" | "modifier_group" | "modifier" | "product_parameter";
+type ContextItem = { id: string | number, name: string, index?: number[] };
+
+type CollectedItem = {
+  name: string;
+  picture?: string;
+  description?: string;
+  price?: number;
+  old_price?: number;
+  proteins?: number;
+  fats?: number;
+  carbohydrates?: number;
+  calories?: number;
+  index?: string;
+  weight?: string;
+};
+
 export class Custom extends BaseParser {
-  private parseContext: { category?: { id: string | number, name: string }, product?: { id: string | number, name: string }, modifierGroup?: { id: string | number, name: string } } = {};
+  private parseContext: Partial<Record<ContextEntity, ContextItem>> = {};
   private tabId: number | undefined;
 
   async checkAvailability() {
@@ -50,7 +67,12 @@ export class Custom extends BaseParser {
     this.tabId = activeTab.id;
   }
 
-  private async executeSteps(steps: IStep[], context: ElementContext = [], checkOnly = false): Promise<void> {
+  private async executeSteps(
+    steps: IStep[],
+    context: ElementContext = [],
+    checkOnly = false,
+    scopedEntities: ContextEntity[] = [],
+  ): Promise<void> {
     if (!this.tabId) throw new Error("tabId is undefined :(");
     const data = this.config.data as PresetCustom;
 
@@ -70,12 +92,12 @@ export class Custom extends BaseParser {
           break;
 
         case "collect":
-          await this.collect(step, context);
+          await this.collect(step, context, scopedEntities);
           break;
 
         case "condition": {
           const matched = await StepExecutor.execute<boolean>(this.tabId, { type: "condition", step, context });
-          if (matched) await this.executeSteps(step.children, context, checkOnly);
+          if (matched) await this.executeSteps(step.children, context, checkOnly, scopedEntities);
           break;
         }
 
@@ -87,12 +109,25 @@ export class Custom extends BaseParser {
             context,
           });
           const iterations = checkOnly ? Math.min(count, 1) : count;
+          const iterationScopes = step.params.entity
+            ? [...scopedEntities, step.params.entity]
+            : scopedEntities;
+
           for (let index = 0; index < iterations; index++) {
             const iterationContext =
               step.params.source === "element"
                 ? [...context, { selector: step.params.selector, index }]
                 : [{ selector: step.params.selector, index }];
-            await this.executeSteps(step.children, iterationContext, checkOnly);
+            const contextBeforeIteration = { ...this.parseContext };
+
+            if (step.params.entity) this.clearContextEntity(step.params.entity);
+
+            try {
+              await this.executeSteps(step.children, iterationContext, checkOnly, iterationScopes);
+            } finally {
+              this.parseContext = contextBeforeIteration;
+            }
+
             if (data.requestDelay) await this.sleep(data.requestDelay);
           }
           break;
@@ -101,6 +136,27 @@ export class Custom extends BaseParser {
 
       await this.waitForNextStep();
     }
+  }
+
+  private clearContextEntity(entity: ContextEntity) {
+    delete this.parseContext[entity];
+
+    if (entity === "category") {
+      delete this.parseContext.product;
+      delete this.parseContext.product_parameter;
+    }
+
+    if (entity === "product") {
+      delete this.parseContext.product_parameter;
+    }
+
+    if (entity === "modifier_group") {
+      delete this.parseContext.modifier;
+    }
+  }
+
+  private getScopedContextItem(entity: ContextEntity, scopedEntities: ContextEntity[]) {
+    return scopedEntities.includes(entity) ? this.parseContext[entity] : undefined;
   }
 
   private parseParameterIndex(value?: string): number[] {
@@ -112,39 +168,79 @@ export class Custom extends BaseParser {
       .filter(Number.isFinite) ?? [];
   }
 
-  private async collect(step: StepCollect, context: ElementContext) {
+  private createProductParameter(id: string, item: CollectedItem, fallbackIndex: number[] = []): ProductParameter {
+    return {
+      id,
+      name: item.name || undefined,
+      price: item.price ?? 0,
+      old_price: item.old_price,
+      proteins: item.proteins,
+      fats: item.fats,
+      carbohydrates: item.carbohydrates,
+      calories: item.calories,
+      index: item.index || item.weight ? this.parseParameterIndex(item.index ?? item.weight) : fallbackIndex,
+    };
+  }
+
+  private updateProductParameter(parameter: ProductParameter, item: CollectedItem) {
+    if (item.name) parameter.name = item.name;
+    if (typeof item.price !== "undefined") parameter.price = item.price;
+    if (typeof item.old_price !== "undefined") parameter.old_price = item.old_price;
+    if (typeof item.proteins !== "undefined") parameter.proteins = item.proteins;
+    if (typeof item.fats !== "undefined") parameter.fats = item.fats;
+    if (typeof item.carbohydrates !== "undefined") parameter.carbohydrates = item.carbohydrates;
+    if (typeof item.calories !== "undefined") parameter.calories = item.calories;
+    if (item.index || item.weight) parameter.index = this.parseParameterIndex(item.index ?? item.weight);
+  }
+
+  private async collect(step: StepCollect, context: ElementContext, scopedEntities: ContextEntity[]) {
     if (!this.tabId) throw new Error("tabId is undefined :(");
 
-    const item = await StepExecutor.execute<{
-      name: string;
-      picture?: string;
-      description?: string;
-      price?: number;
-      old_price?: number;
-      proteins?: number;
-      fats?: number;
-      carbohydrates?: number;
-      calories?: number;
-      index?: string;
-    }>(this.tabId, { type: "collect", step, context });
+    const item = await StepExecutor.execute<CollectedItem>(this.tabId, { type: "collect", step, context });
     const entity = step.params.entity ?? "product";
     const id = `${entity}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     if (entity === "category") {
-      this.categories.push({ id, name: item.name, parent: 0 });
-      this.parseContext.category = { id, name: item.name };
+      const contextItem = this.getScopedContextItem(entity, scopedEntities);
+      const category = contextItem ? this.categories.find((candidate) => candidate.id === contextItem.id) : undefined;
+
+      if (category) {
+        if (item.name) category.name = item.name;
+        this.parseContext.category = { id: category.id, name: category.name };
+      } else {
+        this.categories.push({ id, name: item.name, parent: 0 });
+        this.parseContext.category = { id, name: item.name };
+      }
       return;
     }
 
     if (entity === "modifier_group") {
-      this.modifiers_groups.push({ id, name: item.name, type: "one_unlimited", required: false, minimum: 0, maximum: 0, modifiers: [] });
-      this.parseContext.modifierGroup = { id, name: item.name };
+      const contextItem = this.getScopedContextItem(entity, scopedEntities);
+      const group = contextItem ? this.modifiers_groups.find((candidate) => candidate.id === contextItem.id) : undefined;
+
+      if (group) {
+        if (item.name) group.name = item.name;
+        this.parseContext.modifier_group = { id: group.id, name: group.name };
+      } else {
+        this.modifiers_groups.push({ id, name: item.name, type: "one_unlimited", required: false, minimum: 0, maximum: 0, modifiers: [] });
+        this.parseContext.modifier_group = { id, name: item.name };
+      }
       return;
     }
 
     if (entity === "modifier") {
-      const groupId = this.parseContext.modifierGroup?.id ?? "";
-      this.modifiers.push({ id, name: item.name, price: item.price ?? 0, group_id: groupId });
+      const contextItem = this.getScopedContextItem(entity, scopedEntities);
+      const modifier = contextItem ? this.modifiers.find((candidate) => candidate.id === contextItem.id) : undefined;
+
+      if (modifier) {
+        if (item.name) modifier.name = item.name;
+        if (typeof item.price !== "undefined") modifier.price = item.price;
+        this.parseContext.modifier = { id: modifier.id, name: modifier.name };
+      } else {
+        const groupId = this.parseContext.modifier_group?.id ?? "";
+        this.modifiers.push({ id, name: item.name, price: item.price ?? 0, group_id: groupId });
+        this.parseContext.modifier = { id, name: item.name };
+      }
       return;
     }
 
@@ -159,34 +255,48 @@ export class Custom extends BaseParser {
         throw new Error("Текущий товар для collect product_parameter не найден.");
       }
 
-      const parameter: ProductParameter = {
-        id,
-        name: item.name || undefined,
-        price: item.price ?? 0,
-        old_price: item.old_price,
-        proteins: item.proteins,
-        fats: item.fats,
-        carbohydrates: item.carbohydrates,
-        calories: item.calories,
-        index: this.parseParameterIndex(item.index),
-      };
-      product.price.push(parameter);
+      const contextItem = this.getScopedContextItem(entity, scopedEntities);
+      const parameter = contextItem ? product.price.find((candidate) => candidate.id === contextItem.id) : undefined;
+
+      if (parameter) {
+        this.updateProductParameter(parameter, item);
+        this.parseContext.product_parameter = { id: parameter.id, name: parameter.name ?? "" };
+      } else {
+        const nextParameter = this.createProductParameter(id, item);
+        product.price.push(nextParameter);
+        this.parseContext.product_parameter = { id, name: nextParameter.name ?? "" };
+      }
       return;
     }
 
-    const productParameters: ProductParameter[] = [];
-    if (step.params.price) {
-      productParameters.push({
-        id,
-        price: item.price ?? 0,
-        old_price: item.old_price,
-        proteins: item.proteins,
-        fats: item.fats,
-        carbohydrates: item.carbohydrates,
-        calories: item.calories,
-        index: [],
-      });
+    const contextItem = this.getScopedContextItem(entity, scopedEntities);
+    const product = contextItem ? this.products.find((candidate) => candidate.product_id === contextItem.id) : undefined;
+
+    if (product) {
+      if (item.name) product.name = item.name;
+      if (item.picture) product.picture = item.picture;
+      if (item.description) product.description = item.description;
+
+      const productIndex = item.weight
+        ? this.parseParameterIndex(item.weight)
+        : this.parseContext.product?.index ?? [];
+
+      if (step.params.price) {
+        const defaultParameter = product.price.find((candidate) => !candidate.name);
+        if (defaultParameter) {
+          this.updateProductParameter(defaultParameter, item);
+        } else {
+          product.price.push(this.createProductParameter(id, item, productIndex));
+        }
+      }
+
+      this.parseContext.product = { id: product.product_id, name: product.name, index: productIndex };
+      return;
     }
+
+    const productIndex = this.parseParameterIndex(item.weight);
+    const productParameters: ProductParameter[] = [];
+    if (step.params.price) productParameters.push(this.createProductParameter(id, item, productIndex));
 
     this.products.push({
       product_id: id,
@@ -196,6 +306,6 @@ export class Custom extends BaseParser {
       price: productParameters,
       category: this.parseContext.category?.id ?? "",
     });
-    this.parseContext.product = { id, name: item.name };
+    this.parseContext.product = { id, name: item.name, index: productIndex };
   }
 }
