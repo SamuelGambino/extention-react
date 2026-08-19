@@ -6,8 +6,16 @@ type CollectedItem = {
   weight?: string;
 };
 
+type StoredParserState = {
+  parser_state: {
+    data: Record<string, number>;
+  };
+};
+
 type CustomParserTestGlobal = typeof globalThis & {
   __customParserCollectResponses?: CollectedItem[];
+  __customParserLoopCounts?: number[];
+  __customParserStateHistory?: StoredParserState[];
 };
 
 const assert = (condition: unknown, message: string): asserts condition => {
@@ -23,8 +31,11 @@ const createConfig = (steps: unknown[]) => ({
   data: { steps },
 });
 
-const parseWithResponses = async (steps: unknown[], responses: CollectedItem[]) => {
-  (globalThis as CustomParserTestGlobal).__customParserCollectResponses = [...responses];
+const parseWithResponses = async (steps: unknown[], responses: CollectedItem[], loopCounts: number[] = [1]) => {
+  const testGlobal = globalThis as CustomParserTestGlobal;
+  testGlobal.__customParserCollectResponses = [...responses];
+  testGlobal.__customParserLoopCounts = [...loopCounts];
+  testGlobal.__customParserStateHistory = [];
   const parser = new Custom(createConfig(steps), "parse");
   await parser.parseRest();
   return parser as unknown as {
@@ -90,5 +101,72 @@ const categoryContextParser = await parseWithResponses(categoryContextSteps, [
 ]);
 assert(categoryContextParser.categories.length === 1, "Контекстный цикл category не должен создавать дубликат категории.");
 assert(categoryContextParser.categories[0].name === "Напитки и коктейли", "Повторный collect category должен дополнить текущую категорию.");
+
+const progressSteps = [
+  {
+    type: "loop",
+    params: { entity: "category", selector: ".category-card" },
+    children: [
+      { type: "collect", params: { entity: "category", name: ".category-name" } },
+      {
+        type: "loop",
+        params: { entity: "product", selector: ".product-card" },
+        children: [
+          { type: "collect", params: { entity: "product", name: ".product-name" } },
+        ],
+      },
+    ],
+  },
+];
+
+await parseWithResponses(progressSteps, [
+  { name: "Категория 1" },
+  { name: "Товар 1" },
+  { name: "Товар 2" },
+  { name: "Товар 3" },
+  { name: "Категория 2" },
+  { name: "Товар 4" },
+  { name: "Товар 5" },
+], [2, 3, 2]);
+
+const progressHistory = (globalThis as CustomParserTestGlobal).__customParserStateHistory ?? [];
+const progressData = progressHistory.map((state) => state.parser_state.data);
+const finalProgress = progressData.at(-1);
+
+assert(progressData.some((data) => data.categoriesTotal === 2), "При входе в цикл категорий должен записываться общий счетчик категорий.");
+assert(progressData.some((data) => data.productsTotal === 3), "При обработке первой категории должен добавляться размер ее цикла товаров.");
+assert(progressData.some((data) => data.productsTotal === 5), "При обработке следующей категории общий счетчик товаров должен накапливаться.");
+assert(finalProgress?.categories === 2 && finalProgress.categoriesTotal === 2, "Итоговый прогресс категорий должен отражать все обработанные итерации.");
+assert(finalProgress?.products === 5 && finalProgress.productsTotal === 5, "Итоговый прогресс товаров должен отражать все обработанные итерации.");
+
+const modifierProgressSteps = [
+  {
+    type: "loop",
+    params: { entity: "modifier_group", selector: ".modifier-group" },
+    children: [
+      { type: "collect", params: { entity: "modifier_group", name: ".group-name" } },
+      {
+        type: "loop",
+        params: { entity: "modifier", selector: ".modifier" },
+        children: [
+          { type: "collect", params: { entity: "modifier", name: ".modifier-name", price: ".modifier-price" } },
+        ],
+      },
+    ],
+  },
+];
+
+await parseWithResponses(modifierProgressSteps, [
+  { name: "Размер" },
+  { name: "Маленький", price: 0 },
+  { name: "Большой", price: 100 },
+  { name: "Добавки" },
+  { name: "Сыр", price: 50 },
+], [2, 2, 1]);
+
+const modifierProgressHistory = (globalThis as CustomParserTestGlobal).__customParserStateHistory ?? [];
+const modifierProgress = modifierProgressHistory.at(-1)?.parser_state.data;
+assert(modifierProgress?.groupsModifiers === 2 && modifierProgress.groupsModifiersTotal === 2, "Прогресс групп модификаторов должен учитывать все контекстные итерации.");
+assert(modifierProgress?.modifiers === 3 && modifierProgress.modifiersTotal === 3, "Прогресс модификаторов должен динамически накапливаться во вложенных циклах.");
 
 console.log("loop entity context regression checks passed");

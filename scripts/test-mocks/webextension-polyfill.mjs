@@ -6,11 +6,19 @@ const state = {
   },
 };
 
+const recordState = () => {
+  globalThis.__customParserStateHistory ??= [];
+  globalThis.__customParserStateHistory.push(structuredClone(state));
+};
+
 const browser = {
   storage: {
     local: {
       get: async (key) => ({ [key]: state[key] }),
-      set: async (value) => Object.assign(state, value),
+      set: async (value) => {
+        Object.assign(state, value);
+        recordState();
+      },
     },
   },
   tabs: {
@@ -19,7 +27,8 @@ const browser = {
       if (payload.action === "PING") return { status: "READY" };
 
       if (payload.type === "loop-items") {
-        return { status: "success", data: 1 };
+        const count = globalThis.__customParserLoopCounts?.shift() ?? 1;
+        return { status: "success", data: count };
       }
 
       if (payload.type === "collect") {

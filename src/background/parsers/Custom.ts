@@ -8,6 +8,15 @@ import type { ProductParameter } from "../types/ExportTypes";
 
 type ContextEntity = "category" | "product" | "modifier_group" | "modifier" | "product_parameter";
 type ContextItem = { id: string | number, name: string, index?: number[] };
+type ProgressField = "categories" | "categoriesTotal" | "products" | "productsTotal" | "groupsModifiers" | "groupsModifiersTotal" | "modifiers" | "modifiersTotal";
+type ProgressKind = "total" | "processed";
+
+const PROGRESS_FIELDS: Partial<Record<ContextEntity, Record<ProgressKind, ProgressField>>> = {
+  category: { total: "categoriesTotal", processed: "categories" },
+  product: { total: "productsTotal", processed: "products" },
+  modifier_group: { total: "groupsModifiersTotal", processed: "groupsModifiers" },
+  modifier: { total: "modifiersTotal", processed: "modifiers" },
+};
 
 type CollectedItem = {
   name: string;
@@ -25,6 +34,16 @@ type CollectedItem = {
 
 export class Custom extends BaseParser {
   private parseContext: Partial<Record<ContextEntity, ContextItem>> = {};
+  private progress: Record<ProgressField, number> = {
+    categories: 0,
+    categoriesTotal: 0,
+    products: 0,
+    productsTotal: 0,
+    groupsModifiers: 0,
+    groupsModifiersTotal: 0,
+    modifiers: 0,
+    modifiersTotal: 0,
+  };
   private tabId: number | undefined;
 
   async checkAvailability() {
@@ -44,15 +63,11 @@ export class Custom extends BaseParser {
 
   async parseRest() {
     await this.resolveTabId();
+    await this.resetProgress();
     try {
       const data = this.config.data as PresetCustom;
       await this.executeSteps(data.steps, []);
-      await this.setDataState({
-        categories: this.categories.length,
-        products: this.products.length,
-        groupsModifiers: this.modifiers_groups.length,
-        modifiers: this.modifiers.length,
-      } as Partial<ParserState['data']>);
+      await this.setDataState(this.progress as Partial<ParserState['data']>);
     } catch (e) {
       await this.setLog({ status: "danger", title: "[Custom]:Parse", value: "Ошибка:" + e });
       this.stop();
@@ -65,6 +80,28 @@ export class Custom extends BaseParser {
     const activeTab = tabs[0];
     if (!activeTab?.id) throw new Error("Не удалось найти активную вкладку");
     this.tabId = activeTab.id;
+  }
+
+  private async resetProgress() {
+    this.progress = {
+      categories: 0,
+      categoriesTotal: 0,
+      products: 0,
+      productsTotal: 0,
+      groupsModifiers: 0,
+      groupsModifiersTotal: 0,
+      modifiers: 0,
+      modifiersTotal: 0,
+    };
+    await this.setDataState(this.progress as Partial<ParserState['data']>);
+  }
+
+  private async updateProgress(entity: ContextEntity, kind: ProgressKind, amount: number) {
+    const field = PROGRESS_FIELDS[entity]?.[kind];
+    if (!field || amount === 0) return;
+
+    this.progress[field] += amount;
+    await this.setDataState({ [field]: this.progress[field] } as Partial<ParserState['data']>);
   }
 
   private async executeSteps(
@@ -113,6 +150,10 @@ export class Custom extends BaseParser {
             ? [...scopedEntities, step.params.entity]
             : scopedEntities;
 
+          if (!checkOnly && step.params.entity) {
+            await this.updateProgress(step.params.entity, "total", count);
+          }
+
           for (let index = 0; index < iterations; index++) {
             const iterationContext =
               step.params.source === "element"
@@ -126,6 +167,10 @@ export class Custom extends BaseParser {
               await this.executeSteps(step.children, iterationContext, checkOnly, iterationScopes);
             } finally {
               this.parseContext = contextBeforeIteration;
+            }
+
+            if (!checkOnly && step.params.entity) {
+              await this.updateProgress(step.params.entity, "processed", 1);
             }
 
             if (data.requestDelay) await this.sleep(data.requestDelay);
