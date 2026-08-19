@@ -78,6 +78,8 @@ export class Kuper extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     try {
       if (!this.response?.departments.length) throw new Error('В ответе нет departments');
       for (const category of this.response.departments) {

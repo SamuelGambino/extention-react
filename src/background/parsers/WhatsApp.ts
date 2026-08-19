@@ -153,6 +153,8 @@ export class WhatsApp extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     await this.setLog({ status: "warn", title: "[WhatsApp]:Parse", value: "Парсинг данных..." });
     const categories = this.fullNomenclature?.collections;
     if (!Array.isArray(categories)) throw Error("Response menu is not an array");

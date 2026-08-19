@@ -74,6 +74,8 @@ export class Chibbis extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     await this.setLog({ status: "warn", title: "[Chibbis]:Parse", value: "Парсинг данных..." });
     const categories = this.response?.menu;
     if (!Array.isArray(categories)) throw Error("Response menu is not an array");

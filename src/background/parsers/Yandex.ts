@@ -65,6 +65,8 @@ export class Yandex extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     await this.setLog({ status: "warn", title: "[Yandex]:Parse", value: "Парсинг данных..." });
     const categories = this.response?.payload?.categories;
     if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
