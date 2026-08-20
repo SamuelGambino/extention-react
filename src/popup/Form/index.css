@@ -163,6 +163,37 @@ button.form__button--small {
   position: relative;
 }
 
+.form__indent {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.form__indent-line {
+  width: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.form__indent-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 9px;
+  width: 1px;
+  background: #1e2e50;
+}
+
+.form__indent-line--last::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 10px;
+  height: 1px;
+  background: #1e2e50;
+}
+
 .form__list-select {
   width: -webkit-fill-available;
   height: -webkit-fill-available;

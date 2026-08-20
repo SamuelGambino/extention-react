@@ -12,7 +12,6 @@ interface Props {
   sortableId: string;
   path: string;
   depth: number;
-  isLast: boolean;
   StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
   onRemove: () => void;
 }
@@ -66,7 +65,7 @@ const StepSummary = ({ step }: { step: IStep }) => {
   return null;
 };
 
-const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Props) => {
+const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => {
   const [opened, setOpened] = useState(false);
   const { control } = useFormContext();
 
@@ -95,7 +94,7 @@ const Step = ({ index, path, sortableId, depth, isLast, StepMeta, onRemove }: Pr
             {Array.from({ length: depth }).map((_, i) => (
               <div
                 key={i}
-                className={`step__indent-line ${i === depth - 1 && isLast ? "step__indent-line--last" : ""}`}
+                className={"step__indent-line"}
               />
             ))}
           </div>

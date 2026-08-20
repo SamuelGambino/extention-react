@@ -91,14 +91,24 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
               index={index}
               onRemove={() => remove(index)}
               depth={depth ?? 0}
-              isLast={index === fields.length - 1}
               StepMeta={StepMeta}
             />
           ))}
         </SortableContext>
       </DndContext>
 
-      <div className="form__list-add" style={{ marginLeft: `${depth ? depth * 20 : 0}px`, marginTop: `${depth ? (depth === 0 ? 10 : 0) : 10}px` }}>
+      <div className="form__list-add" style={{ marginTop: `${depth ? (depth === 0 ? 10 : 0) : 10}px` }}>
+        {depth && depth > 0 && (
+          <div className="form__indent">
+            {Array.from({ length: depth }).map((_, i) => (
+              <div
+                key={i}
+                className={`form__indent-line ${i === depth - 1 ? "form__indent-line--last" : ""}`}
+              />
+            ))}
+          </div>
+        )}
+
         <SelectField className="form__list-select" value={selectedType} options={STEP_TYPES.map((type) => ({ value: type, label: type, description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
           setSelectedType(value as StepType);
         }} />
