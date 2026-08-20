@@ -18,8 +18,6 @@ type TranslationKey<T> = {
 type Interpolation = Record<string, string | number>;
 export type LocalizedTextKey = TranslationKey<Translation>;
 
-// Новая локаль должна реализовать Translation: TypeScript потребует все ключи,
-// но позволит задать собственные значения строк.
 const dictionaries: Record<Locale, Translation> = { ru };
 let activeLocale: Locale = "ru";
 
