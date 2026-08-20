@@ -18,12 +18,21 @@ import type { ParserTabConfig, IStep, StepType } from "../../../globalTypes/pars
 import type { FieldArrayPath } from "react-hook-form";
 import SelectField from "../../SelectField";
 import Button from "../../Button";
+import { t } from "../../i18n";
 
 interface ScenarioListProps {
   path: string;
   depth?: number;
   StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
 }
+
+const STEP_TYPE_LABELS: Record<StepType, string> = {
+  collect: t("form.stepTypes.collect"),
+  action: t("form.stepTypes.action"),
+  loop: t("form.stepTypes.loop"),
+  wait: t("form.stepTypes.wait"),
+  condition: t("form.stepTypes.condition"),
+};
 
 const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
   const { control } = useFormContext<ParserTabConfig>();
@@ -109,11 +118,11 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
           </div>
         )}
 
-        <SelectField className="form__list-select" value={selectedType} options={STEP_TYPES.map((type) => ({ value: type, label: type, description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
+        <SelectField className="form__list-select" value={selectedType} options={STEP_TYPES.map((type) => ({ value: type, label: STEP_TYPE_LABELS[type], description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
           setSelectedType(value as StepType);
         }} />
 
-        <Button className="form__list-btn" title={"+ Add step"} onClick={handleAddStep} />
+        <Button className="form__list-btn" title={t("form.addStep")} onClick={handleAddStep} />
       </div>
     </div>
   );

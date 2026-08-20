@@ -2,6 +2,7 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 import "./index.css";
 import SwitchField from "../SwitchField";
 import RadioField from "../RadioField";
+import { t } from "../i18n";
 
 interface StepEditorProps {
   type: string;
@@ -10,57 +11,57 @@ interface StepEditorProps {
 }
 
 const SOURCE_OPTIONS = [
-  { label: "Document", value: "document" },
-  { label: "Element", value: "element" },
+  { label: t("step.sourceOptions.document"), value: "document" },
+  { label: t("step.sourceOptions.element"), value: "element" },
 ];
 
 const ACTION_OPTIONS = [
-  { label: "Click", value: "click" },
-  { label: "Hover", value: "hover" },
+  { label: t("step.actionOptions.click"), value: "click" },
+  { label: t("step.actionOptions.hover"), value: "hover" },
 ];
 
 const WAIT_OPTIONS = [
-  { label: "Timeout", value: "timeout" },
-  { label: "For navigation", value: "navigation" },
-  { label: "For element", value: "element" },
+  { label: t("step.waitOptions.timeout"), value: "timeout" },
+  { label: t("step.waitOptions.navigation"), value: "navigation" },
+  { label: t("step.waitOptions.element"), value: "element" },
 ];
 
 const ENTITY_OPTIONS = [
-  { label: "Category", value: "category" },
-  { label: "Product", value: "product" },
-  { label: "Modifier Group", value: "modifier_group" },
-  { label: "Modifier", value: "modifier" },
-  { label: "Product parameter", value: "product_parameter" },
+  { label: t("step.entityOptions.category"), value: "category" },
+  { label: t("step.entityOptions.product"), value: "product" },
+  { label: t("step.entityOptions.modifierGroup"), value: "modifier_group" },
+  { label: t("step.entityOptions.modifier"), value: "modifier" },
+  { label: t("step.entityOptions.productParameter"), value: "product_parameter" },
 ];
 
 const LOOP_ENTITY_OPTIONS = [
-  { label: "No entity context", value: "" },
+  { label: t("step.entityOptions.noEntityContext"), value: "" },
   ...ENTITY_OPTIONS,
 ];
 
 const LOOP_CONTEXT_STRATEGY_OPTIONS = [
-  { label: "Snapshot", value: "snapshot" },
-  { label: "Dynamic index", value: "dynamic" },
-  { label: "Keyed", value: "keyed" },
+  { label: t("step.contextStrategyOptions.snapshot"), value: "snapshot" },
+  { label: t("step.contextStrategyOptions.dynamic"), value: "dynamic" },
+  { label: t("step.contextStrategyOptions.keyed"), value: "keyed" },
 ];
 
 const LOOP_KEY_TYPE_OPTIONS = [
-  { label: "Text", value: "text" },
-  { label: "Attribute", value: "attribute" },
+  { label: t("step.keyTypeOptions.text"), value: "text" },
+  { label: t("step.keyTypeOptions.attribute"), value: "attribute" },
 ];
 
 const PRODUCT_FIELDS = [
-  { label: "Picture", name: "picture" },
-  { label: "Description", name: "description" },
-  { label: "Weight", name: "weight" },
+  { label: t("form.fields.picture"), name: "picture" },
+  { label: t("form.fields.description"), name: "description" },
+  { label: t("form.fields.weight"), name: "weight" },
 ];
 
 const PARAMETER_FIELDS = [
-  { label: "Old price", name: "old_price" },
-  { label: "Proteins", name: "proteins" },
-  { label: "Fats", name: "fats" },
-  { label: "Carbohydrates", name: "carbohydrates" },
-  { label: "Calories", name: "calories" },
+  { label: t("step.oldPrice"), name: "old_price" },
+  { label: t("step.proteins"), name: "proteins" },
+  { label: t("step.fats"), name: "fats" },
+  { label: t("step.carbohydrates"), name: "carbohydrates" },
+  { label: t("step.calories"), name: "calories" },
 ];
 
 const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
@@ -88,7 +89,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
 
   const renderSourceField = () => depth > 0 && (
     <div className="step__field">
-      <p>Source:</p>
+      <p>{t("step.source")}:</p>
       <Controller
         name={`${path}.params.source`}
         control={control}
@@ -106,7 +107,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
     return (
       <div className="step__field-container">
         <div className="step__field">
-          <p>Entity context:</p>
+          <p>{t("step.entityContext")}:</p>
           <Controller
             name={`${path}.params.entity`}
             control={control}
@@ -120,7 +121,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
           />
         </div>
         <div className="step__field">
-          <p>Context strategy:</p>
+          <p>{t("step.contextStrategy")}:</p>
           <Controller
             name={`${path}.params.contextStrategy`}
             control={control}
@@ -136,7 +137,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
         {contextStrategy === "keyed" && (
           <>
             <div className="step__field">
-              <p>Key type:</p>
+              <p>{t("step.keyType")}:</p>
               <Controller
                 name={`${path}.params.keyType`}
                 control={control}
@@ -149,11 +150,11 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
                 )}
               />
             </div>
-            {keyType === "attribute" && renderTextField("Key attribute", "keyAttribute")}
+            {keyType === "attribute" && renderTextField(t("step.keyAttribute"), "keyAttribute")}
           </>
         )}
         {renderSourceField()}
-        {renderTextField("Selector", "selector")}
+        {renderTextField(t("step.selector"), "selector")}
       </div>
     );
   }
@@ -171,7 +172,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
           />
         </div>
         {renderSourceField()}
-        {params.action && renderTextField("Selector", "selector")}
+        {params.action && renderTextField(t("step.selector"), "selector")}
       </div>
     );
   }
@@ -188,11 +189,11 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
             )}
           />
         </div>
-        {params.mode === "timeout" && renderTextField("Duration", "duration", "number")}
+        {params.mode === "timeout" && renderTextField(t("step.duration"), "duration", "number")}
         {params.mode === "element" && (
           <>
             {renderSourceField()}
-            {renderTextField("Selector", "selector")}
+            {renderTextField(t("step.selector"), "selector")}
           </>
         )}
       </div>
@@ -203,7 +204,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
     return (
       <div className="step__field-container">
         <div className="step__field">
-          <p>Exists:</p>
+          <p>{t("step.exists")}:</p>
           <Controller
             name={`${path}.params.exists`}
             control={control}
@@ -213,7 +214,7 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
           />
         </div>
         {renderSourceField()}
-        {renderTextField("Selector", "selector")}
+        {renderTextField(t("step.selector"), "selector")}
       </div>
     );
   }
@@ -237,13 +238,13 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
         {entity && (
           <>
             {renderSourceField()}
-            {renderTextField("Name", "name")}
+            {renderTextField(t("form.fields.name"), "name")}
           </>
         )}
-        {hasPrice && renderTextField("Price", "price")}
+        {hasPrice && renderTextField(t("form.fields.price"), "price")}
         {entity === "product" && PRODUCT_FIELDS.map(({ label, name }) => renderTextField(label, name))}
         {hasParameterFields && PARAMETER_FIELDS.map(({ label, name }) => renderTextField(label, name))}
-        {entity === "product_parameter" && renderTextField("Index", "index")}
+        {entity === "product_parameter" && renderTextField(t("step.index"), "index")}
       </div>
     );
   }

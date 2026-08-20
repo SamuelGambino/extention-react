@@ -6,6 +6,7 @@ import type { IStep, StepAction, StepCollect, StepCondition, StepLoop, StepWait 
 import { useFormContext, useWatch } from "react-hook-form";
 import ScenarioList from "../Form/blocks/ScenarioList";
 import StepEditor from "./StepEditor";
+import { t } from "../i18n";
 
 interface Props {
   index: number;
@@ -16,50 +17,90 @@ interface Props {
   onRemove: () => void;
 }
 
+const getStepTypeLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    collect: t("form.stepTypes.collect"),
+    action: t("form.stepTypes.action"),
+    loop: t("form.stepTypes.loop"),
+    wait: t("form.stepTypes.wait"),
+    condition: t("form.stepTypes.condition"),
+  };
+
+  return labels[type] ?? type;
+};
+
+const getEntityLabel = (entity: string | undefined) => {
+  const labels: Record<string, string> = {
+    category: t("step.entityOptions.category"),
+    product: t("step.entityOptions.product"),
+    modifier_group: t("step.entityOptions.modifierGroup"),
+    modifier: t("step.entityOptions.modifier"),
+    product_parameter: t("step.entityOptions.productParameter"),
+  };
+
+  return entity ? labels[entity] ?? entity : "";
+};
+
+const getActionLabel = (action: string | undefined) => {
+  const labels: Record<string, string> = {
+    click: t("step.actionOptions.click"),
+    hover: t("step.actionOptions.hover"),
+  };
+
+  return action ? labels[action] ?? action : "";
+};
+
+const getWaitLabel = (mode: string) => {
+  const labels: Record<string, string> = {
+    timeout: t("step.waitOptions.timeout"),
+    navigation: t("step.waitOptions.navigation"),
+    element: t("step.waitOptions.element"),
+  };
+
+  return labels[mode] ?? mode;
+};
+
 const StepSummary = ({ step }: { step: IStep }) => {
-  if (step.type === "action")
-    return <span className="step__sel-class">{`${(step as StepAction).params.action ?? ""} ${(step as StepAction).params.selector ?? ""}`}</span>;
+  if (step.type === "action") {
+    const stepAction = step as StepAction;
+    return <span className="step__sel-class">{`${getActionLabel(stepAction.params.action)} ${stepAction.params.selector ?? ""}`}</span>;
+  }
 
   if (step.type === "collect") {
-    const stepCollect = (step as StepCollect);
-    return (
-      <span className="step__sel-class">
-        {stepCollect.params.entity}
-      </span>
-    );
+    const stepCollect = step as StepCollect;
+    return <span className="step__sel-class">{getEntityLabel(stepCollect.params.entity)}</span>;
   }
 
   if (step.type === "condition") {
-    const stepCond = (step as StepCondition);
+    const stepCondition = step as StepCondition;
     return (
       <>
-        <span className="step__sel-class">{`${stepCond.params.exists ? "If exists:" : "If not exist:"} ${stepCond.params.selector ?? ""}`}</span>
-        {stepCond.children.length > 0 && (
-          <span className="step__loop-count">{stepCond.children.length} steps inside</span>
+        <span className="step__sel-class">{`${stepCondition.params.exists ? t("step.summary.ifExists") : t("step.summary.ifNotExists")} ${stepCondition.params.selector ?? ""}`}</span>
+        {stepCondition.children.length > 0 && (
+          <span className="step__loop-count">{t("step.summary.stepsInside", { count: stepCondition.children.length })}</span>
         )}
       </>
     );
   }
 
   if (step.type === "loop") {
-    const stepLoop = (step as StepLoop);
+    const stepLoop = step as StepLoop;
     return (
       <>
         <span className="step__sel-class">{stepLoop.params.selector}</span>
         {stepLoop.children.length > 0 && (
-          <span className="step__loop-count">{stepLoop.children.length} steps inside</span>
+          <span className="step__loop-count">{t("step.summary.stepsInside", { count: stepLoop.children.length })}</span>
         )}
       </>
     );
   }
 
   if (step.type === "wait") {
-    const stepWait = (step as StepWait);
-    let stepParam;
-    if (stepWait.params.mode === "navigation") stepParam = "";
+    const stepWait = step as StepWait;
+    let stepParam = "";
     if (stepWait.params.mode === "element") stepParam = stepWait.params.selector;
-    if (stepWait.params.mode === "timeout") stepParam = stepWait.params.duration;
-    return (<span className="step__sel-attr">{`${stepWait.params.mode} ${stepParam ?? ""}`}</span>)
+    if (stepWait.params.mode === "timeout") stepParam = String(stepWait.params.duration);
+    return <span className="step__sel-attr">{`${getWaitLabel(stepWait.params.mode)} ${stepParam}`}</span>;
   }
 
   return null;
@@ -71,7 +112,7 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
 
   const step = useWatch({
     control,
-    name: path
+    name: path,
   });
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -92,10 +133,7 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
         {depth > 0 && (
           <div className="step__indent">
             {Array.from({ length: depth }).map((_, i) => (
-              <div
-                key={i}
-                className={"step__indent-line"}
-              />
+              <div key={i} className="step__indent-line" />
             ))}
           </div>
         )}
@@ -112,24 +150,19 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
               className="step__drag"
               {...listeners}
               {...attributes}
-              aria-label="Drag to reorder"
+              aria-label={t("step.controls.dragToReorder")}
             >
               ⠿
             </button>
 
-            <span className="step__num">
-              {String(index + 1).padStart(2, "0")}
-            </span>
+            <span className="step__num">{String(index + 1).padStart(2, "0")}</span>
 
             <span className="step__badge">
               <span className="step__badge-dot" />
-              {step.type}
+              {getStepTypeLabel(step.type)}
             </span>
 
-            <div
-              className="step__summary"
-              onClick={() => setOpened((v) => !v)}
-            >
+            <div className="step__summary" onClick={() => setOpened((value) => !value)}>
               <StepSummary step={step} />
             </div>
 
@@ -137,17 +170,17 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
               <button
                 type="button"
                 className="step__action-btn"
-                aria-label="Edit"
-                title="Edit"
-                onClick={() => setOpened((v) => !v)}
+                aria-label={t("step.controls.edit")}
+                title={t("step.controls.edit")}
+                onClick={() => setOpened((value) => !value)}
               >
                 ✎
               </button>
               <button
                 type="button"
                 className="step__action-btn step__action-btn--del"
-                aria-label="Remove"
-                title="Remove"
+                aria-label={t("step.controls.remove")}
+                title={t("step.controls.remove")}
                 onClick={onRemove}
               >
                 ✕
@@ -158,7 +191,7 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
           {opened && (
             <div className="step__editor">
               <StepEditor type={step.type} path={path} depth={depth} />
-              <span>editor · {step.type}</span>
+              <span>{t("step.controls.editor", { type: getStepTypeLabel(step.type) })}</span>
             </div>
           )}
         </div>

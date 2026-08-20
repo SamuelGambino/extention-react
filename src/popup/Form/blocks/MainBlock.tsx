@@ -8,6 +8,7 @@ import FieldOptions from "../constants";
 import "../index.css";
 import ScrambleText from "../../ScrambleText";
 import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
+import { t } from "../../i18n";
 
 const PRESET_OPTIONS = FieldOptions.PresertOptions.map(({ label, value }) => ({ label, value }));
 
@@ -19,12 +20,12 @@ const MainBlock = () => {
 
   return (
     <fieldset className="form__settings">
-      <legend className="form__settings-title">Main</legend>
+      <legend className="form__settings-title">{t("form.main")}</legend>
 
       <div className="form__field">
         <div className="form__field-title">
-          <label className="form__field-label">Preset</label>
-          <Hint hint="Выберите пресет парсера" />
+          <label className="form__field-label">{t("form.preset")}</label>
+          <Hint hint={t("form.selectPresetHint")} />
         </div>
         <Controller
           name="type"
@@ -42,15 +43,15 @@ const MainBlock = () => {
 
       <div className="form__field">
         <div className="form__field-title">
-          <label className="form__field-label">Source</label>
-          <Hint hint="Введите url источника" hintPosition="left" />
-          <Button title="auto-fill" className="form__button--small form__button--main" onClick={autoFill} />
+          <label className="form__field-label">{t("form.source")}</label>
+          <Hint hint={t("form.sourceHint")} hintPosition="left" />
+          <Button title={t("form.autoFill")} className="form__button--small form__button--main" onClick={autoFill} />
         </div>
         <Controller
           name="source"
           control={control}
           render={({ field }) => (
-            <InputField value={field.value} isAccent={true} placeholder="https://example.com" onChange={field.onChange} />
+            <InputField value={field.value} isAccent={true} placeholder={t("form.sourcePlaceholder")} onChange={field.onChange} />
           )}
         />
       </div>

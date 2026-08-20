@@ -2,6 +2,7 @@ import "./index.css";
 import { useState, useRef, useEffect } from "react";
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import { useTabsConfig } from "../hooks/useTabsConfig";
+import { t } from "../i18n";
 
 interface TabItemProps {
   tab: ParserTabConfig;
@@ -68,7 +69,7 @@ const TabItem: React.FC<TabItemProps> = ({ tab, isActive, canClose, onSelect, on
       )}
 
       {canClose && (
-        <button className="tabs__btn-close" onClick={onClose}>X</button>
+        <button className="tabs__btn-close" aria-label={t("tabs.close")} title={t("tabs.close")} onClick={onClose}>X</button>
       )}
     </li>
   );

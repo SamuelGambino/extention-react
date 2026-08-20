@@ -1,5 +1,6 @@
 import { useParserConfig, useParsingState } from "../hooks/useStorage";
-import "./index.css"
+import "./index.css";
+import { t } from "../i18n";
 
 const State = () => {
   const [configValue, , isLoadedConfig] = useParserConfig();
@@ -28,23 +29,23 @@ const State = () => {
 
       <span className="state__title">
         <span className="state__status-dot" />
-        State
+        {t("state.title")}
       </span>
 
       <section className="state__section">
         <p className="state__item">
-          <span className="state__label">Preset</span>
+          <span className="state__label">{t("state.preset")}</span>
           <span className="state__value">{stateValue.parsing.isRunning ? stateValue.parsing.type : getActualConfig()?.type}</span>
         </p>
         <p className="state__item">
-          <span className="state__label">Source</span>
+          <span className="state__label">{t("state.source")}</span>
           <span className="state__value">{stateValue.parsing.isRunning ? getDomain(stateValue.parsing.source) : getDomain(getActualConfig()?.source)}</span>
         </p>
       </section>
 
       <section className="state__section">
         <p className="state__item">
-          <span className="state__label">Categories</span>
+          <span className="state__label">{t("state.categories")}</span>
           <span className="state__value">{stateValue.data.categories} / {stateValue.data.categoriesTotal}</span>
         </p>
         <div className="state__bar-wrap">
@@ -60,7 +61,7 @@ const State = () => {
         </div>
 
         <p className="state__item">
-          <span className="state__label">Products</span>
+          <span className="state__label">{t("state.products")}</span>
           <span className="state__value">{stateValue.data.products} / {stateValue.data.productsTotal}</span>
         </p>
         <div className="state__bar-wrap">
@@ -76,11 +77,11 @@ const State = () => {
         </div>
 
         <p className="state__item">
-          <span className="state__label">Mod Groups</span>
+          <span className="state__label">{t("state.modifierGroups")}</span>
           <span className="state__value">{stateValue.data.groupsModifiers} / {stateValue.data.groupsModifiersTotal}</span>
         </p>
         <p className="state__item">
-          <span className="state__label">Mods</span>
+          <span className="state__label">{t("state.modifiers")}</span>
           <span className="state__value">{stateValue.data.modifiers} / {stateValue.data.modifiersTotal}</span>
         </p>
       </section>
@@ -88,11 +89,11 @@ const State = () => {
       {stateValue.logs && stateValue.logs.length > 0 && (
         <section className="state__section">
           <span className="state__title state__title--sub">
-            Logs
+            {t("state.logs")}
             {stateValue.parsing.isRunning && (
               <span className="state__badge state__badge--accent state__badge--right">
                 <span className="state__badge-dot" />
-                Running
+                {t("state.running")}
               </span>
             )}
           </span>

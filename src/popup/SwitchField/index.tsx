@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./index.css";
+import { t } from "../i18n";
 
 interface ISwitchField {
   isAccent?: boolean;
@@ -45,7 +46,7 @@ const SwitchField: React.FC<ISwitchField> = ({ isAccent, className, value, onCha
         <div className="switch-field__thumb"></div>
       </label>
       <span className={`switch-field__text ${switchState.value ? 'switch-field__text--enabled' : 'switch-field__text--disabled'}`}>
-        {switchState.value ? 'Enabled' : 'Disabled'}
+        {switchState.value ? t("switch.enabled") : t("switch.disabled")}
       </span>
     </div>
   );
