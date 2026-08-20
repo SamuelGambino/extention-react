@@ -16,17 +16,12 @@ interface FormProps {
 
 const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   const methods = useForm<ParserTabConfig>({ defaultValues: savedConfig });
-  const { control, reset, watch } = methods;
+  const { control, watch } = methods;
   const lastSavedConfigRef = useRef(JSON.stringify(savedConfig));
 
-  useEffect(() => {
-    const serializedSavedConfig = JSON.stringify(savedConfig);
-
-    if (serializedSavedConfig === lastSavedConfigRef.current) return;
-
-    lastSavedConfigRef.current = serializedSavedConfig;
-    reset(savedConfig);
-  }, [reset, savedConfig]);
+  // Форма получает новый savedConfig после каждого автосохранения в storage.
+  // Смена вкладки уже приводит к remount через key={tabId}, поэтому reset здесь
+  // пересоздавал useFieldArray и сбрасывал локальное opened-состояние карточек шагов.
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
