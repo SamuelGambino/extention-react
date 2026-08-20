@@ -83,4 +83,57 @@ try {
 }
 assert(releasedContextFailed, "Освобожденный контекст не должен повторно находить другой элемент по индексу.");
 
+const oldDynamicOption = { id: "old-dynamic-option", isConnected: false, querySelector: () => null, querySelectorAll: () => [] };
+const newDynamicOption = { id: "new-dynamic-option", isConnected: true, querySelector: () => null, querySelectorAll: () => [] };
+let dynamicOptions = [oldDynamicOption];
+globalThis.document = {
+  querySelector: () => null,
+  querySelectorAll: (selector: string) => selector === ".size-option" ? dynamicOptions : [],
+} as unknown as Document;
+
+const dynamicContexts = createElementContexts(".size-option", "document", undefined, "dynamic");
+dynamicOptions = [newDynamicOption];
+const dynamicRoot = getRoot("element", [dynamicContexts[0]]);
+assert((dynamicRoot as { id: string }).id === "new-dynamic-option", "Dynamic-контекст должен заново находить элемент по индексу после перерисовки списка.");
+
+const smallOption = { id: "small-old", textContent: "Маленькая порция", isConnected: false, querySelector: () => null, querySelectorAll: () => [] };
+const largeOption = { id: "large-old", textContent: "Большая порция", isConnected: false, querySelector: () => null, querySelectorAll: () => [] };
+const refreshedSmallOption = { id: "small-new", textContent: "Маленькая порция", isConnected: true, querySelector: () => null, querySelectorAll: () => [] };
+const refreshedLargeOption = { id: "large-new", textContent: "Большая порция", isConnected: true, querySelector: () => null, querySelectorAll: () => [] };
+let keyedOptions = [smallOption, largeOption];
+globalThis.document = {
+  querySelector: () => null,
+  querySelectorAll: (selector: string) => selector === ".size-option" ? keyedOptions : [],
+} as unknown as Document;
+
+const keyedContexts = createElementContexts(".size-option", "document", undefined, "keyed", "text");
+keyedOptions = [refreshedLargeOption, refreshedSmallOption];
+const keyedRoot = getRoot("element", [keyedContexts[1]]);
+assert((keyedRoot as { id: string }).id === "large-new", "Keyed-контекст должен находить вариант по сохраненному ключу после изменения порядка и пересоздания DOM.");
+
+const oldAttributeOption = {
+  id: "attribute-old",
+  isConnected: false,
+  getAttribute: (name: string) => name === "data-size-id" ? "large" : null,
+  querySelector: () => null,
+  querySelectorAll: () => [],
+};
+const newAttributeOption = {
+  id: "attribute-new",
+  isConnected: true,
+  getAttribute: (name: string) => name === "data-size-id" ? "large" : null,
+  querySelector: () => null,
+  querySelectorAll: () => [],
+};
+let attributeOptions = [oldAttributeOption];
+globalThis.document = {
+  querySelector: () => null,
+  querySelectorAll: (selector: string) => selector === ".size-option" ? attributeOptions : [],
+} as unknown as Document;
+
+const attributeContexts = createElementContexts(".size-option", "document", undefined, "keyed", "attribute", "data-size-id");
+attributeOptions = [newAttributeOption];
+const attributeRoot = getRoot("element", [attributeContexts[0]]);
+assert((attributeRoot as { id: string }).id === "attribute-new", "Keyed-контекст по атрибуту должен повторно находить новый DOM-элемент с тем же ключом.");
+
 console.log("waitForElement regression checks passed");

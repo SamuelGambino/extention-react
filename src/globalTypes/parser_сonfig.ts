@@ -83,13 +83,18 @@ interface CollectProductParameter extends BaseCollect {
 }
 
 type ContextEntity = Exclude<StepCollect["params"]["entity"], undefined>;
+type LoopContextStrategy = "snapshot" | "dynamic" | "keyed";
+type LoopContextKeyType = "text" | "attribute";
 
 interface StepLoop extends baseStep {
   type: "loop",
   params: {
     entity?: ContextEntity,
     source?: "document" | "element",
-    selector: string
+    selector: string,
+    contextStrategy?: LoopContextStrategy,
+    keyType?: LoopContextKeyType,
+    keyAttribute?: string,
   }
   children: IStep[];
 }
@@ -169,5 +174,7 @@ export type {
   StepCondition,
   StepAction,
   StepWait,
-  StepCollect
+  StepCollect,
+  LoopContextStrategy,
+  LoopContextKeyType,
 }

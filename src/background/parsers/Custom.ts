@@ -144,6 +144,9 @@ export class Custom extends BaseParser {
             selector: step.params.selector,
             source: step.params.source,
             context,
+            contextStrategy: step.params.contextStrategy ?? "snapshot",
+            keyType: step.params.keyType,
+            keyAttribute: step.params.keyAttribute,
           });
           const iterations = checkOnly ? contexts.slice(0, 1) : contexts;
           const iterationScopes = step.params.entity

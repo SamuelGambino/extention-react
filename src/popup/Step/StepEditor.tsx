@@ -38,6 +38,17 @@ const LOOP_ENTITY_OPTIONS = [
   ...ENTITY_OPTIONS,
 ];
 
+const LOOP_CONTEXT_STRATEGY_OPTIONS = [
+  { label: "Snapshot", value: "snapshot" },
+  { label: "Dynamic index", value: "dynamic" },
+  { label: "Keyed", value: "keyed" },
+];
+
+const LOOP_KEY_TYPE_OPTIONS = [
+  { label: "Text", value: "text" },
+  { label: "Attribute", value: "attribute" },
+];
+
 const PRODUCT_FIELDS = [
   { label: "Picture", name: "picture" },
   { label: "Description", name: "description" },
@@ -89,6 +100,9 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
   );
 
   if (type === "loop") {
+    const contextStrategy = params.contextStrategy ?? "snapshot";
+    const keyType = params.keyType ?? "text";
+
     return (
       <div className="step__field-container">
         <div className="step__field">
@@ -105,6 +119,39 @@ const StepEditor = ({ type, path, depth = 0 }: StepEditorProps) => {
             )}
           />
         </div>
+        <div className="step__field">
+          <p>Context strategy:</p>
+          <Controller
+            name={`${path}.params.contextStrategy`}
+            control={control}
+            render={({ field }) => (
+              <RadioField
+                data={LOOP_CONTEXT_STRATEGY_OPTIONS}
+                value={field.value ?? "snapshot"}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </div>
+        {contextStrategy === "keyed" && (
+          <>
+            <div className="step__field">
+              <p>Key type:</p>
+              <Controller
+                name={`${path}.params.keyType`}
+                control={control}
+                render={({ field }) => (
+                  <RadioField
+                    data={LOOP_KEY_TYPE_OPTIONS}
+                    value={field.value ?? "text"}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
+            {keyType === "attribute" && renderTextField("Key attribute", "keyAttribute")}
+          </>
+        )}
         {renderSourceField()}
         {renderTextField("Selector", "selector")}
       </div>

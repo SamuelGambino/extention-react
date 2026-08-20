@@ -32,7 +32,14 @@ browser.runtime.onMessage.addListener(async (rawMessage: unknown) => {
       case "loop-items":
         return {
           status: "success" as const,
-          data: createElementContexts(message.selector, message.source, message.context),
+          data: createElementContexts(
+            message.selector,
+            message.source,
+            message.context,
+            message.contextStrategy,
+            message.keyType,
+            message.keyAttribute,
+          ),
         };
 
       case "release-context":
