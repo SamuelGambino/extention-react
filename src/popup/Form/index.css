@@ -165,6 +165,7 @@ button.form__button--small {
 
 .form__indent {
   display: flex;
+  height: stretch;
   flex-shrink: 0;
 }
 

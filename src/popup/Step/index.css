@@ -20,7 +20,6 @@
 
 .step__indent {
   display: flex;
-  height: stretch;
   flex-shrink: 0;
 }
 
