@@ -204,32 +204,3 @@ button.form__button--small {
   text-wrap-mode: nowrap;
   min-width: fit-content;
 }
-
-.form__list .dnd-sortable-tree_folder_wrapper {
-  margin-bottom: 4px;
-}
-
-.form__list .dnd-sortable-tree_folder_tree-item {
-  flex: 1;
-  min-width: 0;
-}
-
-.form__list .dnd-sortable-tree_folder_tree-item > .step {
-  width: 100%;
-}
-
-.form__list .dnd-sortable-tree_folder_line {
-  background: linear-gradient(#1e2e50, #1e2e50) center / 1px 100% no-repeat;
-}
-
-.form__list .dnd-sortable-tree_folder_line-to_self {
-  background:
-    linear-gradient(#1e2e50, #1e2e50) center / 1px 100% no-repeat,
-    linear-gradient(#1e2e50, #1e2e50) center / 100% 1px no-repeat;
-}
-
-.form__list .dnd-sortable-tree_folder_line-to_self-last {
-  background:
-    linear-gradient(#1e2e50, #1e2e50) center top / 1px 50% no-repeat,
-    linear-gradient(#1e2e50, #1e2e50) center / 100% 1px no-repeat;
-}

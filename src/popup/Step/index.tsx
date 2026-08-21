@@ -10,6 +10,7 @@ interface Props {
   index: number;
   path: string;
   depth: number;
+  isLast: boolean;
   StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
   onRemove?: () => void;
   onAddChild?: () => void;
@@ -105,7 +106,7 @@ const StepSummary = ({ step }: { step: IStep }) => {
   return null;
 };
 
-const Step = ({ index, path, depth, StepMeta, onRemove, onAddChild, dragHandleProps }: Props) => {
+const Step = ({ index, path, depth, isLast, StepMeta, onRemove, onAddChild, dragHandleProps }: Props) => {
   const [opened, setOpened] = useState(false);
   const { control } = useFormContext();
 
@@ -120,10 +121,21 @@ const Step = ({ index, path, depth, StepMeta, onRemove, onAddChild, dragHandlePr
 
   return (
     <div className="step">
-      <div
-        className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
-        style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
-      >
+      <div className="step__indent-container">
+        {depth > 0 && (
+          <div className="step__indent">
+            {Array.from({ length: depth }).map((_, index) => (
+              <div
+                key={index}
+                className={`step__indent-line${isLast && index === depth - 1 ? " step__indent-line--last" : ""}`}
+              />
+            ))}
+          </div>
+        )}
+        <div
+          className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
+          style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
+        >
           <div className="step__scanline" />
 
           <div className="step__header">
@@ -186,6 +198,7 @@ const Step = ({ index, path, depth, StepMeta, onRemove, onAddChild, dragHandlePr
               <span>{t("step.controls.editor", { type: getStepTypeLabel(step.type) })}</span>
             </div>
           )}
+        </div>
       </div>
     </div>
   );
