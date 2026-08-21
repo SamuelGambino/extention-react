@@ -5,6 +5,7 @@ interface IInputField {
   isAccent?: boolean;
   value?: string;
   className?: string;
+  openUpward?: boolean;
   options: {
     label: string; value: string;
     description?: string;
@@ -13,7 +14,7 @@ interface IInputField {
   onChange: (value: string) => void;
 }
 
-const SelectField: React.FC<IInputField> = ({ isAccent, value, className, options, onChange }) => {
+const SelectField: React.FC<IInputField> = ({ isAccent, value, className, openUpward, options, onChange }) => {
   const normalizedValue = value ?? '';
   const [selectedState, setSelectedState] = useState({
     propValue: normalizedValue,
@@ -54,7 +55,7 @@ const SelectField: React.FC<IInputField> = ({ isAccent, value, className, option
   return (
     <div
       ref={wrapRef}
-      className={`${className ? `${className} ` : ""}select-field ${isOpen ? "select-field--open" : ""}${isAccent ? " select-field--accent" : ""}`}
+      className={`${className ? `${className} ` : ""}select-field ${isOpen ? "select-field--open" : ""}${isAccent ? " select-field--accent" : ""}${openUpward ? " select-field--upward" : ""}`}
     >
       <div className="select-field__corner select-field__corner--tl" />
       <div className="select-field__corner select-field__corner--br" />

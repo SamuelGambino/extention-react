@@ -48,15 +48,17 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
   return (
     <FormProvider {...methods}>
       <form className={`form ${className ? ` ${className}` : ''}`}>
-        <MainBlock />
+        <div className="form__content">
+          <MainBlock />
 
-        {preset !== 'custom' && <ConfigurationBlock />}
+          {preset !== 'custom' && <ConfigurationBlock />}
 
-        {preset === 'custom' && (
-          <fieldset className="form__settings">
-            <legend className="form__settings-title">{terms.form.scenarioBuilder}</legend>
-            <ScenarioList StepMeta={Constants.StepMeta} />
-          </fieldset>)}
+          {preset === 'custom' && (
+            <fieldset className="form__settings">
+              <legend className="form__settings-title">{terms.form.scenarioBuilder}</legend>
+              <ScenarioList StepMeta={Constants.StepMeta} />
+            </fieldset>)}
+        </div>
 
         <ActionButtons />
       </form>

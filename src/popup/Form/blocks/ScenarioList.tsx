@@ -145,6 +145,7 @@ const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
       <div className="form__list-add">
         <SelectField
           className="form__list-select"
+          openUpward
           value={selectedType}
           options={STEP_TYPES.map((type) => ({
             value: type,

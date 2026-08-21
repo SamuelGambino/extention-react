@@ -1,7 +1,7 @@
 .actions {
-  position: sticky;
-  bottom: 0;
+  position: relative;
   display: flex;
+  flex-shrink: 0;
   background-color: var(--bg);
   justify-content: space-around;
   gap: 8px;
