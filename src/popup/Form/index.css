@@ -174,8 +174,18 @@ button.form__button--small {
   align-items: center;
   gap: 6px;
   padding-top: 4px;
-  background: var(--second-bg);
-  box-shadow: 0 -6px 10px var(--second-bg);
+  background-color: var(--bg);
+  box-shadow: 0 -6px 10px var(--bg);
+}
+
+.form__list-add::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px, transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 3px);
+  pointer-events: none;
 }
 
 .form__indent {
@@ -211,9 +221,8 @@ button.form__button--small {
 }
 
 .form__list-select {
-  flex: 1;
-  min-width: 0;
-  height: 36px;
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
 }
 
 .form__list-btn {
