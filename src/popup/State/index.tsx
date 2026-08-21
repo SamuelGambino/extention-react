@@ -1,6 +1,8 @@
 import { useParserConfig, useParsingState } from "../hooks/useStorage";
 import "./index.css";
 import { t } from "../i18n";
+import { formatLogMessage, normalizeLog } from "../../shared/i18n/logs";
+import { formatLogScope, terms } from "../../shared/i18n/terms";
 
 const State = () => {
   const [configValue, , isLoadedConfig] = useParserConfig();
@@ -29,16 +31,16 @@ const State = () => {
 
       <span className="state__title">
         <span className="state__status-dot" />
-        {t("state.title")}
+        {terms.state.title}
       </span>
 
       <section className="state__section">
         <p className="state__item">
-          <span className="state__label">{t("state.preset")}</span>
+          <span className="state__label">{terms.state.preset}</span>
           <span className="state__value">{stateValue.parsing.isRunning ? stateValue.parsing.type : getActualConfig()?.type}</span>
         </p>
         <p className="state__item">
-          <span className="state__label">{t("state.source")}</span>
+          <span className="state__label">{terms.state.source}</span>
           <span className="state__value">{stateValue.parsing.isRunning ? getDomain(stateValue.parsing.source) : getDomain(getActualConfig()?.source)}</span>
         </p>
       </section>
@@ -98,15 +100,19 @@ const State = () => {
             )}
           </span>
           <div className="state__logs">
-            {stateValue.logs.map((log, i) => (
-              <p key={i} className={`state__log-item state__log-item--${log.status ?? 'default'}`}>
-                <span className="state__log-bracket">&gt;</span>
-                <div className="state__log-wrapper">
-                  <span className="state__log-text">{log.title}</span>
-                  <span className="state__log-value">{log.value}</span>
-                </div>
-              </p>
-            ))}
+            {stateValue.logs.map((log, i) => {
+              const localizedLog = normalizeLog(log);
+
+              return (
+                <p key={i} className={`state__log-item state__log-item--${localizedLog.status}`}>
+                  <span className="state__log-bracket">&gt;</span>
+                  <div className="state__log-wrapper">
+                    <span className="state__log-text">{formatLogScope(localizedLog.scope.parser, localizedLog.scope.phase)}</span>
+                    <span className="state__log-value">{formatLogMessage(localizedLog)}</span>
+                  </div>
+                </p>
+              );
+            })}
           </div>
         </section>
       )}

@@ -5,6 +5,7 @@ import type { IStep, PresetCustom, StepCollect } from "../../globalTypes/parser_
 import { StepExecutor } from "../StepExecutor";
 import type { ElementContext } from "../../globalTypes/messages";
 import type { ProductParameter } from "../types/ExportTypes";
+import { createTechnicalDetails } from "../../shared/i18n/logs";
 
 type ContextEntity = "category" | "product" | "modifier_group" | "modifier" | "product_parameter";
 type ContextItem = { id: string | number, name: string, index?: number[] };
@@ -47,16 +48,29 @@ export class Custom extends BaseParser {
   private tabId: number | undefined;
 
   async checkAvailability() {
-    await this.setLog({ status: "warn", title: "[Custom]:Check", value: "Проверка работы сценария..." });
+    await this.setLog({
+      status: "warn",
+      scope: { parser: "custom", phase: "check" },
+      messageKey: "scenarioChecking",
+    });
     await this.setDataState({ categoriesTotal: 0, categories: 0, productsTotal: 0, products: 0, groupsModifiersTotal: 0, groupsModifiers: 0, modifiersTotal: 0, modifiers: 0 });
     await this.resolveTabId();
 
     try {
       const data = this.config.data as PresetCustom;
       await this.executeSteps(data.steps, [], true);
-      await this.setLog({ status: "success", title: "[Custom]:Check", value: "Сценарий доступен" });
+      await this.setLog({
+        status: "success",
+        scope: { parser: "custom", phase: "check" },
+        messageKey: "scenarioAvailable",
+      });
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[Custom]:Check", value: "Ошибка:" + e });
+      await this.setLog({
+        status: "danger",
+        scope: { parser: "custom", phase: "check" },
+        messageKey: "scenarioCheckFailed",
+        technical: createTechnicalDetails(e, "content"),
+      });
       this.stop();
     }
   }
@@ -69,7 +83,12 @@ export class Custom extends BaseParser {
       await this.executeSteps(data.steps, []);
       await this.setDataState(this.progress as Partial<ParserState['data']>);
     } catch (e) {
-      await this.setLog({ status: "danger", title: "[Custom]:Parse", value: "Ошибка:" + e });
+      await this.setLog({
+        status: "danger",
+        scope: { parser: "custom", phase: "parse" },
+        messageKey: "scenarioParseFailed",
+        technical: createTechnicalDetails(e, "content"),
+      });
       this.stop();
     }
   }

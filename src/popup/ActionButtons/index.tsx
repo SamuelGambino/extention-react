@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
 import Button from "../Button";
 import { useParsingState } from "../hooks/useStorage";
-import { t } from "../i18n";
+import { terms } from "../../shared/i18n/terms";
 import "./index.css"
 
 const sendRuntimeMessage = async (action: 'Check_state' | 'Parse' | 'Parse_by_steps' | 'Next_step' | 'Stop') => {
@@ -19,23 +19,23 @@ const ActionButtons = () => {
 
   return (
     <div className="actions">
-      <Button title={t("actions.checkState")} className="actions__button--state" onClick={() => {
+      <Button title={terms.actions.checkState} className="actions__button--state" onClick={() => {
         void sendRuntimeMessage("Check_state");
       }} />
-      <Button title={t("actions.parse")} className="actions__button--main" onClick={() => {
+      <Button title={terms.actions.parse} className="actions__button--main" onClick={() => {
         void sendRuntimeMessage("Parse");
       }} />
       {isStepMode ? (
         <div className="actions__button-wrapper">
-          <Button title={t("actions.next")} onClick={() => {
+          <Button title={terms.actions.next} onClick={() => {
             void sendRuntimeMessage("Next_step");
           }} />
-          <Button title={t("actions.stop")} className="actions__button--stop" onClick={() => {
+          <Button title={terms.actions.stop} className="actions__button--stop" onClick={() => {
             void sendRuntimeMessage("Stop");
           }} />
         </div>
       ) : (
-        <Button title={t("actions.parseBySteps")} onClick={() => {
+        <Button title={terms.actions.parseBySteps} onClick={() => {
           void sendRuntimeMessage("Parse_by_steps");
         }} />
       )}

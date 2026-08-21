@@ -9,6 +9,7 @@ import "../index.css";
 import ScrambleText from "../../ScrambleText";
 import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
 import { t } from "../../i18n";
+import { terms } from "../../../shared/i18n/terms";
 
 const PRESET_OPTIONS = FieldOptions.PresertOptions.map(({ label, value }) => ({ label, value }));
 
@@ -20,11 +21,11 @@ const MainBlock = () => {
 
   return (
     <fieldset className="form__settings">
-      <legend className="form__settings-title">{t("form.main")}</legend>
+      <legend className="form__settings-title">{terms.form.main}</legend>
 
       <div className="form__field">
         <div className="form__field-title">
-          <label className="form__field-label">{t("form.preset")}</label>
+          <label className="form__field-label">{terms.form.preset}</label>
           <Hint hint={t("form.selectPresetHint")} />
         </div>
         <Controller
@@ -43,9 +44,9 @@ const MainBlock = () => {
 
       <div className="form__field">
         <div className="form__field-title">
-          <label className="form__field-label">{t("form.source")}</label>
+          <label className="form__field-label">{terms.form.source}</label>
           <Hint hint={t("form.sourceHint")} hintPosition="left" />
-          <Button title={t("form.autoFill")} className="form__button--small form__button--main" onClick={autoFill} />
+          <Button title={terms.form.autoFill} className="form__button--small form__button--main" onClick={autoFill} />
         </div>
         <Controller
           name="source"

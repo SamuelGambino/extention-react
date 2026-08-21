@@ -1,5 +1,6 @@
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
-import type { Log, ParserState } from "../../globalTypes/parsing_state";
+import type { ParserState } from "../../globalTypes/parsing_state";
+import { createTechnicalDetails, normalizeLog, type LogInput } from "../../shared/i18n/logs";
 import { updateState } from "../storage";
 import type { Categories, ExportData, ModGroups, Mods, Product } from "../types/ExportTypes";
 
@@ -64,10 +65,11 @@ export abstract class BaseParser {
     }));
   }
 
-  protected async setLog(log: Log) {
+  protected async setLog(log: LogInput) {
+    const normalizedLog = normalizeLog(log);
     await updateState((state) => ({
       ...state,
-      logs: [...(state.logs ?? []), log],
+      logs: [...(state.logs ?? []), normalizedLog],
     }));
   }
 
@@ -98,7 +100,12 @@ export abstract class BaseParser {
       }
     } catch (e) {
       await this.setParsingState({ isRunning: false });
-      await this.setLog({ status: "danger", title: "[BaseParser]", value: `${e}` });
+      await this.setLog({
+        status: "danger",
+        scope: { parser: "base" },
+        messageKey: "parserFailed",
+        technical: createTechnicalDetails(e),
+      });
     }
   }
 }

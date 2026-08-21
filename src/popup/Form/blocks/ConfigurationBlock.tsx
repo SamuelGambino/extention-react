@@ -4,6 +4,7 @@ import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
 import { t } from "../../i18n";
+import { terms } from "../../../shared/i18n/terms";
 
 const ConfigurationBlock = () => {
   const { control } = useFormContext<ParserTabConfig>();
@@ -12,7 +13,7 @@ const ConfigurationBlock = () => {
 
   return (
     <fieldset className="form__settings" key={preset}>
-      <legend className="form__settings-title">{t("form.configuration")}</legend>
+      <legend className="form__settings-title">{terms.form.configuration}</legend>
 
       {preset === 'vk' && (
         <div className='form__field'>
@@ -61,7 +62,7 @@ const ConfigurationBlock = () => {
       {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper' || preset === "flowwow") && (
         <div className='form__field'>
           <div className='form__field-title'>
-            <label className='form__field-label'>{t("form.apiUrl")}</label>
+            <label className='form__field-label'>{terms.form.apiUrl}</label>
             <Hint hint={t("form.apiUrlHint")} />
           </div>
           <Controller

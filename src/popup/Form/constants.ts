@@ -1,14 +1,15 @@
 import type { StepType } from "../../globalTypes/parser_сonfig";
 import { t } from "../i18n";
+import { terms } from "../../shared/i18n/terms";
 
 const PresertOptions = [
-  { label: t("form.presets.custom.label"), value: "custom", description: t("form.presets.custom.description") },
-  { label: t("form.presets.vk.label"), value: "vk", description: t("form.presets.vk.description") },
-  { label: t("form.presets.yandex.label"), value: "yandex", description: t("form.presets.yandex.description") },
-  { label: t("form.presets.kuper.label"), value: "kuper", description: t("form.presets.kuper.description") },
-  { label: t("form.presets.chibbis.label"), value: "chibbis", description: t("form.presets.chibbis.description") },
-  { label: t("form.presets.whatsapp.label"), value: "whatsapp", description: t("form.presets.whatsapp.description") },
-  { label: t("form.presets.flowwow.label"), value: "flowwow", description: t("form.presets.flowwow.description") },
+  { label: terms.parserNames.custom, value: "custom", description: t("form.presets.custom.description") },
+  { label: terms.parserNames.vk, value: "vk", description: t("form.presets.vk.description") },
+  { label: terms.parserNames.yandex, value: "yandex", description: t("form.presets.yandex.description") },
+  { label: terms.parserNames.kuper, value: "kuper", description: t("form.presets.kuper.description") },
+  { label: terms.parserNames.chibbis, value: "chibbis", description: t("form.presets.chibbis.description") },
+  { label: terms.parserNames.whatsapp, value: "whatsapp", description: t("form.presets.whatsapp.description") },
+  { label: terms.parserNames.flowwow, value: "flowwow", description: t("form.presets.flowwow.description") },
 ];
 
 const ClicksOptions = [

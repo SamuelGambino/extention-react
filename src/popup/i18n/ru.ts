@@ -1,27 +1,12 @@
 const ru = {
-  actions: {
-    checkState: "Check state",
-    parse: "Parse",
-    next: "Next",
-    stop: "Stop",
-    parseBySteps: "Parse by steps",
-  },
   footer: {
     updateAvailable: "Обновите до версии {{version}}",
-    developer: "developer",
   },
   form: {
-    main: "Main",
-    configuration: "Configuration",
-    scenarioBuilder: "Scenario Builder",
-    preset: "Preset",
-    source: "Source",
-    autoFill: "Auto-Fill",
     sourcePlaceholder: "https://example.com",
     marketId: "ID магазина",
     marketIdHint: "ID группы во ВКонтакте",
     marketIdPlaceholder: "123123123",
-    apiUrl: "API URL",
     apiUrlHint: "API URL для получения меню",
     apiUrlPlaceholder: "https://api.url.com/eda/v1/menu",
     payloadCatalogs: "Payload каталогов",
@@ -31,7 +16,6 @@ const ru = {
     payloadPlaceholder: '{"access_token":"WA|000|00aa00a"',
     selectPresetHint: "Выберите пресет парсера",
     sourceHint: "Введите URL источника",
-    addStep: "+ Add step",
     fields: {
       name: "Название",
       picture: "Изображение",
@@ -108,31 +92,24 @@ const ru = {
     },
     presets: {
       custom: {
-        label: "Custom",
         description: "Соберите сценарий из циклов, действий, ожиданий и шагов сбора данных для нужного сайта",
       },
       vk: {
-        label: "VK",
         description: "Используйте автозаполнение. Потребуется ID магазина ВКонтакте",
       },
       yandex: {
-        label: "Yandex",
         description: "Работает автозаполнение; проверьте итоговую ссылку. Поддерживаются Yandex Eda, Delivery Club и частично Yandex Maps",
       },
       kuper: {
-        label: "Kuper",
         description: "Автозаполнение недоступно. В DevTools откройте Network, выберите товар, найдите запрос multicards?permalink и скопируйте полный URL",
       },
       chibbis: {
-        label: "Chibbis",
         description: "Используйте автозаполнение",
       },
       whatsapp: {
-        label: "WhatsApp",
         description: "Автозаполнение недоступно. В DevTools откройте Fetch/XHR → catalog → Payload → View source и скопируйте payload запроса catalog",
       },
       flowwow: {
-        label: "Flowwow",
         description: "Автозаполнение недоступно. В DevTools откройте Network, найдите запрос search/?property=% и скопируйте полный URL",
       },
     },
@@ -195,9 +172,6 @@ const ru = {
     },
   },
   state: {
-    title: "State",
-    preset: "Preset",
-    source: "Source",
     categories: "Категории",
     products: "Товары",
     modifierGroups: "Группы мод.",

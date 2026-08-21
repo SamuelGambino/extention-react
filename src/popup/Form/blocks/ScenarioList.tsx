@@ -19,6 +19,7 @@ import type { FieldArrayPath } from "react-hook-form";
 import SelectField from "../../SelectField";
 import Button from "../../Button";
 import { t } from "../../i18n";
+import { terms } from "../../../shared/i18n/terms";
 
 interface ScenarioListProps {
   path: string;
@@ -122,7 +123,7 @@ const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
           setSelectedType(value as StepType);
         }} />
 
-        <Button className="form__list-btn" title={t("form.addStep")} onClick={handleAddStep} />
+        <Button className="form__list-btn" title={terms.form.addStep} onClick={handleAddStep} />
       </div>
     </div>
   );

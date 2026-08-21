@@ -45,7 +45,11 @@ const handleParseFailure = async (): Promise<RuntimeMessageResponse> => {
   await updateState((state) => ({
     ...state,
     parsing: { ...state.parsing, isRunning: false },
-    logs: [...(state.logs ?? []), { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
+    logs: [...(state.logs ?? []), {
+      status: "danger",
+      scope: { parser: "exporter", phase: "export" },
+      messageKey: "parserReturnedUndefined",
+    }],
   }));
   return { ok: false };
 };

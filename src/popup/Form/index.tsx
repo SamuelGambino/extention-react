@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
 import ActionButtons from "../ActionButtons";
 import Constants from "./constants";
-import { t } from "../i18n";
+import { terms } from "../../shared/i18n/terms";
 
 interface FormProps {
   className?: string;
@@ -54,7 +54,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
 
         {preset === 'custom' && (
           <fieldset className="form__settings">
-            <legend className="form__settings-title">{t("form.scenarioBuilder")}</legend>
+            <legend className="form__settings-title">{terms.form.scenarioBuilder}</legend>
             <ScenarioList path={"data.steps"} StepMeta={Constants.StepMeta} />
           </fieldset>)}
 
