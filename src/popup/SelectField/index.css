@@ -114,7 +114,7 @@
   top: calc(100% + 4px);
   left: -1px;
   right: -1px;
-  z-index: 2;
+  z-index: 5;
   max-height: 220px;
   margin: 0;
   padding: 0;
