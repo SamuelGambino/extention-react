@@ -1,31 +1,39 @@
 import "../index.css";
-import { useState } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { createContext, forwardRef, useCallback, useContext, useMemo, useState } from "react";
+import { useFormContext, useWatch, type FieldPath } from "react-hook-form";
 import {
-  DndContext,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+  FolderTreeItemWrapper,
+  SortableTree,
+  type TreeItemComponentProps,
+  type TreeItems,
+} from "dnd-kit-sortable-tree";
 import Step from "../../Step";
-import type { ParserTabConfig, IStep, StepType } from "../../../globalTypes/parser_сonfig";
-import type { FieldArrayPath } from "react-hook-form";
+import type { IStep, ParserTabConfig, StepType } from "../../../globalTypes/parser_сonfig";
 import SelectField from "../../SelectField";
 import Button from "../../Button";
 import { t } from "../../i18n";
 import { terms } from "../../../shared/i18n/terms";
+import {
+  appendChildToTree,
+  createTreePathMap,
+  createTreeItemForStep,
+  stepsToTreeItems,
+  treeItemsToSteps,
+  type ScenarioTreeItem,
+  type ScenarioTreePath,
+} from "../scenarioTree";
 
 interface ScenarioListProps {
-  path: string;
-  depth?: number;
   StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
 }
+
+interface ScenarioTreeContextValue {
+  paths: Map<string, ScenarioTreePath>;
+  StepMeta: ScenarioListProps["StepMeta"];
+  addChild: (parentId: string) => void;
+}
+
+const ScenarioTreeContext = createContext<ScenarioTreeContextValue | null>(null);
 
 const STEP_TYPE_LABELS: Record<StepType, string> = {
   collect: t("form.stepTypes.collect"),
@@ -35,95 +43,121 @@ const STEP_TYPE_LABELS: Record<StepType, string> = {
   condition: t("form.stepTypes.condition"),
 };
 
-const ScenarioList = ({ path, depth, StepMeta }: ScenarioListProps) => {
-  const { control } = useFormContext<ParserTabConfig>();
+const createStep = (
+  type: StepType,
+  StepMeta: ScenarioListProps["StepMeta"],
+): IStep => {
+  const meta = StepMeta[type];
+
+  switch (type) {
+    case "collect":
+      return { type: "collect", params: { entity: "category", name: meta.placeholder } };
+    case "action":
+      return { type: "action", params: { action: "click", selector: meta.placeholder } };
+    case "loop":
+      return { type: "loop", params: { selector: meta.placeholder }, children: [] };
+    case "wait":
+      return { type: "wait", params: { mode: "timeout", duration: 1200 } };
+    case "condition":
+      return { type: "condition", params: { exists: false, selector: meta.placeholder }, children: [] };
+  }
+};
+
+const ScenarioTreeStep = forwardRef<
+  HTMLDivElement,
+  TreeItemComponentProps<ScenarioTreeItem>
+>(({ item, depth, handleProps, onRemove, ...wrapperProps }, ref) => {
+  const context = useContext(ScenarioTreeContext);
+
+  if (!context) return null;
+
+  const location = context.paths.get(String(item.id));
+  if (!location) return null;
+
+  return (
+    <FolderTreeItemWrapper
+      {...wrapperProps}
+      ref={ref}
+      item={item}
+      depth={depth}
+      manualDrag
+      showDragHandle={false}
+      hideCollapseButton
+      disableCollapseOnItemClick
+    >
+      <Step
+        index={location.index}
+        path={location.path}
+        depth={depth}
+        StepMeta={context.StepMeta}
+        onRemove={onRemove}
+        onAddChild={item.canHaveChildren ? () => context.addChild(String(item.id)) : undefined}
+        dragHandleProps={handleProps}
+      />
+    </FolderTreeItemWrapper>
+  );
+});
+
+ScenarioTreeStep.displayName = "ScenarioTreeStep";
+
+const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
+  const { control, setValue } = useFormContext<ParserTabConfig>();
   const [selectedType, setSelectedType] = useState<StepType>("loop");
   const STEP_TYPES = Object.keys(StepMeta) as StepType[];
+  const steps = useWatch({ control, name: "data.steps" }) as IStep[] | undefined;
 
-  const { fields, move, append, remove } = useFieldArray({
-    control,
-    name: path as FieldArrayPath<ParserTabConfig>,
-  });
+  const treeItems = useMemo(() => stepsToTreeItems(steps ?? []), [steps]);
+  const paths = useMemo(() => createTreePathMap(treeItems), [treeItems]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
-  );
-
-  const onDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-    if (active.id === over.id) return;
-    const oldIndex = fields.findIndex(
-      ({ id }) => id === active.id
+  const replaceTree = useCallback((items: TreeItems<ScenarioTreeItem>) => {
+    const nextItems = items as ScenarioTreeItem[];
+    setValue(
+      "data.steps" as FieldPath<ParserTabConfig>,
+      treeItemsToSteps(nextItems) as never,
+      { shouldDirty: true },
     );
-    const newIndex = fields.findIndex(
-      ({ id }) => id === over.id
-    );
-    move(oldIndex, newIndex);
+  }, [setValue]);
+
+  const handleAddRoot = () => {
+    replaceTree([...treeItems, createTreeItemForStep(createStep(selectedType, StepMeta))]);
   };
 
-  const createStep = (): IStep => {
-    const meta = StepMeta[selectedType];
+  const handleAddChild = useCallback((parentId: string) => {
+    replaceTree(appendChildToTree(treeItems, parentId, createStep(selectedType, StepMeta)));
+  }, [StepMeta, replaceTree, selectedType, treeItems]);
 
-    switch (selectedType) {
-      case "collect":
-        return { type: "collect", params: { entity: "category", name: meta.placeholder } };
-      case "action":
-        return { type: "action", params: { action: "click", selector: meta.placeholder } };
-      case "loop":
-        return { type: "loop", params: { selector: meta.placeholder }, children: [] };
-      case "wait":
-        return { type: "wait", params: { mode: "timeout", duration: 1200 } };
-      case "condition":
-        return { type: "condition", params: { exists: false, selector: meta.placeholder }, children: [] };
-    }
-  };
-
-  const handleAddStep = () => append(createStep());
+  const contextValue = useMemo<ScenarioTreeContextValue>(() => ({
+    paths,
+    StepMeta,
+    addChild: handleAddChild,
+  }), [StepMeta, handleAddChild, paths]);
 
   return (
     <div className="form__list">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={onDragEnd}
-      >
-        <SortableContext
-          // items={fields}
-          items={fields.map(f => f.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {fields.map((field, index) => (
-            <Step
-              key={field.id}
-              sortableId={field.id}
-              path={`${path}.${index}`}
-              index={index}
-              onRemove={() => remove(index)}
-              depth={depth ?? 0}
-              StepMeta={StepMeta}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
+      <ScenarioTreeContext.Provider value={contextValue}>
+        <SortableTree
+          items={treeItems}
+          onItemsChanged={replaceTree}
+          TreeItemComponent={ScenarioTreeStep}
+          indentationWidth={20}
+          pointerSensorOptions={{ activationConstraint: { distance: 5 } }}
+          canRootHaveChildren
+        />
+      </ScenarioTreeContext.Provider>
 
-      <div className="form__list-add" style={{ marginTop: `${depth ? (depth === 0 ? 10 : 0) : 10}px` }}>
-        {depth && depth > 0 && (
-          <div className="form__indent">
-            {Array.from({ length: depth }).map((_, i) => (
-              <div
-                key={i}
-                className={`form__indent-line ${i === depth - 1 ? "form__indent-line--last" : ""}`}
-              />
-            ))}
-          </div>
-        )}
-
-        <SelectField className="form__list-select" value={selectedType} options={STEP_TYPES.map((type) => ({ value: type, label: STEP_TYPE_LABELS[type], description: StepMeta[type].desc, color: StepMeta[type].color }))} onChange={(value) => {
-          setSelectedType(value as StepType);
-        }} />
-
-        <Button className="form__list-btn" title={terms.form.addStep} onClick={handleAddStep} />
+      <div className="form__list-add">
+        <SelectField
+          className="form__list-select"
+          value={selectedType}
+          options={STEP_TYPES.map((type) => ({
+            value: type,
+            label: STEP_TYPE_LABELS[type],
+            description: StepMeta[type].desc,
+            color: StepMeta[type].color,
+          }))}
+          onChange={(value) => setSelectedType(value as StepType)}
+        />
+        <Button className="form__list-btn" title={terms.form.addStep} onClick={handleAddRoot} />
       </div>
     </div>
   );

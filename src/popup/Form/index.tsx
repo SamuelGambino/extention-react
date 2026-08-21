@@ -55,7 +55,7 @@ const Form = ({ className, savedConfig, saveConfig }: FormProps) => {
         {preset === 'custom' && (
           <fieldset className="form__settings">
             <legend className="form__settings-title">{terms.form.scenarioBuilder}</legend>
-            <ScenarioList path={"data.steps"} StepMeta={Constants.StepMeta} />
+            <ScenarioList StepMeta={Constants.StepMeta} />
           </fieldset>)}
 
         <ActionButtons />

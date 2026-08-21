@@ -1,20 +1,19 @@
 import "./index.css";
-import { useState } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useState, type HTMLAttributes } from "react";
 import type { IStep, StepAction, StepCollect, StepCondition, StepLoop, StepWait } from "../../globalTypes/parser_сonfig";
 import { useFormContext, useWatch } from "react-hook-form";
-import ScenarioList from "../Form/blocks/ScenarioList";
 import StepEditor from "./StepEditor";
 import { t } from "../i18n";
+import { terms } from "../../shared/i18n/terms";
 
 interface Props {
   index: number;
-  sortableId: string;
   path: string;
   depth: number;
   StepMeta: Record<string, { color: string; placeholder: string; desc: string }>;
-  onRemove: () => void;
+  onRemove?: () => void;
+  onAddChild?: () => void;
+  dragHandleProps?: HTMLAttributes<HTMLButtonElement>;
 }
 
 const getStepTypeLabel = (type: string) => {
@@ -106,50 +105,32 @@ const StepSummary = ({ step }: { step: IStep }) => {
   return null;
 };
 
-const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => {
+const Step = ({ index, path, depth, StepMeta, onRemove, onAddChild, dragHandleProps }: Props) => {
   const [opened, setOpened] = useState(false);
   const { control } = useFormContext();
 
   const step = useWatch({
     control,
     name: path,
-  });
+  }) as IStep | undefined;
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: sortableId });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  };
+  if (!step) return null;
 
   const meta = StepMeta[step.type as keyof typeof StepMeta];
-  const hasChildren = "children" in step && Array.isArray(step.children);
 
   return (
-    <div ref={setNodeRef} style={style} className="step">
-      <div className="step__indent-container">
-        {depth > 0 && (
-          <div className="step__indent">
-            {Array.from({ length: depth }).map((_, i) => (
-              <div key={i} className="step__indent-line" />
-            ))}
-          </div>
-        )}
-
-        <div
-          className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
-          style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
-        >
+    <div className="step">
+      <div
+        className={`step__card step__card--${step.type} ${opened ? "step__card--open" : ""}`}
+        style={{ "--step-color": meta?.color ?? "#4a5a84" } as React.CSSProperties}
+      >
           <div className="step__scanline" />
 
           <div className="step__header">
             <button
               type="button"
               className="step__drag"
-              {...listeners}
-              {...attributes}
+              {...dragHandleProps}
               aria-label={t("step.controls.dragToReorder")}
             >
               ⠿
@@ -176,6 +157,17 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
               >
                 ✎
               </button>
+              {onAddChild && (
+                <button
+                  type="button"
+                  className="step__action-btn"
+                  aria-label={terms.actions.addChild}
+                  title={terms.actions.addChild}
+                  onClick={onAddChild}
+                >
+                  +
+                </button>
+              )}
               <button
                 type="button"
                 className="step__action-btn step__action-btn--del"
@@ -194,18 +186,7 @@ const Step = ({ index, path, sortableId, depth, StepMeta, onRemove }: Props) => 
               <span>{t("step.controls.editor", { type: getStepTypeLabel(step.type) })}</span>
             </div>
           )}
-        </div>
       </div>
-
-      {hasChildren && (
-        <div className="step__children">
-          <ScenarioList
-            path={`${path}.children`}
-            depth={depth ? depth + 1 : 1}
-            StepMeta={StepMeta}
-          />
-        </div>
-      )}
     </div>
   );
 };

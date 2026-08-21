@@ -15,6 +15,7 @@
     "test:state": "node --experimental-strip-types --loader ./scripts/test-mocks/webextension-loader.mjs scripts/test-state-updates.ts",
     "test:form-session": "node scripts/test-form-session.mjs",
     "test:i18n": "node --experimental-strip-types scripts/test-i18n.ts",
+    "test:scenario-tree": "node --experimental-strip-types scripts/test-scenario-tree.ts",
     "preview": "vite preview"
   },
   "dependencies": {

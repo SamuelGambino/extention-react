@@ -1,7 +1,7 @@
 import ru from "../src/popup/i18n/ru.ts";
 import { getLocale, setLocale, t } from "../src/popup/i18n/index.ts";
 import { formatLogMessage, normalizeLog } from "../src/shared/i18n/logs.ts";
-import { formatLogScope } from "../src/shared/i18n/terms.ts";
+import { formatLogScope, terms } from "../src/shared/i18n/terms.ts";
 
 const assert = (condition: unknown, message: string): asserts condition => {
   if (!condition) throw new Error(message);
@@ -23,6 +23,7 @@ assertDictionaryLeaves(ru);
 setLocale("ru");
 assert(getLocale() === "ru", "Русский язык должен быть активной локалью по умолчанию.");
 assert(t("state.logs") === "Журнал", "Должна возвращаться локализованная подпись интерфейса.");
+assert(terms.actions.addChild === "Add child step", "Новая фиксированная подпись действия должна находиться в общем словаре терминов.");
 assert(t("footer.updateAvailable", { version: "1.2.3" }) === "Обновите до версии 1.2.3", "Должна поддерживаться подстановка параметров.");
 assert(t("step.summary.stepsInside", { count: 3 }) === "3 шагов внутри", "Должна поддерживаться подстановка числовых параметров.");
 

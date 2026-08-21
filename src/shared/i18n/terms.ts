@@ -5,6 +5,7 @@ export const terms = {
     next: "Next",
     stop: "Stop",
     parseBySteps: "Parse by steps",
+    addChild: "Add child step",
   },
   footer: {
     developer: "developer",
