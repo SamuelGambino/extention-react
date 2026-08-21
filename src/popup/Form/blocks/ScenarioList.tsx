@@ -1,6 +1,6 @@
 import "../index.css";
-import { createContext, forwardRef, useCallback, useContext, useMemo, useState } from "react";
-import { useFormContext, useWatch, type FieldPath } from "react-hook-form";
+import { createContext, forwardRef, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { useFormContext, type FieldPath } from "react-hook-form";
 import {
   SortableTree,
   type TreeItemComponentProps,
@@ -17,6 +17,7 @@ import {
   createTreePathMap,
   createTreeItemForStep,
   stepsToTreeItems,
+  syncTreeItems,
   treeItemsToSteps,
   type ScenarioTreeItem,
   type ScenarioTreePath,
@@ -98,16 +99,28 @@ const ScenarioTreeStep = forwardRef<
 ScenarioTreeStep.displayName = "ScenarioTreeStep";
 
 const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
-  const { control, setValue } = useFormContext<ParserTabConfig>();
+  const { getValues, setValue, watch } = useFormContext<ParserTabConfig>();
   const [selectedType, setSelectedType] = useState<StepType>("loop");
   const STEP_TYPES = Object.keys(StepMeta) as StepType[];
-  const steps = useWatch({ control, name: "data.steps" }) as IStep[] | undefined;
-
-  const treeItems = useMemo(() => stepsToTreeItems(steps ?? []), [steps]);
+  const [treeItems, setTreeItems] = useState<ScenarioTreeItem[]>(() => {
+    return stepsToTreeItems((getValues("data.steps" as FieldPath<ParserTabConfig>) as IStep[] | undefined) ?? []);
+  });
   const paths = useMemo(() => createTreePathMap(treeItems), [treeItems]);
+
+  useEffect(() => {
+    const subscription = watch((_values, { name }) => {
+      if (name && !name.startsWith("data.steps")) return;
+
+      const steps = (getValues("data.steps" as FieldPath<ParserTabConfig>) as IStep[] | undefined) ?? [];
+      setTreeItems((items) => syncTreeItems(items, steps));
+    });
+
+    return () => subscription.unsubscribe();
+  }, [getValues, watch]);
 
   const replaceTree = useCallback((items: TreeItems<ScenarioTreeItem>) => {
     const nextItems = items as ScenarioTreeItem[];
+    setTreeItems(nextItems);
     setValue(
       "data.steps" as FieldPath<ParserTabConfig>,
       treeItemsToSteps(nextItems) as never,

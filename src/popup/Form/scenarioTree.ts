@@ -20,24 +20,32 @@ export const isStepContainer = (step: IStep): step is StepLoop | StepCondition =
   return step.type === "loop" || step.type === "condition";
 };
 
-const getStepId = (step: IStep): string => {
+const getStepId = (step: IStep, previousId?: string): string => {
   const knownId = stepIds.get(step);
   if (knownId) return knownId;
 
-  const id = `scenario-step-${nextStepId++}`;
+  const id = previousId ?? `scenario-step-${nextStepId++}`;
   stepIds.set(step, id);
   return id;
 };
 
-const createTreeItem = (step: IStep): ScenarioTreeItem => ({
-  id: getStepId(step),
+const createTreeItem = (step: IStep, previousItem?: ScenarioTreeItem): ScenarioTreeItem => ({
+  id: getStepId(step, previousItem?.id),
   step,
   canHaveChildren: isStepContainer(step),
-  ...(isStepContainer(step) ? { children: stepsToTreeItems(step.children) } : {}),
+  ...(isStepContainer(step)
+    ? { children: stepsToTreeItems(step.children, previousItem?.children) }
+    : {}),
 });
 
-export const stepsToTreeItems = (steps: IStep[]): ScenarioTreeItem[] => {
-  return steps.map(createTreeItem);
+// browser.storage и react-hook-form могут возвращать новые объекты для тех же
+// шагов. Предыдущая структура сопоставляется по текущей позиции, сохраняя
+// DnD/React-идентификатор при обычном редактировании полей.
+export const stepsToTreeItems = (
+  steps: IStep[],
+  previousItems: ScenarioTreeItem[] = [],
+): ScenarioTreeItem[] => {
+  return steps.map((step, index) => createTreeItem(step, previousItems[index]));
 };
 
 export const treeItemsToSteps = (items: ScenarioTreeItem[]): IStep[] => {
@@ -51,6 +59,44 @@ export const treeItemsToSteps = (items: ScenarioTreeItem[]): IStep[] => {
     stepIds.set(nextStep, id);
     return nextStep;
   });
+};
+
+export const syncTreeItems = (
+  items: ScenarioTreeItem[],
+  steps: IStep[],
+): ScenarioTreeItem[] => {
+  let changed = items.length !== steps.length;
+
+  const syncedItems = steps.map((step, index) => {
+    const item = items[index];
+    if (!item) {
+      changed = true;
+      return createTreeItem(step);
+    }
+
+    const canHaveChildren = isStepContainer(step);
+    const children = canHaveChildren
+      ? syncTreeItems(item.children ?? [], step.children)
+      : undefined;
+
+    if (
+      item.step === step
+      && item.canHaveChildren === canHaveChildren
+      && item.children === children
+    ) {
+      return item;
+    }
+
+    changed = true;
+    return {
+      ...item,
+      step,
+      canHaveChildren,
+      ...(canHaveChildren ? { children } : { children: undefined }),
+    };
+  });
+
+  return changed ? syncedItems : items;
 };
 
 export const createTreePathMap = (items: ScenarioTreeItem[]): Map<string, ScenarioTreePath> => {

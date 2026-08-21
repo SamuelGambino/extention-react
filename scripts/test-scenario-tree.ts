@@ -2,6 +2,7 @@ import {
   appendChildToTree,
   createTreePathMap,
   stepsToTreeItems,
+  syncTreeItems,
   treeItemsToSteps,
 } from "../src/popup/Form/scenarioTree.ts";
 import type { IStep } from "../src/globalTypes/parser_сonfig.ts";
@@ -49,6 +50,12 @@ const movedTreeWithStableIds = stepsToTreeItems(movedSteps);
 assert(movedTreeWithStableIds[0].id === loopNode.id, "Контейнер должен сохранять стабильный DnD-идентификатор после обновления формы.");
 assert(movedTreeWithStableIds[1].id === conditionNode.id, "Целевой контейнер должен сохранять стабильный DnD-идентификатор после обновления формы.");
 assert(movedTreeWithStableIds[1].children?.[0]?.id === actionNode?.id, "Перенесённый шаг должен сохранять DnD-идентификатор после обновления формы.");
+
+const persistedSteps = JSON.parse(JSON.stringify(movedSteps)) as IStep[];
+const restoredTree = syncTreeItems(movedTreeWithStableIds, persistedSteps);
+assert(restoredTree[0].id === loopNode.id, "Автосохранённая копия цикла не должна менять React-ключ карточки.");
+assert(restoredTree[1].id === conditionNode.id, "Автосохранённая копия условия не должна менять React-ключ карточки.");
+assert(restoredTree[1].children?.[0]?.id === actionNode?.id, "Автосохранённая копия вложенного шага не должна закрывать его редактор.");
 
 const paths = createTreePathMap(movedTreeWithStableIds);
 const actionPath = paths.get(String(actionNode?.id));
