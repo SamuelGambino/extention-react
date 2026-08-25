@@ -1,6 +1,8 @@
 import {
   appendChildToTree,
   createTreePathMap,
+  moveTreeItem,
+  removeTreeItem,
   stepsToTreeItems,
   syncTreeItems,
   treeItemsToSteps,
@@ -66,5 +68,21 @@ const waitStep: IStep = { type: "wait", params: { mode: "timeout", duration: 300
 const treeWithNewChild = appendChildToTree(movedTreeWithStableIds, String(loopNode.id), waitStep);
 const stepsWithNewChild = treeItemsToSteps(treeWithNewChild);
 assert(stepsWithNewChild[0].type === "loop" && stepsWithNewChild[0].children[0].type === "wait", "Добавление дочернего шага должно изменять только выбранный контейнер.");
+
+const treeWithNestedAction = moveTreeItem(originalTree, String(actionNode?.id), loopNode.id, "inside");
+const nestedSteps = treeItemsToSteps(treeWithNestedAction);
+assert(nestedSteps[0].type === "loop" && nestedSteps[0].children.length === 1, "Перенос внутрь должен добавлять шаг в контейнер.");
+assert(nestedSteps[0].type === "loop" && nestedSteps[0].children[0].type === "action", "Вложенный перенос должен сохранять тип шага.");
+
+const treeWithRootAction = moveTreeItem(treeWithNestedAction, String(actionNode?.id), conditionNode.id, "after");
+const rootSteps = treeItemsToSteps(treeWithRootAction);
+assert(rootSteps.length === 3 && rootSteps[2].type === "action", "Перенос после карточки должен возвращать шаг на корневой уровень.");
+
+const invalidMove = moveTreeItem(treeWithNestedAction, loopNode.id, String(actionNode?.id), "inside");
+assert(invalidMove === treeWithNestedAction, "Контейнер нельзя перенести внутрь собственного потомка.");
+
+const treeWithoutAction = removeTreeItem(treeWithNestedAction, String(actionNode?.id));
+const stepsWithoutAction = treeItemsToSteps(treeWithoutAction);
+assert(stepsWithoutAction[0].type === "loop" && stepsWithoutAction[0].children.length === 0, "Удаление вложенного шага должно обновлять только его контейнер.");
 
 console.log("scenario tree regression checks passed");

@@ -137,3 +137,108 @@ export const appendChildToTree = (
 };
 
 export const createTreeItemForStep = createTreeItem;
+
+export type ScenarioTreeDropPosition = "before" | "after" | "inside";
+
+const findTreeItem = (
+  items: ScenarioTreeItem[],
+  id: string,
+): ScenarioTreeItem | undefined => {
+  for (const item of items) {
+    if (item.id === id) return item;
+
+    const child = findTreeItem(item.children ?? [], id);
+    if (child) return child;
+  }
+
+  return undefined;
+};
+
+const hasDescendant = (item: ScenarioTreeItem, id: string): boolean => {
+  return (item.children ?? []).some((child) => child.id === id || hasDescendant(child, id));
+};
+
+export const removeTreeItem = (
+  items: ScenarioTreeItem[],
+  id: string,
+): ScenarioTreeItem[] => {
+  let removed = false;
+
+  const remove = (nodes: ScenarioTreeItem[]): ScenarioTreeItem[] => {
+    const result: ScenarioTreeItem[] = [];
+
+    for (const item of nodes) {
+      if (item.id === id) {
+        removed = true;
+        continue;
+      }
+
+      const children = item.children ? remove(item.children) : item.children;
+      result.push(children === item.children ? item : { ...item, children });
+    }
+
+    return result;
+  };
+
+  const nextItems = remove(items);
+  return removed ? nextItems : items;
+};
+
+const insertTreeItem = (
+  items: ScenarioTreeItem[],
+  targetId: string,
+  position: ScenarioTreeDropPosition,
+  itemToInsert: ScenarioTreeItem,
+): ScenarioTreeItem[] => {
+  let inserted = false;
+
+  const insert = (nodes: ScenarioTreeItem[]): ScenarioTreeItem[] => {
+    const result: ScenarioTreeItem[] = [];
+
+    for (const item of nodes) {
+      if (item.id === targetId) {
+        if (position === "before") result.push(itemToInsert);
+        if (position === "inside") {
+          result.push({ ...item, children: [...(item.children ?? []), itemToInsert] });
+        } else {
+          result.push(item);
+        }
+        if (position === "after") result.push(itemToInsert);
+        inserted = true;
+        continue;
+      }
+
+      const children = item.children ? insert(item.children) : item.children;
+      result.push(children === item.children ? item : { ...item, children });
+    }
+
+    return result;
+  };
+
+  const nextItems = insert(items);
+  return inserted ? nextItems : items;
+};
+
+export const moveTreeItem = (
+  items: ScenarioTreeItem[],
+  draggedId: string,
+  targetId: string,
+  position: ScenarioTreeDropPosition,
+): ScenarioTreeItem[] => {
+  if (draggedId === targetId) return items;
+
+  const draggedItem = findTreeItem(items, draggedId);
+  const targetItem = findTreeItem(items, targetId);
+
+  if (
+    !draggedItem
+    || !targetItem
+    || hasDescendant(draggedItem, targetId)
+    || (position === "inside" && !targetItem.canHaveChildren)
+  ) {
+    return items;
+  }
+
+  const itemsWithoutDragged = removeTreeItem(items, draggedId);
+  return insertTreeItem(itemsWithoutDragged, targetId, position, draggedItem);
+};

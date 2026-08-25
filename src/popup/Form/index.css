@@ -229,3 +229,40 @@ button.form__button--small {
   text-wrap-mode: nowrap;
   min-width: fit-content;
 }
+
+.scenario-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scenario-tree__item {
+  position: relative;
+}
+
+.scenario-tree__item--dragging {
+  opacity: 0.45;
+}
+
+.scenario-tree__item--drop-before::before,
+.scenario-tree__item--drop-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--text-hover);
+  z-index: 2;
+}
+
+.scenario-tree__item--drop-before::before {
+  top: -3px;
+}
+
+.scenario-tree__item--drop-after::after {
+  bottom: -3px;
+}
+
+.scenario-tree__item--drop-inside .step__card {
+  box-shadow: inset 3px 0 0 var(--step-color);
+}
