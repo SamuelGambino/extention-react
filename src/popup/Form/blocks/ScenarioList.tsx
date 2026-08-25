@@ -2,6 +2,7 @@ import "../index.css";
 import { createContext, forwardRef, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useFormContext, type FieldPath } from "react-hook-form";
 import {
+  SimpleTreeItemWrapper,
   SortableTree,
   type TreeItemComponentProps,
   type TreeItems,
@@ -66,7 +67,7 @@ const createStep = (
 const ScenarioTreeStep = forwardRef<
   HTMLDivElement,
   TreeItemComponentProps<ScenarioTreeItem>
->(({ item, depth, isLast, handleProps, onRemove, wrapperRef, style, ghost }, ref) => {
+>(({ item, depth, isLast, handleProps, onRemove, ghost, ...treeItemProps }, ref) => {
   const context = useContext(ScenarioTreeContext);
 
   if (!context) return null;
@@ -75,24 +76,25 @@ const ScenarioTreeStep = forwardRef<
   if (!location) return null;
 
   return (
-    <div
-      ref={wrapperRef}
-      style={style}
+    <SimpleTreeItemWrapper
+      {...treeItemProps}
+      ref={ref}
+      indentationWidth={0}
+      manualDrag
+      showDragHandle={false}
       className={`scenario-tree__item${ghost ? " scenario-tree__item--dragging" : ""}`}
     >
-      <div ref={ref}>
-        <Step
-          index={location.index}
-          path={location.path}
-          depth={depth}
-          isLast={isLast}
-          StepMeta={context.StepMeta}
-          onRemove={onRemove}
-          onAddChild={item.canHaveChildren ? () => context.addChild(String(item.id)) : undefined}
-          dragHandleProps={handleProps}
-        />
-      </div>
-    </div>
+      <Step
+        index={location.index}
+        path={location.path}
+        depth={depth}
+        isLast={isLast}
+        StepMeta={context.StepMeta}
+        onRemove={onRemove}
+        onAddChild={item.canHaveChildren ? () => context.addChild(String(item.id)) : undefined}
+        dragHandleProps={handleProps}
+      />
+    </SimpleTreeItemWrapper>
   );
 });
 
