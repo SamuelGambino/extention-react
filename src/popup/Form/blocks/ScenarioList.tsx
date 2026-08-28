@@ -134,6 +134,7 @@ const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
   });
   const [dragState, setDragState] = useState<DragState | null>(null);
   const dragStateRef = useRef<DragState | null>(null);
+  const pointerPositionRef = useRef<{ x: number; y: number } | null>(null);
   const paths = useMemo(() => createTreePathMap(treeItems), [treeItems]);
 
   const updateDragState = useCallback((state: DragState | null) => {
@@ -174,6 +175,7 @@ const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
   }, [replaceTree, treeItems]);
 
   const handleDragStart = useCallback((id: string) => {
+    pointerPositionRef.current = null;
     updateDragState({ draggedId: id });
   }, [updateDragState]);
 
@@ -222,18 +224,60 @@ const ScenarioList = ({ StepMeta }: ScenarioListProps) => {
   useEffect(() => {
     if (!dragState) return;
 
-    const onPointerMove = (event: PointerEvent) => handleDragMove(event.clientX, event.clientY);
+    const scrollContainer = document.querySelector<HTMLElement>(".form__content");
+    const edgeSize = 56;
+    const maxScrollPerFrame = 18;
+    let animationFrame = 0;
+
+    const autoScroll = () => {
+      const pointer = pointerPositionRef.current;
+      if (pointer && scrollContainer) {
+        const rect = scrollContainer.getBoundingClientRect();
+        let scrollDelta = 0;
+
+        if (pointer.y < rect.top + edgeSize) {
+          scrollDelta = -Math.min(maxScrollPerFrame, Math.max(2, rect.top + edgeSize - pointer.y) * 0.45);
+        } else if (pointer.y > rect.bottom - edgeSize) {
+          scrollDelta = Math.min(maxScrollPerFrame, Math.max(2, pointer.y - (rect.bottom - edgeSize)) * 0.45);
+        }
+
+        if (scrollDelta !== 0 && scrollContainer.scrollHeight > scrollContainer.clientHeight) {
+          const previousScrollTop = scrollContainer.scrollTop;
+          scrollContainer.scrollTop = Math.max(
+            0,
+            Math.min(
+              scrollContainer.scrollHeight - scrollContainer.clientHeight,
+              previousScrollTop + scrollDelta,
+            ),
+          );
+
+          if (scrollContainer.scrollTop !== previousScrollTop) {
+            handleDragMove(pointer.x, pointer.y);
+          }
+        }
+      }
+
+      animationFrame = window.requestAnimationFrame(autoScroll);
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      pointerPositionRef.current = { x: event.clientX, y: event.clientY };
+      handleDragMove(event.clientX, event.clientY);
+    };
     const onPointerUp = () => handleDragEnd();
     const onPointerCancel = () => updateDragState(null);
 
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerCancel);
+    animationFrame = window.requestAnimationFrame(autoScroll);
 
     return () => {
+      window.cancelAnimationFrame(animationFrame);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerCancel);
+      pointerPositionRef.current = null;
     };
   }, [dragState, handleDragEnd, handleDragMove, updateDragState]);
 
