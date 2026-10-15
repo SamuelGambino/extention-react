@@ -125,7 +125,8 @@ export class Yandex extends BaseParser {
 
     product_data.price = [{
       id: product.id,
-      price: product.price,
+      price: product.promoPrice ? product.promoPrice : product.price,
+      old_price: product.promoPrice ? product.price : undefined,
       proteins: product.nutrients?.proteins.value || undefined,
       fats: product.nutrients?.fats.value || undefined,
       carbohydrates: product.nutrients?.carbohydrates.value || undefined,
