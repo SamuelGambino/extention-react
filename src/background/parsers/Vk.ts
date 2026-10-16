@@ -166,6 +166,8 @@ export class Vk extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     this.categories = [
       { id: 1000, name: 'Без категории', parent: 0 }
     ];

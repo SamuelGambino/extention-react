@@ -1,41 +1,31 @@
 import "../index.css";
 import InputField from "../../InputField";
-import ClicksSection from "../sections/ClicksSection";
-import ModifiersSection from "../sections/ModifiersSection";
-import PaginationSection from "../sections/PaginationSection";
-import ParametersSection from "../sections/ParametersSection";
-import CategorySection from "../sections/CategorySection";
-import ProductSection from "../sections/ProductSection";
 import Hint from "../../Hint";
 import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import type { ParserTabConfig } from "../../../globalTypes/parser_сonfig";
+import { t } from "../../i18n";
+import { terms } from "../../../shared/i18n/terms";
 
 const ConfigurationBlock = () => {
   const { control } = useFormContext<ParserTabConfig>();
 
   const preset = useWatch({ control, name: 'type' });
-  const settings = useWatch({ control, name: 'data.settings' });
-  const clicks = settings?.clicks ?? 'none';
-  const pagination = settings?.pagination ?? false;
-  const parameters = settings?.parameters ?? false;
-  const modifiers = settings?.modifiers ?? false;
-  const hasSections = preset === 'custom';
 
   return (
     <fieldset className="form__settings" key={preset}>
-      <legend className="form__settings-title">Configuration</legend>
+      <legend className="form__settings-title">{terms.form.configuration}</legend>
 
       {preset === 'vk' && (
         <div className='form__field'>
           <div className='form__field-title'>
-            <label className='form__field-label'>Market ID</label>
-            <Hint hint='ID группы в ВКонтакте' />
+            <label className='form__field-label'>{t("form.marketId")}</label>
+            <Hint hint={t("form.marketIdHint")} />
           </div>
           <Controller
             name="data.marketId"
             control={control}
             render={({ field }) => (
-              <InputField placeholder='123123123' value={field.value} onChange={field.onChange} />
+              <InputField placeholder={t("form.marketIdPlaceholder")} value={field.value} onChange={field.onChange} />
             )} />
         </div>
       )}
@@ -44,26 +34,26 @@ const ConfigurationBlock = () => {
         <>
           <div className='form__field'>
             <div className='form__field-title'>
-              <label className='form__field-label'>Payload catalogs</label>
-              <Hint hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_collections' />
+              <label className='form__field-label'>{t("form.payloadCatalogs")}</label>
+              <Hint hint={t("form.payloadCatalogsHint")} />
             </div>
             <Controller
               name="data.paylodCatalogs"
               control={control}
               render={({ field }) => (
-                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+                <InputField placeholder={t("form.payloadPlaceholder")} value={field.value} onChange={field.onChange} />
               )} />
           </div>
           <div className='form__field'>
             <div className='form__field-title'>
-              <label className='form__field-label'>Payload products</label>
-              <Hint hintPosition='left' hint='Payload запроса ответ на который содержит поле data.xwa_product_catalog_get_single_collection' />
+              <label className='form__field-label'>{t("form.payloadProducts")}</label>
+              <Hint hintPosition='left' hint={t("form.payloadProductsHint")} />
             </div>
             <Controller
               name="data.paylodProducts"
               control={control}
               render={({ field }) => (
-                <InputField placeholder='{"access_token":"WA|000|00aa00a0a"' value={field.value} onChange={field.onChange} />
+                <InputField placeholder={t("form.payloadPlaceholder")} value={field.value} onChange={field.onChange} />
               )} />
           </div>
         </>
@@ -72,29 +62,17 @@ const ConfigurationBlock = () => {
       {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper' || preset === "flowwow") && (
         <div className='form__field'>
           <div className='form__field-title'>
-            <label className='form__field-label'>API URL</label>
-            <Hint hint='API URL для получения меню' />
+            <label className='form__field-label'>{terms.form.apiUrl}</label>
+            <Hint hint={t("form.apiUrlHint")} />
           </div>
           <Controller
             name="data.apiUrl"
             control={control}
             render={({ field }) => (
-              <InputField placeholder='https://api.url.com/eda/v1/menu' value={field.value} onChange={field.onChange} />
+              <InputField placeholder={t("form.apiUrlPlaceholder")} value={field.value} onChange={field.onChange} />
             )} />
         </div>
       )}
-
-      {hasSections && <CategorySection />}
-
-      {hasSections && <ProductSection />}
-
-      {hasSections && clicks !== 'none' && <ClicksSection />}
-
-      {hasSections && pagination && <PaginationSection />}
-
-      {hasSections && parameters && <ParametersSection />}
-
-      {hasSections && modifiers && <ModifiersSection />}
     </fieldset>
   )
 }

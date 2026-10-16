@@ -1,13 +1,15 @@
-.select-field {
-  position: relative;
-  height: 36px;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  transition: border-color 0.15s;
-  letter-spacing: 0.24em;
-  font-size: 10px;
-  text-transform: uppercase;
+@layer base {
+  .select-field {
+    position: relative;
+    height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    transition: border-color 0.15s;
+    letter-spacing: 0.24em;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
 }
 
 /* Угловые засечки */
@@ -112,14 +114,21 @@
   top: calc(100% + 4px);
   left: -1px;
   right: -1px;
+  z-index: 5;
+  max-height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
   background: var(--second-bg);
   border: 1px solid var(--border-hover);
   border-radius: 2px;
-  z-index: 100;
-  list-style: none;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
+}
+
+.select-field--upward .select-field__dropdown {
+  top: auto;
+  bottom: calc(100% + 4px);
 }
 
 .select-field--accent .select-field__dropdown {
@@ -132,8 +141,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 32px;
   padding: 0 12px;
-  height: 32px;
+  overflow: hidden;
   letter-spacing: 0.24em;
   font-size: 10px;
   text-transform: uppercase;
@@ -196,4 +206,18 @@
 
 .select-field--accent .select-field__item--selected .select-field__item-dot {
   background: var(--border-green);
+}
+
+.select-field__item-label {
+  flex-shrink: 0;
+}
+
+.select-field__item-desc {
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  color: var(--text-placeholder);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

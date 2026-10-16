@@ -4,21 +4,24 @@ interface Categories {
   parent: number,
 }
 
+interface ProductParameter {
+  id: number | string,
+  name?: string,
+  price: number,
+  old_price?: number,
+  proteins?: number,
+  fats?: number,
+  carbohydrates?: number,
+  calories?: number,
+  index: number[],
+}
+
 interface Product {
   product_id: number | string,
   name: string,
   picture: string,
   description: string,
-  price: {
-    id: number | string,
-    price: number,
-    old_price?: number,
-    proteins?: number,
-    fats?: number,
-    carbohydrates?: number,
-    calories?: number,
-    index: number[],
-  }[],
+  price: ProductParameter[],
   category: number | string,
   modifiers?: (number | string)[];
 }
@@ -50,6 +53,7 @@ interface ExportData {
 export type {
   Categories,
   Product,
+  ProductParameter,
   ModGroups,
   Mods,
   ExportData

@@ -1,10 +1,10 @@
 .popup {
   position: relative;
+  box-sizing: border-box;
   background-color: var(--bg);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+  min-height: 0;
   height: 100%;
   padding: 10px 20px;
   opacity: 0.85;
@@ -24,10 +24,11 @@
 
 .popup__wrapper {
   display: grid;
-  grid-template-columns: auto 1fr 168px;
-  grid-template-rows: auto 1fr;
+  flex: 1 1 auto;
+  grid-template-columns: auto minmax(0, 1fr) 168px;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
   column-gap: 14px;
-  height: 100%;
 }
 
 .popup__decorative {

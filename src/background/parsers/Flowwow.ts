@@ -114,9 +114,11 @@ export class Flowwow extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     try {
       if (!this.response?.categories.length) throw new Error('В ответе нет категорий');
-      for (const category of this.response?.categories) {
+      for (const category of this.response.categories) {
         this.categories.push({
           id: category.id,
           name: category.name,

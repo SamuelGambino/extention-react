@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useParserConfig } from "./useStorage";
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
+import { t } from "../i18n";
 
 const useTabsConfig = () => {
   const [value, setStorageValue, isLoaded] = useParserConfig();
@@ -67,7 +68,7 @@ const useTabsConfig = () => {
     const newTab: ParserTabConfig = {
       ...currentTab,
       tabId: crypto.randomUUID(),
-      tabName: "Новая вкладка",
+      tabName: t("tabs.newTab"),
       data: structuredClone(currentTab.data),
     };
 

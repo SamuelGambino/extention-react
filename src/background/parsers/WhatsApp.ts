@@ -39,8 +39,11 @@ export class WhatsApp extends BaseParser {
 
     await this.setLog({ status: "warn", title: "[WhatsApp]:Check", value: "Запросы к api для получения товаров..." });
     if (!this.fullNomenclature?.collections) return;
-    for (const category of this.fullNomenclature?.collections) {
-      this.sleep(1000);
+    if (this.inputPayloadProducts?.variables.request.product_catalog) {
+      this.fullNomenclature?.collections.push({
+        name: "Без категории",
+        id: "noname_cat_000"
+      })
       try {
         const resp = await fetch("https://graph.whatsapp.com/graphql/catalog", {
           method: "POST",
@@ -51,9 +54,10 @@ export class WhatsApp extends BaseParser {
             ...this.inputPayloadProducts,
             variables: {
               request: {
-                collection: {
-                  biz_jid: this.inputPayloadProducts?.variables.request.collection.biz_jid,
-                  id: category.id,
+                product_catalog: {
+                  allow_shop_source: this.inputPayloadProducts?.variables.request.product_catalog.allow_shop_source,
+                  jid: this.inputPayloadProducts?.variables.request.product_catalog.jid,
+                  variant_info_fields: this.inputPayloadProducts?.variables.request.product_catalog.variant_info_fields,
                   limit: "100",
                   width: "100",
                   height: "100",
@@ -68,13 +72,52 @@ export class WhatsApp extends BaseParser {
           throw new Error(`HTTP error ${resp.status}: ${resp.statusText}`);
         }
         const response = await resp.json() as WhatsAppRespProducts;
-        if (!response || !Array.isArray(response.data.xwa_product_catalog_get_single_collection.collection.products)) {
+        if (!response || (response.data.xwa_product_catalog_get_product_catalog && !Array.isArray(response.data.xwa_product_catalog_get_product_catalog.product_catalog.products))) {
           throw new Error("Api вернул не то, что ожидалось, проверьте актуальность модуля или корректность данных в input поле");
         } else {
-          category.products = response.data.xwa_product_catalog_get_single_collection.collection.products;
+          this.fullNomenclature.collections[0].products = response.data.xwa_product_catalog_get_product_catalog?.product_catalog.products ?? [];
         }
       } catch (e) {
         await this.setLog({ status: "danger", title: "[WhatsApp]:Check", value: "Ошибка  при запросе - " + e });
+      }
+    } else if (this.inputPayloadProducts?.variables.request.collection) {
+      for (const category of this.fullNomenclature.collections) {
+        this.sleep(1000);
+        try {
+          const resp = await fetch("https://graph.whatsapp.com/graphql/catalog", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...this.inputPayloadProducts,
+              variables: {
+                request: {
+                  collection: {
+                    biz_jid: this.inputPayloadProducts?.variables.request.collection.biz_jid,
+                    id: category.id,
+                    limit: "100",
+                    width: "100",
+                    height: "100",
+                    variant_thumbnail_height: null,
+                    variant_thumbnail_width: null
+                  }
+                }
+              }
+            }),
+          });
+          if (!resp.ok) {
+            throw new Error(`HTTP error ${resp.status}: ${resp.statusText}`);
+          }
+          const response = await resp.json() as WhatsAppRespProducts;
+          if (!response || (response.data.xwa_product_catalog_get_single_collection && !Array.isArray(response.data.xwa_product_catalog_get_single_collection.collection.products))) {
+            throw new Error("Api вернул не то, что ожидалось, проверьте актуальность модуля или корректность данных в input поле");
+          } else {
+            category.products = response.data.xwa_product_catalog_get_single_collection?.collection.products ?? [];
+          }
+        } catch (e) {
+          await this.setLog({ status: "danger", title: "[WhatsApp]:Check", value: "Ошибка  при запросе - " + e });
+        }
       }
     }
 
@@ -110,6 +153,8 @@ export class WhatsApp extends BaseParser {
   }
 
   async parseRest() {
+    await this.checkAvailability();
+
     await this.setLog({ status: "warn", title: "[WhatsApp]:Parse", value: "Парсинг данных..." });
     const categories = this.fullNomenclature?.collections;
     if (!Array.isArray(categories)) throw Error("Response menu is not an array");
@@ -130,7 +175,7 @@ export class WhatsApp extends BaseParser {
             description: item.description || '',
             price: [{
               id: item.id,
-              price: item.price / 1000,
+              price: item.price ? item.price / 1000 : 0,
               index: [1, 10],
             }],
             category: category.id,

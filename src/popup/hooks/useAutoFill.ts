@@ -8,7 +8,7 @@ const useAutoFill = () => {
 
   const detectPresetFromUrl = (domain: string) => {
     if (domain === "vk.com" || domain === "vk.ru") return "vk";
-    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru") return "yandex";
+    if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru" || domain === "eda.yandex.kg") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
     if (domain === "web.whatsapp.com") return "whatsapp";
     if (domain === "kuper.ru") return "kuper";
@@ -45,12 +45,12 @@ const useAutoFill = () => {
       setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);
     };
     if (preset === "chibbis") {
-      const chibbisResponse = await fetch("https://chibbis.ru/webapi/cities");
+      const chibbisResponse = await fetch("https://chibbis.ru/webapi/geo-objects");
       if (!chibbisResponse.ok) return;
       const data: { id: string, urlName: string }[] = await chibbisResponse.json();
       const pathSegments = urlObject.pathname.split('/').filter(Boolean);
       const cityObj = data.find(city => city.urlName === pathSegments[0]);
-      setValue("data.apiUrl", `https://chibbis.ru/webapi/v2/restaurants/${pathSegments[2]}/menu/summary?cityId=${cityObj?.id}`);
+      setValue("data.apiUrl", `https://chibbis.ru/webapi/v2/restaurants/${pathSegments[2]}/menu/summary?geoObjectId=${cityObj?.id}`);
     }
     if (preset === "kuper") {
       setValue("data.apiUrl", `https://kuper.ru/api/v3/multicards?permalink`);

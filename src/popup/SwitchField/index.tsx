@@ -1,13 +1,15 @@
 import { useState } from "react";
 import "./index.css";
+import { t } from "../i18n";
 
 interface ISwitchField {
   isAccent?: boolean;
+  className?: string;
   value?: boolean;
   onChange: (value: boolean) => void;
 }
 
-const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
+const SwitchField: React.FC<ISwitchField> = ({ isAccent, className, value, onChange }) => {
   const normalizedValue = value ?? false;
   const [switchState, setSwitchState] = useState({
     propValue: normalizedValue,
@@ -23,7 +25,7 @@ const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
 
   return (
     <div className={`switch-field`}>
-      <label className={`switch-field__switch ${isAccent ? 'switch-field__switch--accent' : ''}`}>
+      <label className={`switch-field__switch ${isAccent ? 'switch-field__switch--accent' : ''} ${className ? className : ''}`}>
         <input
           type='checkbox'
           checked={switchState.value}
@@ -44,7 +46,7 @@ const SwitchField: React.FC<ISwitchField> = ({ isAccent, value, onChange }) => {
         <div className="switch-field__thumb"></div>
       </label>
       <span className={`switch-field__text ${switchState.value ? 'switch-field__text--enabled' : 'switch-field__text--disabled'}`}>
-        {switchState.value ? 'Enabled' : 'Disabled'}
+        {switchState.value ? t("switch.enabled") : t("switch.disabled")}
       </span>
     </div>
   );

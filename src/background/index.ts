@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import { getActualConfig, getState, setParsingState, setSource, setState } from "./storage";
+import { getActualConfig, setParsingState, setSource, updateState } from "./storage";
 import { Custom } from "./parsers/Custom";
 import type { BaseParser, ParseMode } from "./parsers/BaseParser";
 import type { ParserTabConfig } from "../globalTypes/parser_сonfig";
@@ -35,21 +35,22 @@ type RuntimeMessageResponse = {
 };
 
 const clearLogs = async () => {
-  const state = await getState();
-  await setState({
+  await updateState((state) => ({
     ...state,
     logs: [],
-  });
+  }));
 };
 
 const handleParseFailure = async (): Promise<RuntimeMessageResponse> => {
-  const state = await getState();
-  const logs = state.logs ?? [];
-  await setState({
+  await updateState((state) => ({
     ...state,
     parsing: { ...state.parsing, isRunning: false },
-    logs: [...logs, { status: "danger", title: "[Exporter]:Export", value: "Парсер вернул undefined" }],
-  });
+    logs: [...(state.logs ?? []), {
+      status: "danger",
+      scope: { parser: "exporter", phase: "export" },
+      messageKey: "parserReturnedUndefined",
+    }],
+  }));
   return { ok: false };
 };
 

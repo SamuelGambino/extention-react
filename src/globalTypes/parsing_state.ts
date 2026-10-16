@@ -1,4 +1,6 @@
-interface ParserState {
+import type { LocalizedLog } from "../shared/i18n/logs";
+
+type ParserState = {
   parsing: {
     isReady: boolean;
     message?: string;
@@ -16,19 +18,22 @@ interface ParserState {
     groupsModifiersTotal?: number;
     modifiers?: number;
     modifiersTotal?: number;
-  }
+  };
   logs?: Log[];
 };
 
-interface Log {
-  status: "success" | "warn" | "danger"
+interface LegacyLog {
+  status: "success" | "warn" | "danger";
   title: string;
   value: string;
 }
 
-type PresertOptionsType = 'custom' | 'api' | 'vk' | 'yandex_eda' | 'yandex_map' | 'chibbis';
+type Log = LocalizedLog | LegacyLog;
+
+type PresertOptionsType = "custom" | "api" | "vk" | "yandex_eda" | "yandex_map" | "chibbis";
 
 export type {
   ParserState,
-  Log
-}
+  Log,
+  LegacyLog,
+};

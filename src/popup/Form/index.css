@@ -1,15 +1,25 @@
 .form {
   padding-left: 2px;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  overflow-y: auto;
-  gap: 16px;
-  height: 100%;
-  -ms-overflow-style: none;
-  scrollbar-width: none;  
+  min-height: 0;
+  overflow: hidden;
 }
 
-.form::-webkit-scrollbar {
+.form__content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  gap: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.form__content::-webkit-scrollbar {
   display: none;
 }
 
@@ -147,4 +157,112 @@ button.form__button--small {
 
 .form__button--main div {
   border-color: var(--border-green);
+}
+
+.form__list {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / 3;
+  gap: 4px;
+}
+
+.form__list-add {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 4px;
+  background-color: var(--bg);
+  box-shadow: 0 -6px 10px var(--bg);
+}
+
+.form__list-add::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg,
+      transparent 0px, transparent 2px,
+      rgba(255, 255, 255, 0.015) 2px, rgba(255, 255, 255, 0.015) 3px);
+  pointer-events: none;
+}
+
+.form__indent {
+  display: flex;
+  height: stretch;
+  flex-shrink: 0;
+}
+
+.form__indent-line {
+  width: 20px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.form__indent-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 9px;
+  width: 1px;
+  background: #1e2e50;
+}
+
+.form__indent-line--last::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 9px;
+  width: 10px;
+  height: 1px;
+  background: #1e2e50;
+}
+
+.form__list-select {
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+}
+
+.form__list-btn {
+  text-wrap-mode: nowrap;
+  min-width: fit-content;
+}
+
+.scenario-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scenario-tree__item {
+  position: relative;
+}
+
+.scenario-tree__item--dragging {
+  opacity: 0.45;
+}
+
+.scenario-tree__item--drop-before::before,
+.scenario-tree__item--drop-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--text-hover);
+  z-index: 2;
+}
+
+.scenario-tree__item--drop-before::before {
+  top: -3px;
+}
+
+.scenario-tree__item--drop-after::after {
+  bottom: -3px;
+}
+
+.scenario-tree__item--drop-inside .step__card {
+  box-shadow: inset 3px 0 0 var(--step-color);
 }

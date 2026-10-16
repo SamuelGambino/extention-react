@@ -1,6 +1,7 @@
 import type { ParserTabConfig } from "../../globalTypes/parser_сonfig";
-import type { Log, ParserState } from "../../globalTypes/parsing_state";
-import { setState, getState } from "../storage";
+import type { ParserState } from "../../globalTypes/parsing_state";
+import { createTechnicalDetails, normalizeLog, type LogInput } from "../../shared/i18n/logs";
+import { updateState } from "../storage";
 import type { Categories, ExportData, ModGroups, Mods, Product } from "../types/ExportTypes";
 
 export type ParseMode = 'check' | 'parse' | 'steps';
@@ -51,28 +52,25 @@ export abstract class BaseParser {
   }
 
   protected async setDataState(patch: Partial<ParserState['data']>) {
-    const state = await getState();
-    await setState({
+    await updateState((state) => ({
       ...state,
-      data: { ...state.data, ...patch }
-    });
+      data: { ...state.data, ...patch },
+    }));
   }
 
   protected async setParsingState(patch: Partial<ParserState['parsing']>) {
-    const state = await getState();
-    await setState({
+    await updateState((state) => ({
       ...state,
-      parsing: { ...state.parsing, ...patch }
-    });
+      parsing: { ...state.parsing, ...patch },
+    }));
   }
 
-  protected async setLog(log: Log) {
-    const state = await getState();
-    const logs = state.logs ?? [];
-    await setState({
+  protected async setLog(log: LogInput) {
+    const normalizedLog = normalizeLog(log);
+    await updateState((state) => ({
       ...state,
-      logs: [...logs, log]
-    });
+      logs: [...(state.logs ?? []), normalizedLog],
+    }));
   }
 
   protected async sleep(ms: number) {
@@ -82,8 +80,10 @@ export abstract class BaseParser {
   // Run steps
   async run(): Promise<ExportData | undefined> {
     try {
-      await this.checkAvailability();
-      if (this.mode === 'check') return;
+      if (this.mode === "check") {
+        await this.checkAvailability();
+        return;
+      }
 
       await this.waitForNextStep();
       if (this.stopped) return;
@@ -100,7 +100,12 @@ export abstract class BaseParser {
       }
     } catch (e) {
       await this.setParsingState({ isRunning: false });
-      await this.setLog({ status: "danger", title: "[BaseParser]", value: `${e}` });
+      await this.setLog({
+        status: "danger",
+        scope: { parser: "base" },
+        messageKey: "parserFailed",
+        technical: createTechnicalDetails(e),
+      });
     }
   }
 }

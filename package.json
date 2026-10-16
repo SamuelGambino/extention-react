@@ -9,11 +9,22 @@
     "build:firefox": "cross-env VITE_BROWSER=firefox vite build",
     "build": "npm run build:chrome && npm run build:firefox",
     "lint": "eslint .",
+    "test:content": "node --experimental-strip-types scripts/test-wait-for-element.ts",
+    "test:parameter": "node scripts/test-collect-parameter.mjs",
+    "test:loop-context": "node --experimental-strip-types --loader ./scripts/test-mocks/webextension-loader.mjs scripts/test-loop-entity-context.ts",
+    "test:state": "node --experimental-strip-types --loader ./scripts/test-mocks/webextension-loader.mjs scripts/test-state-updates.ts",
+    "test:form-session": "node scripts/test-form-session.mjs",
+    "test:i18n": "node --experimental-strip-types scripts/test-i18n.ts",
+    "test:scenario-tree": "node --experimental-strip-types scripts/test-scenario-tree.ts",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource/monoton": "^5.2.7",
+    "dnd-kit-sortable-tree": "^0.1.73",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.77.0"

@@ -2,6 +2,8 @@ import ScrambleText from '../ScrambleText';
 import './index.css'
 import browser from "webextension-polyfill";
 import { useVersion } from '../hooks/useStorage';
+import { t } from "../i18n";
+import { terms } from "../../shared/i18n/terms";
 
 const Footer = () => {
   const [version] = useVersion();
@@ -12,9 +14,8 @@ const Footer = () => {
       <a className='footer__text' href="https://github.com/SamuelGambino/extention-react" target="_blank" rel="noopener noreferrer">ProductParser v{currentVersion}</a>
 
       {version.hasUpdate && (
-        <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">Обновитесь до версии {version.latestVersion}</a>
+        <a className='footer__text footer__text--link footer__text--link-accent' href={version.releaseUrl} target="_blank" rel="noopener noreferrer">{t("footer.updateAvailable", { version: version.latestVersion })}</a>
       )}
-      
 
       <a
         className='footer__text footer__text--link footer__text--right'
@@ -22,7 +23,7 @@ const Footer = () => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <ScrambleText text="developer" play={true} repeatInterval={3000} />
+        <ScrambleText text={terms.footer.developer} play={true} repeatInterval={3000} />
         <svg className='footer__icon' width="15" height="15" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M14.4997 14.5V0.5H0.5" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M14.5 0.5L0.780273 14.2205" stroke="#4A4956" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />

@@ -19,22 +19,15 @@ const DEFAULT_CONFIG: ParserConfig = {
       type: 'custom',
       source: '',
       data: {
-        settings: {
-          clicks: 'none',
-          pagination: false,
-          parameters: false,
-          modifiers: false,
-        },
-        selectors: {
-          category: {
-            container: "",
-          },
-          product: {
-            container: "",
-            name: "",
-            price: "",
-          },
-        },
+        steps: [
+          {
+            type: "action",
+            params: {
+              action: "click",
+              selector: ""
+            }
+          }
+        ]
       },
     }
   ]
@@ -49,7 +42,7 @@ const DEFAULT_STATE: ParserState = {
     categories: 0,
     categoriesTotal: 0,
     products: 0,
-    productsTotal: 0,    
+    productsTotal: 0,
   }
 }
 
@@ -88,7 +81,7 @@ const useStorage = <T>(key: string, initialValue: T) => {
     await browser.storage.local.set({ [key]: newValue });
   }, [key]);
 
-  return [ value, setStorageValue, isLoaded ] as const;
+  return [value, setStorageValue, isLoaded] as const;
 }
 
 const useParserConfig = () => {
@@ -118,7 +111,7 @@ const useVersion = () => {
       setIsLoaded(true);
     };
     initializeVersion();
-  }, []);
+  }, [currentVersion]);
 
   useEffect(() => {
     const handleChanges = (changes: browser.Storage.StorageAreaOnChangedChangesType, areaName: string) => {
@@ -131,7 +124,7 @@ const useVersion = () => {
     };
     browser.storage.onChanged.addListener(handleChanges);
     return () => browser.storage.onChanged.removeListener(handleChanges);
-  }, []);
+  }, [currentVersion]);
 
   const setStorageValue = useCallback(async (newValue: UpdateData) => {
     setValue(newValue);
