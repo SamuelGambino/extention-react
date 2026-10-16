@@ -78,6 +78,7 @@ export const getRoot = (source: Source, context?: ElementContext): ParentNode =>
 };
 
 export const queryElement = <T extends Element = Element>(selector: string, source: Source, context?: ElementContext): T | null => {
+  if (selector === ".") return getRoot(source, context) as T | null;
   return getRoot(source, context).querySelector(selector) as T | null;
 };
 
