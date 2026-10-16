@@ -22,6 +22,12 @@
 
 <p align="center">
 
+New module for building parser operation scenarios *(Preview)*:
+<img src="../docs/images/new-interface.png" width="900"/>
+
+> 💡 *Interactive GIF demo coming soon!*
+
+Demos of other presets in action:
 <img src="../docs/images/demo.gif" width="900"/>
 
 </p>

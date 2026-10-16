@@ -20,6 +20,12 @@
 
 <p align="center">
 
+Новый модуль для создания сценариев работы парсера *(Preview)*:
+<img src="./docs/images/new-interface.png" width="900"/>
+
+> 💡 *Скоро появится интерактивная GIF-демонстрация!*
+
+Демонстрация работы других пресетов:
 <img src="./docs/images/demo.gif" width="900"/>
 
 </p>
