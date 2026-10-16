@@ -1,5 +1,61 @@
 # Changelog
 
+## [2.5.0](https://github.com/SamuelGambino/extention-react/compare/v2.4.3...v2.5.0) (2026-10-16)
+
+
+### Features
+
+* add all fields in StepEditor ([976e56e](https://github.com/SamuelGambino/extention-react/commit/976e56e4b12326e66ef6267788c70596910535a9))
+* add availability check before parsing in multiple parser classes ([b8710f1](https://github.com/SamuelGambino/extention-react/commit/b8710f1bb55b9149e54b951693b808943ad8537e))
+* add configurable loop context strategies ([7a4c1dd](https://github.com/SamuelGambino/extention-react/commit/7a4c1ddadbbc5d05d1509a4093c3669240b77c29))
+* add dnd-kit dependencies and update parser configuration ([4daeaee](https://github.com/SamuelGambino/extention-react/commit/4daeaeef1dd7be43d884e3a942e0a94719127d2b))
+* add dnd-kit utilities and sortable tree dependencies ([d1172d4](https://github.com/SamuelGambino/extention-react/commit/d1172d4dd6d5bdd5aa5a19372a5a7b23aace6eb4))
+* add entity context to custom parser loops ([12cc6ba](https://github.com/SamuelGambino/extention-react/commit/12cc6ba5816f5cae9a48b068bfc0dc32b094b058))
+* add RadioField component and add in StepEditor for collect step ([ee2e1cb](https://github.com/SamuelGambino/extention-react/commit/ee2e1cb71fbfcedf10d246a1e994a5c2ba75dcea))
+* add wait functionality and enhance action handling; update manifest files for content scripts ([393c5da](https://github.com/SamuelGambino/extention-react/commit/393c5daa959f98e364cf35a1bbf740a8c7c1336c))
+* add waitUntilContentReady function and integrate it into StepExecutor; update content script to handle PING action ([9c216ce](https://github.com/SamuelGambino/extention-react/commit/9c216ce6f4f60148a64a98f3433fea1572ad92df))
+* enhance indentation display for nested steps in ScenarioList ([be1190f](https://github.com/SamuelGambino/extention-react/commit/be1190f2a5a9eeefd74366350f50f7a2349ea11b))
+* enhance SelectField component with description and dynamic styling options ([cb03f42](https://github.com/SamuelGambino/extention-react/commit/cb03f424fda2ac4041ec54aba9ed4bc199f28d0d))
+* enhance step configuration with source and selector parameters; update related components for improved functionality ([1005569](https://github.com/SamuelGambino/extention-react/commit/10055695bab1cfa5e24b3788b9f59ede33e56121))
+* enhance step execution logic to handle context based on source; clean up whitespace in action handlers ([eddb7b7](https://github.com/SamuelGambino/extention-react/commit/eddb7b79bd18947499d29f212607a8a1530f1311))
+* enhance StepEditor and ScenarioList components, update StepMeta descriptions, and improve auto-fill logic ([309b2d6](https://github.com/SamuelGambino/extention-react/commit/309b2d6fed56573a2a3af9bf6db48e11520db8a2))
+* implement action execution and tab handling in StepExecutor; add waitForTabComplete utility ([2a30372](https://github.com/SamuelGambino/extention-react/commit/2a303721de9b3fdf0fc2637378d85a403040090c))
+* implement action handling in content script; add handlers for click and hover actions ([5012ce1](https://github.com/SamuelGambino/extention-react/commit/5012ce12daf6d44a369b509a900d3980249e25f3))
+* Implement correct DnD functionality and ensure nesting in loops is displayed ([a9ac59c](https://github.com/SamuelGambino/extention-react/commit/a9ac59ceee058d2d138bdde6d6bdba8d6caa71e4))
+* implement scenario builder and refactor parser configuration ([3531dbd](https://github.com/SamuelGambino/extention-react/commit/3531dbd6d53a92d60d8bb71117285af03d05ec01))
+* implement scenario builder with drag-and-drop functionality and refactor step handling ([cb0a519](https://github.com/SamuelGambino/extention-react/commit/cb0a519fa9edb3278a1ba1c489af276e62bbecd5))
+* implement ScenarioList component with drag-and-drop functionality and integrate with StepMeta ([164ecf4](https://github.com/SamuelGambino/extention-react/commit/164ecf43df6ac62f88f4e63c51b95590b9261e32))
+* implement step execution handling; enhance message processing and add new handlers for collect, condition, and wait actions ([9cf3824](https://github.com/SamuelGambino/extention-react/commit/9cf3824e2aa169b249b6ac74ddb5c7ab094fc069))
+* refactor message sending and waiting logic; improve error handling and streamline step parameter management ([5ad8e5a](https://github.com/SamuelGambino/extention-react/commit/5ad8e5a4cf05c92abef3d5a49ea3c6eac9f8fa44))
+* refactor StepExecutor and related handlers; remove executeAction function and enhance message handling ([04a308b](https://github.com/SamuelGambino/extention-react/commit/04a308babe5fe296871fd3eeb8b74df494dafa30))
+* support multiple product parameters in custom parser ([6dbc107](https://github.com/SamuelGambino/extention-react/commit/6dbc10717aea1970ae2dec35a18236b7c9f6e452))
+* support nested drag and drop for scenario steps ([2e13740](https://github.com/SamuelGambino/extention-react/commit/2e137400e7ca138ebf3a9ef27e5af8bbd8a214c1))
+* track custom parser progress by loop context ([3b896ce](https://github.com/SamuelGambino/extention-react/commit/3b896ced5dcbe11a8e8a5d0d109ee2bf47b0f0ab))
+* update step types and enhance StepEditor, ScenarioList, and constants for action handling ([b2346f2](https://github.com/SamuelGambino/extention-react/commit/b2346f2ae8d21fde3e673b434dbef732412b7742))
+* update step types and enhance StepEditor, ScenarioList, and SwitchField components for improved functionality ([06193d6](https://github.com/SamuelGambino/extention-react/commit/06193d62b6f0f5c8bf0dbe6d351084d4dcbecfac))
+
+
+### Bug Fixes
+
+* add custom parser context and enhance queryElement for root selection ([0840d45](https://github.com/SamuelGambino/extention-react/commit/0840d45e289d27970082cbf82c87c55c1ada664e))
+* add scenario list drag autoscroll ([d50da9f](https://github.com/SamuelGambino/extention-react/commit/d50da9ff95f974342586cfc0d6f51a89a4f6c394))
+* adjust height property for form indentation ([a7ea2a8](https://github.com/SamuelGambino/extention-react/commit/a7ea2a81c9259366b179522097b04a0f62d7436b))
+* fix content script initialization ([b02a390](https://github.com/SamuelGambino/extention-react/commit/b02a390268c801eb91feda2d0c10f31390067c6c))
+* increase z-index for dropdown to improve visibility ([caaf915](https://github.com/SamuelGambino/extention-react/commit/caaf9151458d1994246308704c36b59bf0ddbf88))
+* isolate parsing from scenario check ([9e98cf7](https://github.com/SamuelGambino/extention-react/commit/9e98cf72009144989d27f59c11cef0cb958c0ce4))
+* make nested scenario dragging reliable ([40381c8](https://github.com/SamuelGambino/extention-react/commit/40381c86a89c0982205db402f566355b9c01fc49))
+* preserve opened scenario editors during form updates ([b3bb382](https://github.com/SamuelGambino/extention-react/commit/b3bb382219fa3cca6370370ceb1f61046fe34f84))
+* preserve step expansion during form autosave ([ae27a91](https://github.com/SamuelGambino/extention-react/commit/ae27a9146cf773084a4eb485a1b00f8d607b230b))
+* restore compact nested scenario tree layout ([067146b](https://github.com/SamuelGambino/extention-react/commit/067146bc8b696bf5dc037ad7126ef0b201a20db5))
+* restore nested scenario drag and drop ([79f622e](https://github.com/SamuelGambino/extention-react/commit/79f622e7a982a926c47bb560f54f02617c6177d1))
+* stabilize parser contexts and state updates ([044d7e1](https://github.com/SamuelGambino/extention-react/commit/044d7e1dc9c1ae4f12e2bc787616524f1f580412))
+* stabilize sticky scenario controls and step selector ([fe6cd1c](https://github.com/SamuelGambino/extention-react/commit/fe6cd1c7f0993cc124bd238038db47561153b4c9))
+* update button background and add gradient effect to list add button ([ac0228b](https://github.com/SamuelGambino/extention-react/commit/ac0228b4c9cbfd037d722cdc2c0fd5b8b29f3db3))
+* update chibbis API endpoint for geo-objects ([c70c451](https://github.com/SamuelGambino/extention-react/commit/c70c451d9ea2edf00289808a0b723be2831e335c))
+* update product pricing logic to include promotional prices ([bba5220](https://github.com/SamuelGambino/extention-react/commit/bba5220da88ba715505d1dc8a6e7f16dd7a30691))
+* update SelectField component to support selected value ([228a1ee](https://github.com/SamuelGambino/extention-react/commit/228a1ee7623b0ce53fd20136fd8ea7accd0340c7))
+* wait for async action targets in custom parser ([0391a1a](https://github.com/SamuelGambino/extention-react/commit/0391a1abc06fec104d763a67cc6b49f7851f7787))
+
 ## [2.4.3](https://github.com/SamuelGambino/extention-react/compare/v2.4.2...v2.4.3) (2026-07-05)
 
 
