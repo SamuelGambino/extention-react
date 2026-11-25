@@ -8,7 +8,7 @@ interface YandexResp {
   }
 }
 
-interface YandexRespItem { 
+interface YandexRespItem {
   id: number,
   name: string,
   description: string,

@@ -29,6 +29,7 @@ export const terms = {
     custom: "Custom",
     vk: "VK",
     yandex: "Yandex",
+    yandexFlowers: "Yandex.Flowers",
     chibbis: "Chibbis",
     whatsapp: "WhatsApp",
     kuper: "Kuper",

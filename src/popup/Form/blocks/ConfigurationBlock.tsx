@@ -59,7 +59,7 @@ const ConfigurationBlock = () => {
         </>
       )}
 
-      {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper' || preset === "flowwow") && (
+      {(preset === 'yandex' || preset === 'chibbis' || preset === 'kuper' || preset === "flowwow" || preset === "yandex.flowers") && (
         <div className='form__field'>
           <div className='form__field-title'>
             <label className='form__field-label'>{terms.form.apiUrl}</label>

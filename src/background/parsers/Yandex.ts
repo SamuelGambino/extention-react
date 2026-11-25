@@ -33,7 +33,8 @@ export class Yandex extends BaseParser {
     };
 
     try {
-      const categories = this.response?.payload?.categories;
+      const categories = this.response?.payload.categories;
+
       if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
       let categoriesTotal = 0;
@@ -68,7 +69,8 @@ export class Yandex extends BaseParser {
     await this.checkAvailability();
 
     await this.setLog({ status: "warn", title: "[Yandex]:Parse", value: "Парсинг данных..." });
-    const categories = this.response?.payload?.categories;
+    const categories = this.response?.payload.categories;
+
     if (!Array.isArray(categories)) throw Error("Response payload.categories is not an array");
 
     for (const category of categories) {

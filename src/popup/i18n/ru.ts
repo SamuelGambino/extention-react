@@ -100,6 +100,9 @@ const ru = {
       yandex: {
         description: "Работает автозаполнение; проверьте итоговую ссылку. Поддерживаются Yandex Eda, Delivery Club и частично Yandex Maps",
       },
+      yandexFlowers: {
+        description: "Работает автозаполнение; проверьте итоговую ссылку. Подсервис Яндекса",
+      },
       kuper: {
         description: "Автозаполнение недоступно. В DevTools откройте Network, выберите товар, найдите запрос multicards?permalink и скопируйте полный URL",
       },

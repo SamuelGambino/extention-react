@@ -11,7 +11,7 @@ interface ParserTabConfig {
   data: PresetDataType;
 };
 
-type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis' | 'whatsapp' | 'kuper' | 'flowwow';
+type PresertOptionsType = 'custom' | 'vk' | 'yandex' | 'chibbis' | 'whatsapp' | 'kuper' | 'flowwow' | 'yandex.flowers';
 
 type PresetDataType = PresetCustom | PresetVk | PresetByApi | PresetWhatsApp;
 

@@ -6,6 +6,7 @@ const PresertOptions = [
   { label: terms.parserNames.custom, value: "custom", description: t("form.presets.custom.description") },
   { label: terms.parserNames.vk, value: "vk", description: t("form.presets.vk.description") },
   { label: terms.parserNames.yandex, value: "yandex", description: t("form.presets.yandex.description") },
+  { label: terms.parserNames.yandexFlowers, value: "yandex.flowers", description: t("form.presets.yandexFlowers.description") },
   { label: terms.parserNames.kuper, value: "kuper", description: t("form.presets.kuper.description") },
   { label: terms.parserNames.chibbis, value: "chibbis", description: t("form.presets.chibbis.description") },
   { label: terms.parserNames.whatsapp, value: "whatsapp", description: t("form.presets.whatsapp.description") },
