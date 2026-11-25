@@ -117,7 +117,7 @@ export class Vk extends BaseParser {
     return response.items.map((item: VkItemsResp) => ({
       product_id: item.id,
       name: item.title,
-      picture: item.thumb_photo.replaceAll("&", "&amp;") || '',
+      picture: this.getOriginalPhoto(item).replaceAll("&", "&amp;") || '',
       description: item.description || '',
       category: catId,
       price: [{
@@ -127,6 +127,27 @@ export class Vk extends BaseParser {
       }],
       modifiers: []
     }));
+  }
+
+  private getOriginalPhoto(item: VkItemsResp): string {
+    if (item.photos && item.photos.length > 0) {
+      const lastPhoto = item.photos[item.photos.length - 1];
+
+      if (lastPhoto.sizes && lastPhoto.sizes.length > 0) {
+        const maxQualitySize = lastPhoto.sizes.reduce((prev, current) => {
+          return (current.width > prev.width) ? current : prev;
+        });
+        if (maxQualitySize?.url) {
+          return maxQualitySize.url;
+        }
+      }
+
+      if (lastPhoto.photo_1280) return lastPhoto.photo_1280;
+      if (lastPhoto.photo_800) return lastPhoto.photo_800;
+      if (lastPhoto.photo_600) return lastPhoto.photo_600;
+    }
+
+    return item.thumb_photo || '';
   }
 
   async checkAvailability() {
@@ -196,7 +217,7 @@ export class Vk extends BaseParser {
         allProducts.push({
           product_id: item.id,
           name: item.title,
-          picture: item.thumb_photo.replaceAll("&", "&amp;") || '',
+          picture: this.getOriginalPhoto(item).replaceAll("&", "&amp;") || '',
           description: item.description || '',
           category: 1000,
           price: [{

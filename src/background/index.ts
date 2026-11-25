@@ -10,6 +10,7 @@ import { WhatsApp } from "./parsers/WhatsApp";
 import { Exporter } from "./Exporter";
 import { Kuper } from "./parsers/Kuper";
 import { Flowwow } from "./parsers/Flowwow";
+import { YandexFlowers } from "./parsers/YandexFlowers";
 import { checkUpdate } from "./UpdateChecker";
 
 type PresetType = ParserTabConfig['type'];
@@ -22,6 +23,7 @@ const PARSER_MAP: Record<PresetType, new (config: ParserTabConfig, mode: ParseMo
   whatsapp: WhatsApp,
   kuper: Kuper,
   flowwow: Flowwow,
+  "yandex.flowers": YandexFlowers,
 };
 
 let activeParser: BaseParser | null = null;

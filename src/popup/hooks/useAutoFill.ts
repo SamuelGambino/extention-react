@@ -10,6 +10,7 @@ const useAutoFill = () => {
     if (domain === "vk.com" || domain === "vk.ru") return "vk";
     if (domain === "eda.yandex.ru" || domain === "yandex.ru" || domain === "yandex.com" || domain === "market-delivery.yandex.ru" || domain === "eda.yandex.kg") return "yandex";
     if (domain === "chibbis.ru") return "chibbis";
+    if (domain === "flowers.yandex.ru") return "yandex.flowers";
     if (domain === "web.whatsapp.com") return "whatsapp";
     if (domain === "kuper.ru") return "kuper";
     if (domain === "flowwow.com" || domain === "flowwow.ru") return "flowwow";
@@ -43,6 +44,10 @@ const useAutoFill = () => {
         placeSlug = orgIndex !== -1 ? pathSegments[orgIndex + 1] : undefined;
       }
       setValue("data.apiUrl", `https://eda.yandex.ru/api/v2/menu/retrieve/${placeSlug}?latitude=0&longitude=0&autoTranslate=false`);
+    };
+    if (preset === "yandex.flowers") {
+      const pathSegments = urlObject.pathname.split('/').filter(Boolean);
+      setValue("data.apiUrl", `https://flowers.yandex.ru/eats/v1/eats-catalog/v2/brand/place?brand_slug=${pathSegments.at(-1)}&shippingType=delivery`);
     };
     if (preset === "chibbis") {
       const chibbisResponse = await fetch("https://chibbis.ru/webapi/geo-objects");
