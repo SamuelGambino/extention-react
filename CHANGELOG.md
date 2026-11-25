@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.6.0](https://github.com/SamuelGambino/extention-react/compare/v2.5.0...v2.6.0) (2026-11-25)
+
+
+### Features
+
+* add new module Yandex Flowers ([2521aa0](https://github.com/SamuelGambino/extention-react/commit/2521aa02fb213536168ab42e310287ae96cdae46))
+
+
+### Bug Fixes
+
+* enhance product image retrieval by adding original photo selection logic ([1d32be8](https://github.com/SamuelGambino/extention-react/commit/1d32be818ea030695119087e3caa39e88d1e5ad5))
+* streamline product parameter descriptions in XML export ([12897ab](https://github.com/SamuelGambino/extention-react/commit/12897ab7dc40c3eb5cc9c4854b557bdf0bd5686d))
+
 ## [2.5.0](https://github.com/SamuelGambino/extention-react/compare/v2.4.3...v2.5.0) (2026-10-16)
 
 
